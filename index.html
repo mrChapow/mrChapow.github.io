@@ -5,15 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cota</title>
   <style>
-    html, body {
-      height: 100%;
+    body {
       margin: 0;
-      background: #f9f9f9;
+      background: #f3f3f3;
+      font-family: 'Arial', sans-serif;
+      height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-family: sans-serif;
+      position: relative;
     }
+
     input {
       padding: 1rem 2rem;
       font-size: 1.2rem;
@@ -21,13 +23,65 @@
       border-bottom: 2px solid #000;
       outline: none;
       width: 300px;
-      text-align: center;
       background: transparent;
+      text-align: center;
+    }
+
+    .win95-box {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -60%);
+      width: 350px;
+      border: 2px solid black;
+      background: #c0c0c0;
+      box-shadow: 4px 4px 0px #808080;
+      z-index: 10;
+    }
+
+    .win95-header {
+      background: #000080;
+      color: white;
+      padding: 4px 8px;
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: bold;
+    }
+
+    .win95-header button {
+      background: #c0c0c0;
+      border: 2px outset white;
+      font-weight: bold;
+      cursor: pointer;
+      width: 20px;
+      height: 20px;
+      padding: 0;
+    }
+
+    .win95-content {
+      padding: 1rem;
+      font-size: 14px;
+      color: #000;
     }
   </style>
 </head>
 <body>
+
+  <div class="win95-box" id="popup">
+    <div class="win95-header">
+      Alert
+      <button onclick="document.getElementById('popup').style.display='none'">X</button>
+    </div>
+    <div class="win95-content">
+      You’ve entered the Cota shell.
+    </div>
+  </div>
+
   <input type="text" placeholder="type something" />
+
 </body>
 </html>
+
 

@@ -111,16 +111,28 @@
     class="cota-input"
     required
   />
-  <p id="response" style="display:none; font-family: monospace; margin-top: 1rem;">.</p>
+  <p id="response" style="display:none; font-family: monospace; margin-top: 1rem;">nothing happened...</p>
 </form>
 
 
 <script>
   const form = document.getElementById("cotaForm");
   const responseText = document.getElementById("response");
+  const input = document.querySelector(".cota-input");
 
   form.addEventListener("submit", function (e) {
     e.preventDefault();
+
+    const value = input.value.trim().toLowerCase();
+
+    if (value === "love") {
+      const loveNote = document.createElement("p");
+      loveNote.textContent = "You are loved 💖";
+      loveNote.style.fontFamily = "monospace";
+      loveNote.style.marginTop = "0.5rem";
+      loveNote.style.color = "#d100b3";
+      form.appendChild(loveNote);
+    }
 
     const data = new FormData(form);
 

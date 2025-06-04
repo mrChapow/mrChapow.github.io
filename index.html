@@ -146,6 +146,83 @@
 </div>
 <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "f321664fe17c4bf097ed51e782837677"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
+  <div id="pride-terminal" class="terminal hidden">
+  <div class="terminal-content" id="terminal-output"></div>
+</div>
+
+<!-- Input field example -->
+<input type="text" id="cota-input" placeholder="Enter the signal..." />
+
+<style>
+  .terminal {
+    position: fixed;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #000;
+    color: #00ffcc;
+    font-family: 'Courier New', monospace;
+    padding: 1rem 1.5rem;
+    border: 2px solid #00ffcc;
+    z-index: 9999;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 0 20px rgba(0,255,204,0.6);
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  .rainbow-flash {
+    animation: rainbow 0.8s infinite alternate;
+  }
+
+  @keyframes rainbow {
+    0%   { background-color: red; }
+    14%  { background-color: orange; }
+    28%  { background-color: yellow; }
+    42%  { background-color: green; }
+    57%  { background-color: blue; }
+    71%  { background-color: indigo; }
+    85%  { background-color: violet; }
+    100% { background-color: red; }
+  }
+</style>
+
+<script>
+  const input = document.getElementById("cota-input");
+  const terminal = document.getElementById("pride-terminal");
+  const output = document.getElementById("terminal-output");
+
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      const val = input.value.trim().toLowerCase();
+      if (val === "pride") {
+        runPrideEasterEgg();
+        input.value = "";
+      }
+    }
+  });
+
+  function runPrideEasterEgg() {
+    terminal.classList.remove("hidden");
+    output.innerHTML = "> Command accepted: pride<br>> Terminal is now feeling fabulous 🙋‍♀️<br>> 🌈 SYSTEM OVERLOAD 🌈";
+    document.body.classList.add("rainbow-flash");
+
+    setTimeout(() => {
+      output.innerHTML +=
+        "<br><br>> BOOTING: QUEER_MODE_1997™" +
+        "<br>> Loading... they.them.exe" +
+        "<br>> Executing sparkle.bat" +
+        "<br>> Mood set to: Slaycore Ultra" +
+        "<br>>> _";
+
+      document.body.classList.remove("rainbow-flash");
+    }, 3000);
+  }
+</script>
+
 </body>
 </html>
 

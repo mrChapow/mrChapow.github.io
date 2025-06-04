@@ -65,30 +65,29 @@
       font-size: 14px;
       color: #000;
     }
+
     .cota-input {
-  padding: 0.8rem 1.2rem;
-  font-size: 1rem;
-  font-family: monospace;
-  background: transparent;
-  border: none;
-  border-bottom: 2px solid #000;
-  outline: none;
-  width: 280px;
-  text-align: center;
-  letter-spacing: 0.05em;
-}
+      padding: 0.8rem 1.2rem;
+      font-size: 1rem;
+      font-family: monospace;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid #000;
+      outline: none;
+      width: 280px;
+      text-align: center;
+      letter-spacing: 0.05em;
+    }
 
-
-.submit-btn {
-  margin-left: 8px;
-  background: #000;
-  color: #fff;
-  font-family: monospace;
-  border: none;
-  padding: 0.6rem 1rem;
-  cursor: pointer;
-}
-
+    .submit-btn {
+      margin-left: 8px;
+      background: #000;
+      color: #fff;
+      font-family: monospace;
+      border: none;
+      padding: 0.6rem 1rem;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -114,7 +113,6 @@
   <p id="response" style="display:none; font-family: monospace; margin-top: 1rem;">nothing happened...</p>
 </form>
 
-
 <script>
   const form = document.getElementById("cotaForm");
   const responseText = document.getElementById("response");
@@ -132,6 +130,9 @@
       loveNote.style.marginTop = "0.5rem";
       loveNote.style.color = "#d100b3";
       form.appendChild(loveNote);
+      responseText.style.display = "none";
+    } else {
+      responseText.style.display = "block";
     }
 
     const data = new FormData(form);
@@ -144,25 +145,20 @@
       },
     }).then((response) => {
       if (response.ok) {
-        responseText.style.display = "block";
         form.reset();
       }
     });
   });
 </script>
 
-
-  <!-- 👁 Hidden Gratitude Message -->
-
+<!-- Hidden Gratitude Message -->
 <div style="display: none;">
-    If you can see this, you're a legend. thank you. i love you! 
-  </div>
+  If you can see this, you're a legend. thank you. i love you!
+</div>
 
-<!-- 🌐 Cloudflare Web Analytics -->
-  <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
-    data-cf-beacon='{"token": "f321664fe17c4bf097ed51e782837677"}'></script>
-  <!-- End Cloudflare Web Analytics -->
-
+<!-- Cloudflare Web Analytics -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "f321664fe17c4bf097ed51e782837677"}'></script>
+<!-- End Cloudflare Web Analytics -->
 
 </body>
 </html>

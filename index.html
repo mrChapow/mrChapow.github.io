@@ -141,87 +141,86 @@
 
 <!-- other HTML elements -->
 
-<div style="display:none;">
-  If you can see this, youre a legend. thank you. 
-</div>
-<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "f321664fe17c4bf097ed51e782837677"}'></script>
+<!-- 👁 Hidden Gratitude Message -->
+  <div style="display: none;">
+    If you can see this, you're a legend. thank you.
+  </div>
+
+  <!-- 🌐 Cloudflare Web Analytics -->
+  <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+    data-cf-beacon='{"token": "f321664fe17c4bf097ed51e782837677"}'></script>
   <!-- End Cloudflare Web Analytics -->
 
-  <!-- Hidden Terminal for PRIDE Easter Egg -->
-<div id="pride-terminal" class="terminal hidden">
-  <div class="terminal-content" id="terminal-output"></div>
-</div>
+  <!-- 🌈 PRIDE Easter Egg Terminal -->
+  <div id="pride-terminal" class="terminal hidden">
+    <div class="terminal-content" id="terminal-output"></div>
+  </div>
 
-<style>
-  .terminal {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -60%);
-  width: 350px;
-  border: 2px solid black;
-  background: #000;
-  box-shadow: 4px 4px 0px #808080;
-  z-index: 11;
-  color: #00ffcc;
-  font-family: 'Courier New', monospace;
-  padding: 1rem;
-  display: none;
-}
-
-
-  .hidden {
-    display: none;
-  }
-
-  .rainbow-flash {
-    animation: rainbow 0.8s infinite alternate;
-  }
-
-  @keyframes rainbow {
-    0%   { background-color: red; }
-    14%  { background-color: orange; }
-    28%  { background-color: yellow; }
-    42%  { background-color: green; }
-    57%  { background-color: blue; }
-    71%  { background-color: indigo; }
-    85%  { background-color: violet; }
-    100% { background-color: red; }
-  }
-</style>
-
-<script>
-  const input = document.querySelector(".cota-input");
-  const terminal = document.getElementById("pride-terminal");
-  const output = document.getElementById("terminal-output");
-
-  input.addEventListener("keydown", function (e) {
-    if (e.key === "Enter") {
-      const val = input.value.trim().toLowerCase();
-
-      if (val === "pride") {
-        // Trigger Easter Egg
-        terminal.classList.remove("hidden");
-        output.innerHTML =
-          "> Command accepted: pride<br>> Terminal is now feeling fabulous and flamboyant 🙋‍♀️<br>> 🌈 SYSTEM OVERLOAD 🌈";
-        document.body.classList.add("rainbow-flash");
-
-        setTimeout(() => {
-          output.innerHTML +=
-            "<br><br>> BOOTING: QUEER_MODE_1997™" +
-            "<br>> Loading... they.them.exe" +
-            "<br>> Executing sparkle.bat" +
-            "<br>> Mood set to: Slaycore Ultra" +
-            "<br>>> _";
-          document.body.classList.remove("rainbow-flash");
-        }, 3000);
-      }
+  <style>
+    .terminal {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -60%);
+      width: 350px;
+      border: 2px solid black;
+      background: #000;
+      box-shadow: 4px 4px 0px #808080;
+      z-index: 11;
+      color: #00ffcc;
+      font-family: 'Courier New', monospace;
+      padding: 1rem;
+      display: none;
     }
-  });
-</script>
 
+    .hidden {
+      display: none;
+    }
 
+    .rainbow-flash {
+      animation: rainbow 0.8s infinite alternate;
+    }
 
+    @keyframes rainbow {
+      0% { background-color: red; }
+      14% { background-color: orange; }
+      28% { background-color: yellow; }
+      42% { background-color: green; }
+      57% { background-color: blue; }
+      71% { background-color: indigo; }
+      85% { background-color: violet; }
+      100% { background-color: red; }
+    }
+  </style>
+
+  <script>
+    const input = document.querySelector(".cota-input");
+    const terminal = document.getElementById("pride-terminal");
+    const output = document.getElementById("terminal-output");
+
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        const val = input.value.trim().toLowerCase();
+
+        if (val === "pride") {
+          terminal.classList.remove("hidden");
+          output.innerHTML =
+            "> Command accepted: pride<br>> Terminal is now feeling fabulous and flamboyant 🙋‍♀️<br>> 🌈 SYSTEM OVERLOAD 🌈";
+          document.body.classList.add("rainbow-flash");
+
+          setTimeout(() => {
+            output.innerHTML +=
+              "<br><br>> BOOTING: QUEER_MODE_1997™" +
+              "<br>> Loading... they.them.exe" +
+              "<br>> Executing sparkle.bat" +
+              "<br>> Mood set to: Slaycore Ultra" +
+              "<br>>> _";
+            document.body.classList.remove("rainbow-flash");
+          }, 3000);
+        }
+      }
+    });
+  </script>
 
 </body>
 </html>

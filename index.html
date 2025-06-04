@@ -154,20 +154,21 @@
 
 <style>
   .terminal {
-    position: fixed;
-    top: 10%;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #000;
-    color: #00ffcc;
-    font-family: 'Courier New', monospace;
-    padding: 1rem 1.5rem;
-    border: 2px solid #00ffcc;
-    z-index: 9999;
-    width: 90%;
-    max-width: 600px;
-    box-shadow: 0 0 20px rgba(0,255,204,0.6);
-  }
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -60%);
+  width: 350px;
+  border: 2px solid black;
+  background: #000;
+  box-shadow: 4px 4px 0px #808080;
+  z-index: 11;
+  color: #00ffcc;
+  font-family: 'Courier New', monospace;
+  padding: 1rem;
+  display: none;
+}
+
 
   .hidden {
     display: none;

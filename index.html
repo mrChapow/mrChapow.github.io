@@ -164,13 +164,47 @@
 
    setTimeout(() => {
   myspacePage.innerHTML = `
-    <div style="border: 2px solid #000; padding: 2rem; background: white; width: 80%; max-width: 600px; text-align: left; box-shadow: 4px 4px 0px #999;">
-      <h1 style="font-family: cursive; color: hotpink; text-shadow: 1px 1px 0 black;">AllenMMC's MySpace</h1>
-      <p><strong>Status:</strong> just chillin rn... hmu 💯</p>
-      <p><strong>Song:</strong> *music auto-playing soon*</p>
-      <p style="margin-top: 2rem; font-size: 0.9rem; color: #555;">
-        <strong>About Me:</strong> Not much to say. You either get it or you don’t. <span style="color: red">♥</span>
-      </p>
+    <div style="border: 2px solid #000; padding: 1rem 1.5rem; background: #fff; width: 100%; max-width: 700px; box-shadow: 4px 4px #aaa; text-align: left; font-family: monospace;">
+      <h1 style="font-size: 1.6rem; margin-bottom: 1rem; color: hotpink; text-shadow: 1px 1px black;">AllenMMC's MySpace</h1>
+
+      <div style="display: flex; align-items: flex-start; gap: 2rem;">
+        <img src="profile-placeholder.png" alt="Profile Pic" style="width: 100px; height: 100px; border: 2px solid #000; object-fit: cover;" />
+        <div>
+          <p><strong>Status:</strong> just chillin rn... hmu 💯</p>
+          <p><strong>Mood:</strong> contemplative 🌑</p>
+        </div>
+      </div>
+
+      <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid #ccc;" />
+
+      <div>
+        <h3 style="margin-bottom: 0.5rem; font-size: 1rem; color: #000;">About Me</h3>
+        <p style="margin-top: 0; font-size: 0.9rem; color: #444;">Not much to say. You either get it or you don’t. <span style="color: red">♥</span></p>
+      </div>
+
+      <div style="margin-top: 1.5rem;">
+        <h3 style="margin-bottom: 0.5rem; font-size: 1rem; color: #000;">Music</h3>
+        <p>*music auto-playing soon*</p>
+      </div>
+
+      <div style="margin-top: 1.5rem;">
+        <h3 style="margin-bottom: 0.5rem; font-size: 1rem; color: #000;">Friends</h3>
+        <div style="display: flex; gap: 1rem;">
+          <div style="text-align: center;">
+            <img src="friend1.png" alt="Friend 1" style="width: 60px; height: 60px; border: 1px solid #000;" />
+            <p style="font-size: 0.75rem; margin: 0.25rem 0 0;">Tom</p>
+          </div>
+          <div style="text-align: center;">
+            <img src="friend2.png" alt="Friend 2" style="width: 60px; height: 60px; border: 1px solid #000;" />
+            <p style="font-size: 0.75rem; margin: 0.25rem 0 0;">Jordan</p>
+          </div>
+          <div style="text-align: center;">
+            <img src="friend3.png" alt="Friend 3" style="width: 60px; height: 60px; border: 1px solid #000;" />
+            <p style="font-size: 0.75rem; margin: 0.25rem 0 0;">Riley</p>
+          </div>
+        </div>
+      </div>
+
       <div style="margin-top: 2rem; padding: 0.5rem 1rem; border: 1px dashed #aaa; background: #f9f9f9;">
         <a href="#" style="font-family: monospace; text-decoration: underline; color: #0066cc;">Message</a>
       </div>
@@ -208,3 +242,4 @@
 
 </body>
 </html>
+

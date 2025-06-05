@@ -88,6 +88,21 @@
       padding: 0.6rem 1rem;
       cursor: pointer;
     }
+
+      #myspacePage {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      font-family: monospace;
+      font-size: 1.2rem;
+      animation: fadeIn 1s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
   </style>
 </head>
 <body>
@@ -113,10 +128,18 @@
   <p id="response" style="display:none; font-family: monospace; margin-top: 1rem;">nothing happened...</p>
 </form>
 
+<div id="myspacePage">
+  <p>Loading MySpace...</p>
+  <p>Authenticating nostalgia...</p>
+  <p>Welcome back, AllenMMC.</p>
+</div>
+
 <script>
   const form = document.getElementById("cotaForm");
   const responseText = document.getElementById("response");
   const input = document.querySelector(".cota-input");
+  const popup = document.getElementById("popup");
+  const myspacePage = document.getElementById("myspacePage");
 
   form.addEventListener("submit", function (e) {
     e.preventDefault();
@@ -131,6 +154,10 @@
       loveNote.style.color = "#d100b3";
       form.appendChild(loveNote);
       responseText.style.display = "none";
+    } else if (value === "myspace") {
+      form.style.display = "none";
+      popup.style.display = "none";
+      myspacePage.style.display = "flex";
     } else {
       responseText.style.display = "block";
     }
@@ -153,7 +180,7 @@
 
 <!-- Hidden Gratitude Message -->
 <div style="display: none;">
-  If you can see this, you're a legend. thank you. i love you!
+  If you can see this, you're a legend. thank you.
 </div>
 
 <!-- Cloudflare Web Analytics -->

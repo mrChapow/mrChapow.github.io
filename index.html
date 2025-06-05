@@ -117,88 +117,85 @@
     </div>
   </div>
 
- <form action="https://formspree.io/f/mdkzoqdp" method="POST" id="cotaForm">
-  <input
-    type="text"
-    name="signal"
-    placeholder="Say anything..."
-    class="cota-input"
-    required
-  />
-  <p id="response" style="display:none; font-family: monospace; margin-top: 1rem;">nothing happened...</p>
-</form>
+  <form action="https://formspree.io/f/mdkzoqdp" method="POST" id="cotaForm">
+    <input
+      type="text"
+      name="signal"
+      placeholder="Say anything..."
+      class="cota-input"
+      required
+    />
+    <p id="response" style="display:none; font-family: monospace; margin-top: 1rem;">nothing happened...</p>
+  </form>
 
-<div id="myspacePage">
-  <!-- This is where MySpace content will eventually go -->
-</div>
+  <div id="myspacePage"></div>
 
-<script>
-  const form = document.getElementById("cotaForm");
-  const responseText = document.getElementById("response");
-  const input = document.querySelector(".cota-input");
-  const popup = document.getElementById("popup");
-  const myspacePage = document.getElementById("myspacePage");
+  <script>
+    const form = document.getElementById("cotaForm");
+    const responseText = document.getElementById("response");
+    const input = document.querySelector(".cota-input");
+    const popup = document.getElementById("popup");
+    const myspacePage = document.getElementById("myspacePage");
 
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
 
-    const value = input.value.trim().toLowerCase();
+      const value = input.value.trim().toLowerCase();
+      const data = new FormData(form);
 
-    if (value === "love") {
-      const loveNote = document.createElement("p");
-      loveNote.textContent = "You are loved 💖";
-      loveNote.style.fontFamily = "monospace";
-      loveNote.style.marginTop = "0.5rem";
-      loveNote.style.color = "#d100b3";
-      form.appendChild(loveNote);
-      responseText.style.display = "none";
-    } else if (value === "myspace") {
-      form.style.display = "none";
-      popup.style.display = "none";
-      myspacePage.innerHTML = '<p style="font-family: monospace; font-size: 1.1rem;">Loading MySpace...</p>';
-      myspacePage.style.display = "flex";
-
-      setTimeout(() => {
-        myspacePage.innerHTML = '<div style="border: 2px solid #000; padding: 2rem; background: white; width: 80%; max-width: 600px; text-align: left; box-shadow: 4px 4px 0px #999;">
-<h1 style="font-family: cursive; color: hotpink; text-shadow: 1px 1px 0 black;">AllenMMC\'s MySpace</h1>
-<p><strong>Status:</strong> just chillin rn... hmu 💯</p>
-<p><strong>Song:</strong> *music auto-playing soon*</p>
-<p style="margin-top: 2rem; font-size: 0.9rem; color: #555;">About Me: Not much to say. You either get it or you don’t. <span style="color: red">♥</span></p>
-</div>';
-      }, 1500);
-      // proceed to submit the form to Formspree even for 'myspace'
-    } else {
-      responseText.style.display = "block";
-    }
-
-    const data = new FormData(form);
-
-    fetch(form.action, {
-      method: form.method,
-      body: data,
-      headers: {
-        Accept: "application/json",
-      },
-    }).then((response) => {
-      if (response.ok) {
-        form.reset();
+      // Special cases
+      if (value === "love") {
+        const loveNote = document.createElement("p");
+        loveNote.textContent = "You are loved 💖";
+        loveNote.style.fontFamily = "monospace";
+        loveNote.style.marginTop = "0.5rem";
+        loveNote.style.color = "#d100b3";
+        form.appendChild(loveNote);
+        responseText.style.display = "none";
       }
+
+      if (value === "myspace") {
+        form.style.display = "none";
+        popup.style.display = "none";
+        myspacePage.innerHTML = '<p style="font-family: monospace; font-size: 1.1rem;">Loading MySpace...</p>';
+        myspacePage.style.display = "flex";
+
+        setTimeout(() => {
+          myspacePage.innerHTML = `
+            <div style="border: 2px solid #000; padding: 2rem; background: white; width: 80%; max-width: 600px; text-align: left; box-shadow: 4px 4px 0px #999;">
+              <h1 style="font-family: cursive; color: hotpink; text-shadow: 1px 1px 0 black;">AllenMMC's MySpace</h1>
+              <p><strong>Status:</strong> just chillin rn... hmu 💯</p>
+              <p><strong>Song:</strong> *music auto-playing soon*</p>
+              <p style="margin-top: 2rem; font-size: 0.9rem; color: #555;">About Me: Not much to say. You either get it or you don’t. <span style="color: red">♥</span></p>
+            </div>
+          `;
+        }, 1500);
+      } else {
+        responseText.style.display = "block";
+      }
+
+      // Always submit to Formspree in background
+      fetch(form.action, {
+        method: form.method,
+        body: data,
+        headers: {
+          Accept: "application/json",
+        },
+      }).then((response) => {
+        if (response.ok) {
+          form.reset();
+        }
+      });
     });
-  });
-</script>
+  </script>
 
-<!-- Hidden Gratitude Message -->
-<div style="display: none;">
-  If you can see this, you're a legend. thank you. i love you!
-</div>
+  <!-- Hidden Gratitude Message -->
+  <div style="display: none;">
+    If you can see this, you're a legend. thank you. i love you!
+  </div>
 
-<!-- Cloudflare Web Analytics -->
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "f321664fe17c4bf097ed51e782837677"}'></script>
-<!-- End Cloudflare Web Analytics -->
+  <!-- Cloudflare Web Analytics -->
+  <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "f321664fe17c4bf097ed51e782837677"}'></script>
 
 </body>
 </html>
-
-
-
-

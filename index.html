@@ -153,9 +153,11 @@
       form.appendChild(loveNote);
       responseText.style.display = "none";
     } else if (value === "myspace") {
-      form.style.display = "none";
-      popup.style.display = "none";
-      myspacePage.style.display = "flex";
+      setTimeout(() => {
+        form.style.display = "none";
+        popup.style.display = "none";
+        myspacePage.style.display = "flex";
+      }, 1000);
     } else {
       responseText.style.display = "block";
     }

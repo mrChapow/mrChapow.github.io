@@ -153,11 +153,20 @@
       form.appendChild(loveNote);
       responseText.style.display = "none";
     } else if (value === "myspace") {
+      form.style.display = "none";
+      popup.style.display = "none";
+      myspacePage.innerHTML = '<p style="font-family: monospace; font-size: 1.1rem;">Loading MySpace...</p>';
+      myspacePage.style.display = "flex";
+
       setTimeout(() => {
-        form.style.display = "none";
-        popup.style.display = "none";
-        myspacePage.style.display = "flex";
-      }, 1000);
+        myspacePage.innerHTML = '<div style="border: 2px solid #000; padding: 2rem; background: white; width: 80%; max-width: 600px; text-align: left; box-shadow: 4px 4px 0px #999;">
+<h1 style="font-family: cursive; color: hotpink; text-shadow: 1px 1px 0 black;">AllenMMC\'s MySpace</h1>
+<p><strong>Status:</strong> just chillin rn... hmu 💯</p>
+<p><strong>Song:</strong> *music auto-playing soon*</p>
+<p style="margin-top: 2rem; font-size: 0.9rem; color: #555;">About Me: Not much to say. You either get it or you don’t. <span style="color: red">♥</span></p>
+</div>';
+      }, 1500);
+    }
     } else {
       responseText.style.display = "block";
     }
@@ -189,5 +198,6 @@
 
 </body>
 </html>
+
 
 

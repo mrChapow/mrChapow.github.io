@@ -162,15 +162,19 @@
       myspacePage.innerHTML = '<p style="font-family: monospace; font-size: 1.1rem;">Loading MySpace...</p>';
       myspacePage.style.display = "flex";
 
- setTimeout(() => {
+   setTimeout(() => {
   myspacePage.innerHTML = `
     <div style="border: 2px solid #000; padding: 2rem; background: white; width: 80%; max-width: 600px; text-align: left; box-shadow: 4px 4px 0px #999;">
       <h1 style="font-family: cursive; color: hotpink; text-shadow: 1px 1px 0 black;">AllenMMC's MySpace</h1>
       <p><strong>Status:</strong> just chillin rn... hmu 💯</p>
       <p><strong>Song:</strong> *music auto-playing soon*</p>
-      <p style="margin-top: 2rem; font-size: 0.9rem; color: #555;">About Me: Not much to say. You either get it or you don’t. <span style="color: red">♥</span></p>
-    </div>
-  `;
+      <p style="margin-top: 2rem; font-size: 0.9rem; color: #555;">
+        <strong>About Me:</strong> Not much to say. You either get it or you don’t. <span style="color: red">♥</span>
+      </p>
+      <div style="margin-top: 2rem; padding: 0.5rem 1rem; border: 1px dashed #aaa; background: #f9f9f9;">
+        <a href="#" style="font-family: monospace; text-decoration: underline; color: #0066cc;">Message</a>
+      </div>
+    </div>`;
 }, 1500);
       // proceed to submit the form to Formspree even for 'myspace'
     } else {
@@ -204,4 +208,3 @@
 
 </body>
 </html>
-

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>COTA Landing</title>
+<title>COTA Cellular Automata</title>
 <style>
   html, body {
     margin: 0;
@@ -38,77 +38,83 @@ window.addEventListener("resize", () => {
   initGrid();
 });
 
-const charSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-const gridSize = 18;
-let cols, rows, grid = [];
+const gridSize = 12;
+const cols = Math.floor(width / gridSize);
+const rows = Math.floor(height / gridSize);
+let grid = [], nextGrid = [];
+const liveChars = ['|', '-', '/', '\\', '_'];
+const deadChar = '.';
 
-const centerWord = "COTA";
-let wordMap = [];
+// Symmetric totalistic rule: survive 2-3, birth at 3 (Conway-like)
+function countNeighbors(x, y) {
+  let count = 0;
+  for (let dy = -1; dy <= 1; dy++) {
+    for (let dx = -1; dx <= 1; dx++) {
+      if (dx === 0 && dy === 0) continue;
+      const nx = (x + dx + cols) % cols;
+      const ny = (y + dy + rows) % rows;
+      count += grid[ny][nx];
+    }
+  }
+  return count;
+}
 
 function initGrid() {
-  cols = Math.floor(width / gridSize);
-  rows = Math.floor(height / gridSize);
   grid = [];
-
-  // initialize grid with random characters
   for (let y = 0; y < rows; y++) {
     let row = [];
     for (let x = 0; x < cols; x++) {
-      row.push({
-        char: randomChar(),
-        flicker: Math.random() * 1000
-      });
+      row.push(Math.random() > 0.8 ? 1 : 0);
     }
     grid.push(row);
   }
-
-  generateWordMap();
 }
 
-function randomChar() {
-  return charSet[Math.floor(Math.random() * charSet.length)];
-}
-
-function generateWordMap() {
-  wordMap = [];
-  const startX = Math.floor((cols - centerWord.length) / 2);
-  const startY = Math.floor(rows / 2);
-  for (let i = 0; i < centerWord.length; i++) {
-    wordMap.push({ x: startX + i, y: startY, char: centerWord[i] });
-  }
-}
-
-function drawGrid(time) {
+function drawGrid() {
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, width, height);
 
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
-      let cell = grid[y][x];
-      let centerCell = wordMap.find(c => c.x === x && c.y === y);
-      let charToDraw = centerCell ? centerCell.char : cell.char;
-
-      // subtle shimmering on non-center letters
-      if (!centerCell && time % Math.floor(cell.flicker) === 0) {
-        cell.char = randomChar();
-      }
-
-      ctx.fillStyle = centerCell ? "#FFF" : "#555";
+      const alive = grid[y][x];
+      ctx.fillStyle = alive ? "white" : "#333";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.font = `${gridSize}px monospace`;
-      ctx.fillText(charToDraw, x * gridSize + gridSize/2, y * gridSize + gridSize/2);
+      const char = alive
+        ? liveChars[Math.floor(Math.random() * liveChars.length)]
+        : deadChar;
+      ctx.fillText(char, x * gridSize + gridSize/2, y * gridSize + gridSize/2);
     }
   }
 }
 
-function animate(time) {
-  drawGrid(time);
+function updateGrid() {
+  nextGrid = [];
+  for (let y = 0; y < rows; y++) {
+    let row = [];
+    for (let x = 0; x < cols; x++) {
+      const alive = grid[y][x];
+      const neighbors = countNeighbors(x, y);
+      if (alive) {
+        row.push((neighbors === 2 || neighbors === 3) ? 1 : 0);
+      } else {
+        row.push(neighbors === 3 ? 1 : 0);
+      }
+    }
+    nextGrid.push(row);
+  }
+  grid = nextGrid;
+}
+
+function animate() {
+  drawGrid();
+  updateGrid();
   requestAnimationFrame(animate);
 }
 
 initGrid();
-animate(0);
+animate();
 </script>
 </body>
 </html>

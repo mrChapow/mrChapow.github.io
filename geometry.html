@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>COTA Landing + CA</title>
+<title>Cota</title>
 <style>
   html, body {
     margin: 0;
@@ -12,14 +12,41 @@
     overflow: hidden;
     height: 100%;
     font-family: monospace;
+    color: white;
   }
   canvas {
     display: block;
+    position: absolute;
+    top: 0; left: 0;
+  }
+  .center {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    top: 40%;
+    transform: translateY(-50%);
+  }
+  .center h1 {
+    font-size: 4rem;
+    letter-spacing: 0.3rem;
+    color: white;
+    margin: 0;
+  }
+  .center img {
+    margin-top: 20px;
+    max-width: 200px;
+    opacity: 0.8;
   }
 </style>
 </head>
 <body>
+
 <canvas id="canvas"></canvas>
+
+<div class="center">
+  <h1>COTA</h1>
+  <img src="071ef8ba-d220-4219-ba7c-cd8377690abd.png" alt="Cota Symbol">
+</div>
 
 <script>
 const canvas = document.getElementById("canvas");
@@ -30,6 +57,9 @@ let height = window.innerHeight;
 canvas.width = width;
 canvas.height = height;
 
+const gridSize = 18;
+let cols, rows, grid = [];
+
 window.addEventListener("resize", () => {
   width = window.innerWidth;
   height = window.innerHeight;
@@ -38,106 +68,57 @@ window.addEventListener("resize", () => {
   initGrid();
 });
 
-const gridSize = 18;
-let cols, rows, grid = [], nextGrid = [];
-const liveChars = ['|', '-', '/', '\\', '_'];
-const deadChar = '.';
-
-const centerWord = "COTA";
-let wordMap = [];
-
 function initGrid() {
   cols = Math.floor(width / gridSize);
   rows = Math.floor(height / gridSize);
   grid = [];
+
   for (let y = 0; y < rows; y++) {
     let row = [];
     for (let x = 0; x < cols; x++) {
-      row.push(Math.random() > 0.8 ? 1 : 0);
+      row.push({
+        char: randomChar(),
+        flicker: Math.random() * 1000
+      });
     }
     grid.push(row);
   }
-  generateWordMap();
 }
 
-function generateWordMap() {
-  wordMap = [];
-  const startX = Math.floor((cols - centerWord.length) / 2);
-  const startY = Math.floor(rows / 2);
-  for (let i = 0; i < centerWord.length; i++) {
-    wordMap.push({ x: startX + i, y: startY, char: centerWord[i] });
-  }
+const charSet = ['|', '/', '\\', '-', '_', '.'];
+
+function randomChar() {
+  return charSet[Math.floor(Math.random() * charSet.length)];
 }
 
-function countNeighbors(x, y) {
-  let count = 0;
-  for (let dy = -1; dy <= 1; dy++) {
-    for (let dx = -1; dx <= 1; dx++) {
-      if (dx === 0 && dy === 0) continue;
-      const nx = (x + dx + cols) % cols;
-      const ny = (y + dy + rows) % rows;
-      count += grid[ny][nx];
-    }
-  }
-  return count;
-}
-
-function drawGrid() {
+function drawGrid(time) {
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, width, height);
 
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
-      const centerCell = wordMap.find(c => c.x === x && c.y === y);
-      let alive = grid[y][x];
+      let cell = grid[y][x];
+      if (time % Math.floor(cell.flicker) === 0) {
+        cell.char = randomChar();
+      }
 
-      ctx.fillStyle = centerCell ? "#FFF" : (alive ? "#AAA" : "#333");
+      ctx.fillStyle = "#333";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.font = `${gridSize}px monospace`;
-
-      const charToDraw = centerCell
-        ? centerCell.char
-        : (alive
-          ? liveChars[Math.floor(Math.random() * liveChars.length)]
-          : deadChar);
-
-      ctx.fillText(charToDraw, x * gridSize + gridSize/2, y * gridSize + gridSize/2);
+      ctx.fillText(cell.char, x * gridSize + gridSize/2, y * gridSize + gridSize/2);
     }
   }
 }
 
-function updateGrid() {
-  nextGrid = [];
-  for (let y = 0; y < rows; y++) {
-    let row = [];
-    for (let x = 0; x < cols; x++) {
-      const centerCell = wordMap.find(c => c.x === x && c.y === y);
-      if (centerCell) {
-        row.push(0); // keep COTA static
-        continue;
-      }
-      const alive = grid[y][x];
-      const neighbors = countNeighbors(x, y);
-      if (alive) {
-        row.push((neighbors === 2 || neighbors === 3) ? 1 : 0);
-      } else {
-        row.push(neighbors === 3 ? 1 : 0);
-      }
-    }
-    nextGrid.push(row);
-  }
-  grid = nextGrid;
-}
-
-function animate() {
-  drawGrid();
-  updateGrid();
+function animate(time) {
+  drawGrid(time);
   requestAnimationFrame(animate);
 }
 
 initGrid();
-animate();
+animate(0);
 </script>
+
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cota Calm Ripple</title>
+<title>Cota Ripple Grid — Fixed</title>
 <style>
   html, body {
     margin: 0;
@@ -39,13 +39,12 @@ window.addEventListener("resize", () => {
 });
 
 const charSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+[]{}|;:'\",.<>?/\\~`";
-const baseChar = "•"; // constant background character
+const baseChar = "•";
 const gridSize = 20;
 let cols, rows;
 let grid = [];
 let rippleTime = 0;
 let rippleOrigin = { x: width/2, y: height/2 };
-let lastTime = 0;
 
 function initGrid() {
   cols = Math.floor(width / gridSize);
@@ -57,7 +56,7 @@ function initGrid() {
     for (let x = 0; x < cols; x++) {
       row.push({
         char: baseChar,
-        changing: false
+        lastChanged: 0
       });
     }
     grid.push(row);
@@ -73,7 +72,7 @@ function triggerRipple(x, y) {
   rippleTime = 0;
 }
 
-function drawGrid(time) {
+function drawGrid() {
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, width, height);
 
@@ -86,14 +85,16 @@ function drawGrid(time) {
       const dy = cellY - rippleOrigin.y;
       const dist = Math.sqrt(dx*dx + dy*dy);
 
-      const wave = Math.sin((dist/12) - rippleTime*0.12);
+      const wave = Math.sin((dist/15) - rippleTime*0.2);
 
-      if (Math.abs(wave) > 0.98) {
+      if (wave > 0.95) {
         grid[y][x].char = randomChar();
-        grid[y][x].changing = true;
-      } else if (grid[y][x].changing) {
+        grid[y][x].lastChanged = Date.now();
+      }
+
+      // baseline shimmer: every few seconds revert back to baseChar
+      if (Date.now() - grid[y][x].lastChanged > 100) {
         grid[y][x].char = baseChar;
-        grid[y][x].changing = false;
       }
 
       ctx.fillStyle = "white";
@@ -105,14 +106,9 @@ function drawGrid(time) {
   }
 }
 
-function animate(time) {
-  if (!lastTime) lastTime = time;
-  const delta = time - lastTime;
-  lastTime = time;
-
-  rippleTime += delta * 0.05;
-
-  drawGrid(time);
+function animate() {
+  rippleTime += 0.5;
+  drawGrid();
   requestAnimationFrame(animate);
 }
 

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cota Sacred Geometry</title>
+<title>Cota Ripple Grid</title>
 <style>
   html, body {
     margin: 0;
@@ -19,67 +19,103 @@
 </head>
 <body>
 
-<canvas id="cota"></canvas>
+<canvas id="canvas"></canvas>
 
 <script>
-const canvas = document.getElementById('cota');
-const ctx = canvas.getContext('2d');
-let w = window.innerWidth;
-let h = window.innerHeight;
-canvas.width = w;
-canvas.height = h;
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
 
-window.addEventListener('resize', () => {
-  w = window.innerWidth;
-  h = window.innerHeight;
-  canvas.width = w;
-  canvas.height = h;
+let width = window.innerWidth;
+let height = window.innerHeight;
+canvas.width = width;
+canvas.height = height;
+
+window.addEventListener("resize", () => {
+  width = window.innerWidth;
+  height = window.innerHeight;
+  canvas.width = width;
+  canvas.height = height;
+  initGrid();
 });
 
-let time = 0;
+const charSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+[]{}|;:'\",.<>?/\\~`";
+const gridSize = 20;
+let cols, rows;
+let grid = [];
+let rippleTime = 0;
+let rippleOrigin = { x: width/2, y: height/2 };
+let lastTime = 0;
 
-function drawPattern(cx, cy, radius, points, rotations, t) {
-  ctx.save();
-  ctx.translate(cx, cy);
-  ctx.rotate(t * 0.001 * rotations);
+function initGrid() {
+  cols = Math.floor(width / gridSize);
+  rows = Math.floor(height / gridSize);
+  grid = [];
 
-  for (let i = 0; i < points; i++) {
-    const angle = (i / points) * Math.PI * 2;
-    const x = Math.cos(angle) * radius;
-    const y = Math.sin(angle) * radius;
-
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.rotate(-t * 0.001 * rotations);
-    ctx.beginPath();
-    ctx.arc(0, 0, 2, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
+  for (let y = 0; y < rows; y++) {
+    let row = [];
+    for (let x = 0; x < cols; x++) {
+      row.push({
+        char: randomChar(),
+        t: 0
+      });
+    }
+    grid.push(row);
   }
-  ctx.restore();
 }
 
-function animate() {
-  ctx.fillStyle = 'rgba(0,0,0,0.2)';
-  ctx.fillRect(0,0,w,h);
+function randomChar() {
+  return charSet[Math.floor(Math.random() * charSet.length)];
+}
 
-  ctx.fillStyle = `hsl(${(time/10)%360}, 100%, 50%)`;
+function triggerRipple(x, y) {
+  rippleOrigin = { x, y };
+  rippleTime = 0;
+}
 
-  const cx = w/2;
-  const cy = h/2;
-  const layers = 8;
+function drawGrid(time) {
+  ctx.fillStyle = "black";
+  ctx.fillRect(0, 0, width, height);
 
-  for (let i = 0; i < layers; i++) {
-    const radius = (w/6) + i*30 + Math.sin(time*0.002+i)*20;
-    const points = 6 + i*2;
-    const rotations = (i+1);
-    drawPattern(cx, cy, radius, points, rotations, time);
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+      const cellX = x * gridSize + gridSize/2;
+      const cellY = y * gridSize + gridSize/2;
+
+      const dx = cellX - rippleOrigin.x;
+      const dy = cellY - rippleOrigin.y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+
+      const wave = Math.sin((dist/10) - rippleTime*0.1);
+      if (wave > 0.95) {
+        grid[y][x].char = randomChar();
+      }
+
+      ctx.fillStyle = "#0f0";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.font = `${gridSize - 2}px monospace`;
+      ctx.fillText(grid[y][x].char, cellX, cellY);
+    }
   }
+}
 
-  time++;
+function animate(time) {
+  if (!lastTime) lastTime = time;
+  const delta = time - lastTime;
+  lastTime = time;
+
+  rippleTime += delta * 0.05;
+
+  drawGrid(time);
   requestAnimationFrame(animate);
 }
 
+canvas.addEventListener("click", (e) => {
+  triggerRipple(e.clientX, e.clientY);
+});
+
+initGrid();
+triggerRipple(width/2, height/2);
 animate();
 </script>
 

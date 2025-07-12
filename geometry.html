@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sacred Geometry</title>
+<title>Cota Geometry</title>
 <style>
   html, body {
     margin: 0;
     padding: 0;
-    background: black;
     overflow: hidden;
+    background: black;
     height: 100%;
   }
   canvas {
@@ -19,48 +19,55 @@
 </head>
 <body>
 
-<canvas id="background"></canvas>
+<canvas id="crazy"></canvas>
 
 <script>
-const canvas = document.getElementById('background');
+const canvas = document.getElementById('crazy');
 const ctx = canvas.getContext('2d');
+let width = window.innerWidth;
+let height = window.innerHeight;
+canvas.width = width;
+canvas.height = height;
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+window.addEventListener('resize', () => {
+  width = window.innerWidth;
+  height = window.innerHeight;
+  canvas.width = width;
+  canvas.height = height;
+});
 
 let time = 0;
 
 function draw() {
   ctx.fillStyle = 'rgba(0,0,0,0.1)';
-  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillRect(0,0,width,height);
 
-  const cx = canvas.width/2;
-  const cy = canvas.height/2;
-  const maxR = Math.min(canvas.width,canvas.height)/2.2;
+  const cx = width/2;
+  const cy = height/2;
 
-  for (let i=0; i<200; i++) {
-    const angle = i * Math.PI * 2 / 200 + time * 0.02;
-    const radius = maxR * Math.sin(i/20 + time*0.01);
-    const x = cx + radius * Math.cos(angle);
-    const y = cy + radius * Math.sin(angle);
+  const points = 600;
+  const layers = 10;
 
-    ctx.beginPath();
-    ctx.arc(x,y,1.5,0,Math.PI*2);
-    ctx.fillStyle = `hsl(${(i*5+time)%360}, 80%, 50%)`;
-    ctx.fill();
+  for (let j = 0; j < layers; j++) {
+    for (let i = 0; i < points; i++) {
+      const angle = (i / points) * Math.PI * 2 + time * 0.002;
+      const radius = Math.sin(time * 0.002 + j/5) * (width/4) + (j*10);
+      const x = cx + radius * Math.cos(angle * (j+1));
+      const y = cy + radius * Math.sin(angle * (j+1));
+
+      const hue = (i*360/points + j*36 + time*0.1) % 360;
+
+      ctx.fillStyle = `hsl(${hue},100%,50%)`;
+      ctx.fillRect(x,y,1.5,1.5);
+    }
   }
 
-  time++;
+  time += 4;
 
   requestAnimationFrame(draw);
 }
 
 draw();
-
-window.addEventListener('resize', () => {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-});
 </script>
 
 </body>

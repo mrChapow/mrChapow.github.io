@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cota Ripple Grid</title>
+<title>Cota Calm Ripple</title>
 <style>
   html, body {
     margin: 0;
@@ -39,6 +39,7 @@ window.addEventListener("resize", () => {
 });
 
 const charSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+[]{}|;:'\",.<>?/\\~`";
+const baseChar = "•"; // constant background character
 const gridSize = 20;
 let cols, rows;
 let grid = [];
@@ -55,8 +56,8 @@ function initGrid() {
     let row = [];
     for (let x = 0; x < cols; x++) {
       row.push({
-        char: randomChar(),
-        t: 0
+        char: baseChar,
+        changing: false
       });
     }
     grid.push(row);
@@ -85,12 +86,17 @@ function drawGrid(time) {
       const dy = cellY - rippleOrigin.y;
       const dist = Math.sqrt(dx*dx + dy*dy);
 
-      const wave = Math.sin((dist/10) - rippleTime*0.1);
-      if (wave > 0.95) {
+      const wave = Math.sin((dist/12) - rippleTime*0.12);
+
+      if (Math.abs(wave) > 0.98) {
         grid[y][x].char = randomChar();
+        grid[y][x].changing = true;
+      } else if (grid[y][x].changing) {
+        grid[y][x].char = baseChar;
+        grid[y][x].changing = false;
       }
 
-      ctx.fillStyle = "#0f0";
+      ctx.fillStyle = "white";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.font = `${gridSize - 2}px monospace`;

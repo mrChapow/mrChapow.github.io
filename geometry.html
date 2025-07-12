@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sacred Geometry</title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: black;
+    overflow: hidden;
+    height: 100%;
+  }
+  canvas {
+    display: block;
+  }
+</style>
+</head>
+<body>
+
+<canvas id="background"></canvas>
+
+<script>
+const canvas = document.getElementById('background');
+const ctx = canvas.getContext('2d');
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let time = 0;
+
+function draw() {
+  ctx.fillStyle = 'rgba(0,0,0,0.1)';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  const cx = canvas.width/2;
+  const cy = canvas.height/2;
+  const maxR = Math.min(canvas.width,canvas.height)/2.2;
+
+  for (let i=0; i<200; i++) {
+    const angle = i * Math.PI * 2 / 200 + time * 0.02;
+    const radius = maxR * Math.sin(i/20 + time*0.01);
+    const x = cx + radius * Math.cos(angle);
+    const y = cy + radius * Math.sin(angle);
+
+    ctx.beginPath();
+    ctx.arc(x,y,1.5,0,Math.PI*2);
+    ctx.fillStyle = `hsl(${(i*5+time)%360}, 80%, 50%)`;
+    ctx.fill();
+  }
+
+  time++;
+
+  requestAnimationFrame(draw);
+}
+
+draw();
+
+window.addEventListener('resize', () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+</script>
+
+</body>
+</html>

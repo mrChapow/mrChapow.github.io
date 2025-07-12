@@ -1,123 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cota</title>
-  <style>
-    body {
-      margin: 0;
-      background: #f3f3f3;
-      font-family: 'Arial', sans-serif;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: relative;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cota</title>
+<style>
+  body {
+    margin: 0;
+    background: #f3f3f3;
+    font-family: 'Arial', sans-serif;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
 
-    input {
-      padding: 1rem 2rem;
-      font-size: 1.2rem;
-      border: none;
-      border-bottom: 2px solid #000;
-      outline: none;
-      width: 300px;
-      background: transparent;
-      text-align: center;
-    }
+  input {
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    border: none;
+    border-bottom: 2px solid #000;
+    outline: none;
+    width: 300px;
+    background: transparent;
+    text-align: center;
+  }
 
-    .win95-box {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -60%);
-      width: 350px;
-      border: 2px solid black;
-      background: #c0c0c0;
-      box-shadow: 4px 4px 0px #808080;
-      z-index: 10;
-    }
+  .win95-box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -60%);
+    width: 350px;
+    border: 2px solid black;
+    background: #c0c0c0;
+    box-shadow: 4px 4px 0px #808080;
+    z-index: 10;
+  }
 
-    .win95-header {
-      background: #000080;
-      color: white;
-      padding: 4px 8px;
-      font-size: 14px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: bold;
-    }
+  .win95-header {
+    background: #000080;
+    color: white;
+    padding: 4px 8px;
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+  }
 
-    .win95-header button {
-      background: #c0c0c0;
-      border: 2px outset white;
-      font-weight: bold;
-      cursor: pointer;
-      width: 20px;
-      height: 20px;
-      padding: 0;
-    }
+  .win95-header button {
+    background: #c0c0c0;
+    border: 2px outset white;
+    font-weight: bold;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+  }
 
-    .win95-content {
-      padding: 1rem;
-      font-size: 14px;
-      color: #000;
-    }
+  .win95-content {
+    padding: 1rem;
+    font-size: 14px;
+    color: #000;
+  }
 
-    .cota-input {
-      padding: 0.8rem 1.2rem;
-      font-size: 1rem;
-      font-family: monospace;
-      background: transparent;
-      border: none;
-      border-bottom: 2px solid #000;
-      outline: none;
-      width: 280px;
-      text-align: center;
-      letter-spacing: 0.05em;
-    }
+  .cota-input {
+    padding: 0.8rem 1.2rem;
+    font-size: 1rem;
+    font-family: monospace;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid #000;
+    outline: none;
+    width: 280px;
+    text-align: center;
+    letter-spacing: 0.05em;
+  }
 
-    .submit-btn {
-      margin-left: 8px;
-      background: #000;
-      color: #fff;
-      font-family: monospace;
-      border: none;
-      padding: 0.6rem 1rem;
-      cursor: pointer;
-    }
+  .submit-btn {
+    margin-left: 8px;
+    background: #000;
+    color: #fff;
+    font-family: monospace;
+    border: none;
+    padding: 0.6rem 1rem;
+    cursor: pointer;
+  }
 
-    #myspacePage {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      font-family: monospace;
-      font-size: 1.2rem;
-      animation: fadeIn 1s ease forwards;
-    }
+  #myspacePage {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    font-family: monospace;
+    font-size: 1.2rem;
+    animation: fadeIn 1s ease forwards;
+  }
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-  </style>
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+</style>
 </head>
+
 <body>
 
-  <div class="win95-box" id="popup">
-    <div class="win95-header">
-      Alert
-      <button onclick="document.getElementById('popup').style.display='none'">X</button>
-    </div>
-    <div class="win95-content">
-       <img src="cota_cloud_pixelart.png" alt="Cota Symbol" style="width:100%; image-rendering: pixelated;" />
-    </div>
+<div class="win95-box" id="popup">
+  <div class="win95-header">
+    Alert
+    <button onclick="document.getElementById('popup').style.display='none'">X</button>
   </div>
+  <div class="win95-content">
+    <img src="cota_cloud_pixelart.png" alt="Cota Symbol" style="width:100%; image-rendering: pixelated;" />
+  </div>
+</div>
 
- <form action="https://formspree.io/f/mdkzoqdp" method="POST" id="cotaForm">
+<form action="https://formspree.io/f/mdkzoqdp" method="POST" id="cotaForm">
   <input
     type="text"
     name="signal"
@@ -128,107 +129,60 @@
   <p id="response" style="display:none; font-family: monospace; margin-top: 1rem;">nothing happened...</p>
 </form>
 
-<div id="myspacePage">
-  <div style="font-family: monospace; font-size: 1rem; color: #222; background: #fff; padding: 1rem 2rem; border: 2px solid #999; box-shadow: 3px 3px 0 #aaa; max-width: 500px;">
-    <p style="margin: 0 0 1rem 0;">Welcome to your profile space.</p>
-    <p style="margin: 0; font-size: 0.9rem; color: #444;">(We’ll build out the 90s web-style layout here — centered, simple, and ready to expand.)</p>
-  </div>
-</div>
+<div id="myspacePage"></div>
 
 <script>
-  const form = document.getElementById("cotaForm");
-  const responseText = document.getElementById("response");
-  const input = document.querySelector(".cota-input");
-  const popup = document.getElementById("popup");
-  const myspacePage = document.getElementById("myspacePage");
+const form = document.getElementById("cotaForm");
+const responseText = document.getElementById("response");
+const input = document.querySelector(".cota-input");
+const popup = document.getElementById("popup");
+const myspacePage = document.getElementById("myspacePage");
 
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
+form.addEventListener("submit", function (e) {
+  e.preventDefault();
 
-    const value = input.value.trim().toLowerCase();
+  const value = input.value.trim().toLowerCase();
 
-    if (value === "love") {
-      const loveNote = document.createElement("p");
-      loveNote.textContent = "You are loved 💖";
-      loveNote.style.fontFamily = "monospace";
-      loveNote.style.marginTop = "0.5rem";
-      loveNote.style.color = "#d100b3";
-      form.appendChild(loveNote);
-      responseText.style.display = "none";
-      return; // prevent 'nothing happened...' from showing
-    } else if (value === "myspace") {
-      form.style.display = "none";
-      popup.style.display = "none";
-      myspacePage.innerHTML = '<p style="font-family: monospace; font-size: 1.1rem;">Loading MySpace...</p>';
-      myspacePage.style.display = "flex";
+  if (value === "love") {
+    const loveNote = document.createElement("p");
+    loveNote.textContent = "You are loved 💖";
+    loveNote.style.fontFamily = "monospace";
+    loveNote.style.marginTop = "0.5rem";
+    loveNote.style.color = "#d100b3";
+    form.appendChild(loveNote);
+    responseText.style.display = "none";
+    return;
+  } else if (value === "myspace") {
+    form.style.display = "none";
+    popup.style.display = "none";
+    myspacePage.innerHTML = '<p style="font-family: monospace; font-size: 1.1rem;">Loading MySpace...</p>';
+    myspacePage.style.display = "flex";
 
-   setTimeout(() => {
-  myspacePage.innerHTML = `
-    <div style="border: 2px solid #000; padding: 1rem 1.5rem; background: #fff; width: 100%; max-width: 700px; box-shadow: 4px 4px #aaa; text-align: left; font-family: monospace;">
-      <h1 style="font-size: 1.6rem; margin-bottom: 1rem; color: hotpink; text-shadow: 1px 1px black;">AllenMMC's MySpace</h1>
+    setTimeout(() => {
+      myspacePage.innerHTML = `
+        <div style="border: 2px solid #000; padding: 1rem 1.5rem; background: #fff; width: 100%; max-width: 700px; box-shadow: 4px 4px #aaa; text-align: left; font-family: monospace;">
+          <h1 style="font-size: 1.6rem; margin-bottom: 1rem; color: hotpink; text-shadow: 1px 1px black;">AllenMMC's MySpace</h1>
+          <p>Profile details here…</p>
+        </div>`;
+    }, 1500);
 
-      <div style="display: flex; align-items: flex-start; gap: 2rem;">
-        <img src="profile-placeholder.png" alt="Profile Pic" style="width: 100px; height: 100px; border: 2px solid #000; object-fit: cover;" />
-        <div>
-          <p><strong>Status:</strong> just chillin rn... hmu 💯</p>
-          <p><strong>Mood:</strong> contemplative 🌑</p>
-        </div>
-      </div>
+  } else if (value === "cota") {
+    window.location.href = "geometry.html";
+  } else {
+    responseText.style.display = "block";
+  }
 
-      <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid #ccc;" />
-
-      <div>
-        <h3 style="margin-bottom: 0.5rem; font-size: 1rem; color: #000;">About Me</h3>
-        <p style="margin-top: 0; font-size: 0.9rem; color: #444;">Not much to say. You either get it or you don’t. <span style="color: red">♥</span></p>
-      </div>
-
-      <div style="margin-top: 1.5rem;">
-        <h3 style="margin-bottom: 0.5rem; font-size: 1rem; color: #000;">Music</h3>
-        <p>*music auto-playing soon*</p>
-      </div>
-
-      <div style="margin-top: 1.5rem;">
-        <h3 style="margin-bottom: 0.5rem; font-size: 1rem; color: #000;">Friends</h3>
-        <div style="display: flex; gap: 1rem;">
-          <div style="text-align: center;">
-            <img src="friend1.png" alt="Friend 1" style="width: 60px; height: 60px; border: 1px solid #000;" />
-            <p style="font-size: 0.75rem; margin: 0.25rem 0 0;">Tom</p>
-          </div>
-          <div style="text-align: center;">
-            <img src="friend2.png" alt="Friend 2" style="width: 60px; height: 60px; border: 1px solid #000;" />
-            <p style="font-size: 0.75rem; margin: 0.25rem 0 0;">Jordan</p>
-          </div>
-          <div style="text-align: center;">
-            <img src="friend3.png" alt="Friend 3" style="width: 60px; height: 60px; border: 1px solid #000;" />
-            <p style="font-size: 0.75rem; margin: 0.25rem 0 0;">Riley</p>
-          </div>
-        </div>
-      </div>
-
-      <div style="margin-top: 2rem; padding: 0.5rem 1rem; border: 1px dashed #aaa; background: #f9f9f9;">
-        <a href="#" style="font-family: monospace; text-decoration: underline; color: #0066cc;">Message</a>
-      </div>
-    </div>`;
-}, 1500);
-      // proceed to submit the form to Formspree even for 'myspace'
-    } else {
-      responseText.style.display = "block";
+  const data = new FormData(form);
+  fetch(form.action, {
+    method: form.method,
+    body: data,
+    headers: { Accept: "application/json" },
+  }).then((response) => {
+    if (response.ok) {
+      form.reset();
     }
-
-    const data = new FormData(form);
-
-    fetch(form.action, {
-      method: form.method,
-      body: data,
-      headers: {
-        Accept: "application/json",
-      },
-    }).then((response) => {
-      if (response.ok) {
-        form.reset();
-      }
-    });
   });
+});
 </script>
 
 <!-- Hidden Gratitude Message -->
@@ -236,10 +190,6 @@
   If you can see this, you're a legend. thank you. i love you!
 </div>
 
-<!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "f321664fe17c4bf097ed51e782837677"}'></script>
-<!-- End Cloudflare Web Analytics -->
-
 </body>
 </html>
-

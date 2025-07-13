@@ -66,7 +66,7 @@ window.addEventListener("resize", () => {
   initGrid();
 });
 
-const patternChars = ['.', '-', '_', '|', '/', '\\', '[', ']', '(', ')'];
+const patternChars = ['|', '/', '\\', '-', '_', '.', '[', ']', '(', ')'];
 
 function initGrid() {
   cols = Math.floor(width / gridSize);
@@ -91,40 +91,30 @@ function randomChar() {
   return patternChars[Math.floor(Math.random() * patternChars.length)];
 }
 
-// 🌸 Flower of Life inspired pattern
+// Simple diagonal pattern for freezing
 function patternCharFor(x, y) {
-  const cx = cols / 2;
-  const cy = rows / 2;
-  const radius = 6; // tweak for scale
-  let intensity = 0;
-
-  // sum of overlapping circle patterns
-  for (let i = -2; i <= 2; i++) {
-    for (let j = -2; j <= 2; j++) {
-      const dx = x - (cx + i * radius * 0.87);
-      const dy = y - (cy + j * radius * 0.75);
-      const dist = Math.sqrt(dx*dx + dy*dy);
-      if (Math.abs(dist - radius) < 1.5) {
-        intensity++;
-      }
-    }
-  }
-
-  if (intensity % 2 === 1) {
-    return patternChars[(x + y) % patternChars.length];
-  } else {
-    return '.';
-  }
+  const index = (x + y) % patternChars.length;
+  return patternChars[index];
 }
 
 function drawGrid(time) {
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, width, height);
 
+  const totalFrames = 60 * 5 * 60 * 3; // ~15 minutes @60fps
+  const progress = Math.min(1, time / totalFrames);
+
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
       const cell = grid[y][x];
 
+      // slowly freeze into pattern
+      if (!cell.locked && Math.random() < progress / 500) {
+        cell.char = cell.target;
+        cell.locked = true;
+      }
+
+      // shimmer while unfrozen
       if (!cell.locked && time % Math.floor(cell.flicker) === 0) {
         cell.char = randomChar();
       }
@@ -133,7 +123,7 @@ function drawGrid(time) {
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.font = `${gridSize}px monospace`;
-      ctx.fillText(cell.target, x * gridSize + gridSize/2, y * gridSize + gridSize/2);
+      ctx.fillText(cell.char, x * gridSize + gridSize/2, y * gridSize + gridSize/2);
     }
   }
 }

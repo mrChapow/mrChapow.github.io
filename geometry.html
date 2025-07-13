@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cota</title>
 
-<!-- Favicon -->
 <link rel="icon" type="image/png" href="cota_cloud_pixelart.png">
 
 <style>
@@ -68,6 +67,7 @@ window.addEventListener("resize", () => {
 });
 
 const patternChars = ['|', '/', '\\', '-', '_', '.', '[', ']', '(', ')'];
+const glitchChar = 'undef';
 
 function initGrid() {
   cols = Math.floor(width / gridSize);
@@ -81,7 +81,8 @@ function initGrid() {
         char: randomChar(),
         flicker: Math.random() * 1000,
         locked: false,
-        target: patternCharFor(x, y)
+        target: patternCharFor(x, y),
+        glitched: false
       });
     }
     grid.push(row);
@@ -92,10 +93,10 @@ function randomChar() {
   return patternChars[Math.floor(Math.random() * patternChars.length)];
 }
 
-// Define zig-zag / diagonal stripe pattern
+// Diamond-plate inspired pattern
 function patternCharFor(x, y) {
-  const diag1 = (x + y) % patternChars.length;
-  const diag2 = (x - y + patternChars.length) % patternChars.length;
+  const diag1 = x + y;
+  const diag2 = x - y + rows;
   const index = (diag1 + diag2) % patternChars.length;
   return patternChars[index];
 }
@@ -104,23 +105,43 @@ function drawGrid(time) {
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, width, height);
 
-  const totalFrames = 60 * 5 * 60 * 3; // ~15 minutes @60fps, much slower
+  const totalFrames = 60 * 5 * 60 * 3; 
   const progress = Math.min(1, time / totalFrames);
 
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
       const cell = grid[y][x];
 
+      // lock cells to pattern over time
       if (!cell.locked && Math.random() < progress / 500) {
         cell.char = cell.target;
         cell.locked = true;
       }
 
-      if (!cell.locked && time % Math.floor(cell.flicker) === 0) {
+      // introduce controlled glitches
+      if (!cell.glitched && Math.random() < 0.0005) {
+        cell.char = glitchChar;
+        cell.glitched = true;
+      }
+
+      // allow glitches to spread to neighbors slowly
+      if (!cell.glitched) {
+        const neighbors = [
+          grid[y]?.[x+1], grid[y]?.[x-1],
+          grid[y+1]?.[x], grid[y-1]?.[x]
+        ];
+        if (neighbors.some(n => n?.glitched) && Math.random() < 0.001) {
+          cell.char = glitchChar;
+          cell.glitched = true;
+        }
+      }
+
+      // still shimmer until locked or glitched
+      if (!cell.locked && !cell.glitched && time % Math.floor(cell.flicker) === 0) {
         cell.char = randomChar();
       }
 
-      ctx.fillStyle = "#666"; // keep same subtle color always
+      ctx.fillStyle = "#666";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.font = `${gridSize}px monospace`;

@@ -66,8 +66,7 @@ window.addEventListener("resize", () => {
   initGrid();
 });
 
-const patternChars = ['|', '/', '\\', '-', '_', '.', '[', ']', '(', ')'];
-const glitchChar = 'undef';
+const patternChars = ['.', '-', '_', '|', '/', '\\', '[', ']', '(', ')'];
 
 function initGrid() {
   cols = Math.floor(width / gridSize);
@@ -81,8 +80,7 @@ function initGrid() {
         char: randomChar(),
         flicker: Math.random() * 1000,
         locked: false,
-        target: patternCharFor(x, y),
-        glitched: false
+        target: patternCharFor(x, y)
       });
     }
     grid.push(row);
@@ -93,51 +91,41 @@ function randomChar() {
   return patternChars[Math.floor(Math.random() * patternChars.length)];
 }
 
-// Diamond-plate inspired pattern
+// 🌸 Flower of Life inspired pattern
 function patternCharFor(x, y) {
-  const diag1 = x + y;
-  const diag2 = x - y + rows;
-  const index = (diag1 + diag2) % patternChars.length;
-  return patternChars[index];
+  const cx = cols / 2;
+  const cy = rows / 2;
+  const radius = 6; // tweak for scale
+  let intensity = 0;
+
+  // sum of overlapping circle patterns
+  for (let i = -2; i <= 2; i++) {
+    for (let j = -2; j <= 2; j++) {
+      const dx = x - (cx + i * radius * 0.87);
+      const dy = y - (cy + j * radius * 0.75);
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (Math.abs(dist - radius) < 1.5) {
+        intensity++;
+      }
+    }
+  }
+
+  if (intensity % 2 === 1) {
+    return patternChars[(x + y) % patternChars.length];
+  } else {
+    return '.';
+  }
 }
 
 function drawGrid(time) {
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, width, height);
 
-  const totalFrames = 60 * 5 * 60 * 3; 
-  const progress = Math.min(1, time / totalFrames);
-
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
       const cell = grid[y][x];
 
-      // lock cells to pattern over time
-      if (!cell.locked && Math.random() < progress / 500) {
-        cell.char = cell.target;
-        cell.locked = true;
-      }
-
-      // introduce controlled glitches
-      if (!cell.glitched && Math.random() < 0.0005) {
-        cell.char = glitchChar;
-        cell.glitched = true;
-      }
-
-      // allow glitches to spread to neighbors slowly
-      if (!cell.glitched) {
-        const neighbors = [
-          grid[y]?.[x+1], grid[y]?.[x-1],
-          grid[y+1]?.[x], grid[y-1]?.[x]
-        ];
-        if (neighbors.some(n => n?.glitched) && Math.random() < 0.001) {
-          cell.char = glitchChar;
-          cell.glitched = true;
-        }
-      }
-
-      // still shimmer until locked or glitched
-      if (!cell.locked && !cell.glitched && time % Math.floor(cell.flicker) === 0) {
+      if (!cell.locked && time % Math.floor(cell.flicker) === 0) {
         cell.char = randomChar();
       }
 
@@ -145,7 +133,7 @@ function drawGrid(time) {
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.font = `${gridSize}px monospace`;
-      ctx.fillText(cell.char, x * gridSize + gridSize/2, y * gridSize + gridSize/2);
+      ctx.fillText(cell.target, x * gridSize + gridSize/2, y * gridSize + gridSize/2);
     }
   }
 }

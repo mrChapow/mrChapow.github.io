@@ -94,7 +94,9 @@ function randomChar() {
 
 // Define zig-zag / diagonal stripe pattern
 function patternCharFor(x, y) {
-  const index = (x + y) % patternChars.length;
+  const diag1 = (x + y) % patternChars.length;
+  const diag2 = (x - y + patternChars.length) % patternChars.length;
+  const index = (diag1 + diag2) % patternChars.length;
   return patternChars[index];
 }
 

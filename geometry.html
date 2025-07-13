@@ -67,6 +67,8 @@ window.addEventListener("resize", () => {
   initGrid();
 });
 
+const patternChars = ['|', '/', '\\', '-', '_', '.', '[', ']', '(', ')', '!'];
+
 function initGrid() {
   cols = Math.floor(width / gridSize);
   rows = Math.floor(height / gridSize);
@@ -77,31 +79,46 @@ function initGrid() {
     for (let x = 0; x < cols; x++) {
       row.push({
         char: randomChar(),
-        flicker: Math.random() * 1000
+        flicker: Math.random() * 1000,
+        locked: false,
+        target: patternCharFor(x, y)
       });
     }
     grid.push(row);
   }
 }
 
-const charSet = ['|', '/', '\\', '-', '_', '.'];
-
 function randomChar() {
-  return charSet[Math.floor(Math.random() * charSet.length)];
+  return patternChars[Math.floor(Math.random() * patternChars.length)];
+}
+
+// Define a zig-zag / diagonal stripe pattern
+function patternCharFor(x, y) {
+  const index = (x + y) % patternChars.length;
+  return patternChars[index];
 }
 
 function drawGrid(time) {
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, width, height);
 
+  const totalFrames = 60 * 5 * 60; // ~5 minutes @60fps
+  const progress = Math.min(1, time / totalFrames);
+
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
-      let cell = grid[y][x];
-      if (time % Math.floor(cell.flicker) === 0) {
+      const cell = grid[y][x];
+
+      if (!cell.locked && Math.random() < progress / 100) {
+        cell.char = cell.target;
+        cell.locked = true;
+      }
+
+      if (!cell.locked && time % Math.floor(cell.flicker) === 0) {
         cell.char = randomChar();
       }
 
-      ctx.fillStyle = "#333";
+      ctx.fillStyle = cell.locked ? "#fff" : "#333";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.font = `${gridSize}px monospace`;

@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cota</title>
 
+<!-- Favicon -->
 <link rel="icon" type="image/png" href="cota_cloud_pixelart.png">
 
 <style>
@@ -56,7 +57,7 @@ canvas.width = width;
 canvas.height = height;
 
 const gridSize = 18;
-let cols, rows, grid = [], targetShape = [];
+let cols, rows, grid = [];
 
 window.addEventListener("resize", () => {
   width = window.innerWidth;
@@ -70,15 +71,13 @@ function initGrid() {
   cols = Math.floor(width / gridSize);
   rows = Math.floor(height / gridSize);
   grid = [];
-  targetShape = generateShape(rows, cols);
 
   for (let y = 0; y < rows; y++) {
     let row = [];
     for (let x = 0; x < cols; x++) {
       row.push({
         char: randomChar(),
-        flicker: Math.random() * 1000,
-        locked: false
+        flicker: Math.random() * 1000
       });
     }
     grid.push(row);
@@ -86,62 +85,23 @@ function initGrid() {
 }
 
 const charSet = ['|', '/', '\\', '-', '_', '.'];
-const treeChar = '#';
-const bgChar = '.';
 
 function randomChar() {
   return charSet[Math.floor(Math.random() * charSet.length)];
-}
-
-// simulate your tree shape in ascii grid (centered, ~1/3 height)
-function generateShape(rows, cols) {
-  const shape = [];
-  const treeHeight = Math.floor(rows/3);
-  const treeWidth = Math.floor(cols/3);
-  const offsetY = Math.floor(rows/3);
-  const offsetX = Math.floor((cols - treeWidth)/2);
-
-  for (let y=0; y<rows; y++) {
-    const row = [];
-    for (let x=0; x<cols; x++) {
-      if (
-        y >= offsetY && y < offsetY + treeHeight &&
-        x >= offsetX && x < offsetX + treeWidth &&
-        Math.random() > 0.6
-      ) {
-        row.push(1); // tree
-      } else {
-        row.push(0); // background
-      }
-    }
-    shape.push(row);
-  }
-  return shape;
 }
 
 function drawGrid(time) {
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, width, height);
 
-  const totalFrames = 60 * 5 * 60; // ~5 minutes @60fps
-  const progress = Math.min(1, time / totalFrames);
-
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
-      const cell = grid[y][x];
-
-      if (!cell.locked && Math.random() < progress / 100) {
-        if (targetShape[y][x] === 1) {
-          cell.char = treeChar;
-          cell.locked = true;
-        }
-      }
-
-      if (!cell.locked && time % Math.floor(cell.flicker) === 0) {
+      let cell = grid[y][x];
+      if (time % Math.floor(cell.flicker) === 0) {
         cell.char = randomChar();
       }
 
-      ctx.fillStyle = cell.locked ? "#fff" : "#333";
+      ctx.fillStyle = "#333";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.font = `${gridSize}px monospace`;

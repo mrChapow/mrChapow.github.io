@@ -17,44 +17,55 @@
     font-family: monospace;
     color: white;
   }
+
   canvas {
     display: block;
     position: absolute;
-    top: 0; left: 0;
+    top: 0;
+    left: 0;
   }
-  .window {
-    position: absolute;
-    background: #ccc;
-    border: 2px solid #333;
-    box-shadow: 3px 3px 0 #000;
+
+  .product-container {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    gap: 2rem;
     padding: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .product-image {
+    background: #bbb;
+    padding: 1rem;
+    width: 300px;
+    min-height: 300px;
     color: black;
-    font-family: monospace;
   }
-  .window h2 {
+
+  .product-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .info-box {
+    background: #bbb;
+    padding: 1rem;
+    min-width: 200px;
+    color: black;
+  }
+
+  .product-image h2,
+  .info-box h3 {
     margin: 0 0 0.5rem 0;
-    font-size: 1rem;
   }
-  .window p {
+
+  .product-image p,
+  .info-box p {
     margin: 0;
-    font-size: 0.9rem;
-  }
-  #main-image {
-    width: 400px;
-    height: 400px;
-    left: 50px;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-  #price {
-    width: 250px;
-    top: 100px;
-    right: 50px;
-  }
-  #description {
-    width: 250px;
-    top: 200px;
-    right: 50px;
   }
 </style>
 </head>
@@ -63,22 +74,26 @@
 
 <canvas id="canvas"></canvas>
 
-<div class="window" id="main-image">
-  <h2>Helm</h2>
-  <p>[ Image Placeholder ]</p>
-</div>
+<div class="product-container">
+  <div class="product-image">
+    <h2>Helm</h2>
+    <p>[ Image Placeholder ]</p>
+  </div>
 
-<div class="window" id="price">
-  <h2>Price</h2>
-  <p>$100.69</p>
-</div>
-
-<div class="window" id="description">
-  <h2>Description</h2>
-  <p>Cota Pilot Project.</p>
+  <div class="product-info">
+    <div class="info-box">
+      <h3>Price</h3>
+      <p>$100.69</p>
+    </div>
+    <div class="info-box">
+      <h3>Description</h3>
+      <p>Cota Pilot Project.</p>
+    </div>
+  </div>
 </div>
 
 <script>
+// ASCII animated background
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
@@ -109,7 +124,7 @@ function initGrid() {
     let row = [];
     for (let x = 0; x < cols; x++) {
       row.push({
-        char: randomChar(),
+        char: patternCharFor(x, y),
         flicker: Math.random() * 1000
       });
     }
@@ -117,8 +132,10 @@ function initGrid() {
   }
 }
 
-function randomChar() {
-  return patternChars[Math.floor(Math.random() * patternChars.length)];
+// Create a repeating diagonal/zig-zag pattern
+function patternCharFor(x, y) {
+  const index = (x + y) % patternChars.length;
+  return patternChars[index];
 }
 
 function drawGrid(time) {
@@ -127,9 +144,10 @@ function drawGrid(time) {
 
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
-      let cell = grid[y][x];
+      const cell = grid[y][x];
+
       if (time % Math.floor(cell.flicker) === 0) {
-        cell.char = randomChar();
+        cell.char = patternCharFor(x, y);
       }
 
       ctx.fillStyle = "#333";

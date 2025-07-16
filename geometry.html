@@ -17,32 +17,48 @@
     font-family: monospace;
     color: white;
   }
+
   canvas {
     display: block;
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 0; left: 0;
   }
+
   .content {
     position: relative;
     z-index: 1;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     height: 100%;
+    gap: 40px;
+    padding: 20px;
+  }
+
+  .left {
+    flex: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
     gap: 20px;
   }
+
   .window {
-    background: rgba(200, 200, 200, 0.08);
-    backdrop-filter: blur(6px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
+    background: rgba(80, 80, 80, 0.4);
+    backdrop-filter: blur(4px);
     padding: 20px;
-    width: fit-content;
-    min-width: 200px;
+    border-radius: 15px;
     color: white;
+    max-width: 300px;
+    font-size: 0.9rem;
+    box-shadow: 0 0 10px rgba(0,0,0,0.4);
   }
 </style>
 </head>
@@ -52,17 +68,21 @@
 <canvas id="canvas"></canvas>
 
 <div class="content">
-  <div class="window">
-    <strong>Helm</strong><br>
-    [ Image Placeholder ]
+  <div class="left">
+    <div class="window">
+      <strong>Helm</strong><br>
+      [ Image Placeholder ]
+    </div>
   </div>
-  <div class="window">
-    <strong>Price</strong><br>
-    $100.69
-  </div>
-  <div class="window">
-    <strong>Description</strong><br>
-    Cota Pilot Project.
+  <div class="right">
+    <div class="window">
+      <strong>Price</strong><br>
+      $100.69
+    </div>
+    <div class="window">
+      <strong>Description</strong><br>
+      Cota Pilot Project.
+    </div>
   </div>
 </div>
 
@@ -78,8 +98,6 @@ canvas.height = height;
 const gridSize = 18;
 let cols, rows, grid = [];
 
-const charSet = ['|', '/', '\\', '-', '_', '.', '[', ']', '(', ')'];
-
 window.addEventListener("resize", () => {
   width = window.innerWidth;
   height = window.innerHeight;
@@ -87,6 +105,8 @@ window.addEventListener("resize", () => {
   canvas.height = height;
   initGrid();
 });
+
+const patternChars = ['|', '/', '\\', '-', '_', '.', '[', ']', '(', ')'];
 
 function initGrid() {
   cols = Math.floor(width / gridSize);
@@ -108,20 +128,19 @@ function initGrid() {
 }
 
 function randomChar() {
-  return charSet[Math.floor(Math.random() * charSet.length)];
+  return patternChars[Math.floor(Math.random() * patternChars.length)];
 }
 
 function patternCharFor(x, y) {
-  // Create diagonal X-pattern
-  const index = (x - y + charSet.length) % charSet.length;
-  return charSet[index];
+  const index = (x + y) % patternChars.length;
+  return patternChars[index];
 }
 
 function drawGrid(time) {
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, width, height);
 
-  const totalFrames = 60 * 5 * 60; // ~5 min at 60fps
+  const totalFrames = 60 * 5 * 60; // ~5 min @60fps
   const progress = Math.min(1, time / totalFrames);
 
   for (let y = 0; y < rows; y++) {

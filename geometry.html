@@ -22,18 +22,39 @@
     position: absolute;
     top: 0; left: 0;
   }
-  .center {
-    position: relative;
-    z-index: 1;
-    text-align: center;
-    top: 40%;
+  .window {
+    position: absolute;
+    background: #ccc;
+    border: 2px solid #333;
+    box-shadow: 3px 3px 0 #000;
+    padding: 1rem;
+    color: black;
+    font-family: monospace;
+  }
+  .window h2 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1rem;
+  }
+  .window p {
+    margin: 0;
+    font-size: 0.9rem;
+  }
+  #main-image {
+    width: 400px;
+    height: 400px;
+    left: 50px;
+    top: 50%;
     transform: translateY(-50%);
   }
-  .center h1 {
-    font-size: 4rem;
-    letter-spacing: 0.3rem;
-    color: white;
-    margin: 0;
+  #price {
+    width: 250px;
+    top: 100px;
+    right: 50px;
+  }
+  #description {
+    width: 250px;
+    top: 200px;
+    right: 50px;
   }
 </style>
 </head>
@@ -42,8 +63,19 @@
 
 <canvas id="canvas"></canvas>
 
-<div class="center">
-  <h1>COTA</h1>
+<div class="window" id="main-image">
+  <h2>Helm</h2>
+  <p>[ Image Placeholder ]</p>
+</div>
+
+<div class="window" id="price">
+  <h2>Price</h2>
+  <p>$100.69</p>
+</div>
+
+<div class="window" id="description">
+  <h2>Description</h2>
+  <p>Cota Pilot Project.</p>
 </div>
 
 <script>
@@ -78,9 +110,7 @@ function initGrid() {
     for (let x = 0; x < cols; x++) {
       row.push({
         char: randomChar(),
-        flicker: Math.random() * 1000,
-        locked: false,
-        target: patternCharFor(x, y)
+        flicker: Math.random() * 1000
       });
     }
     grid.push(row);
@@ -91,31 +121,14 @@ function randomChar() {
   return patternChars[Math.floor(Math.random() * patternChars.length)];
 }
 
-// Simple diagonal pattern for freezing
-function patternCharFor(x, y) {
-  const index = (x + y) % patternChars.length;
-  return patternChars[index];
-}
-
 function drawGrid(time) {
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, width, height);
 
-  const totalFrames = 60 * 5 * 60 * 3; // ~15 minutes @60fps
-  const progress = Math.min(1, time / totalFrames);
-
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
-      const cell = grid[y][x];
-
-      // slowly freeze into pattern
-      if (!cell.locked && Math.random() < progress / 500) {
-        cell.char = cell.target;
-        cell.locked = true;
-      }
-
-      // shimmer while unfrozen
-      if (!cell.locked && time % Math.floor(cell.flicker) === 0) {
+      let cell = grid[y][x];
+      if (time % Math.floor(cell.flicker) === 0) {
         cell.char = randomChar();
       }
 

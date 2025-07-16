@@ -17,44 +17,32 @@
     font-family: monospace;
     color: white;
   }
-
   canvas {
     display: block;
     position: absolute;
-    top: 0; left: 0;
-    z-index: 0;
+    top: 0;
+    left: 0;
   }
-
   .content {
     position: relative;
     z-index: 1;
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
     height: 100%;
     gap: 20px;
   }
-
-.window {
-  background: rgba(200, 200, 200, 0.08);  /* slightly more subtle grey */
-  backdrop-filter: blur(6px);            /* slightly stronger blur */
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-  border-radius: 12px;                   /* increased from ~4px to 12px */
-  padding: 20px;
-  margin: 10px;
-  width: fit-content;
-  color: white;
-}
-
-  .window h2 {
-    margin-top: 0;
-    font-size: 1rem;
-  }
-
-  .window p {
-    margin: 0.5rem 0 0;
-    font-size: 0.9rem;
+  .window {
+    background: rgba(200, 200, 200, 0.08);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+    width: fit-content;
+    min-width: 200px;
+    color: white;
   }
 </style>
 </head>
@@ -65,19 +53,16 @@
 
 <div class="content">
   <div class="window">
-    <h2>Helm</h2>
-    <p>[ Image Placeholder ]</p>
+    <strong>Helm</strong><br>
+    [ Image Placeholder ]
   </div>
-
-  <div>
-    <div class="window">
-      <h2>Price</h2>
-      <p>$100.69</p>
-    </div>
-    <div class="window" style="margin-top: 10px;">
-      <h2>Description</h2>
-      <p>Cota Pilot Project.</p>
-    </div>
+  <div class="window">
+    <strong>Price</strong><br>
+    $100.69
+  </div>
+  <div class="window">
+    <strong>Description</strong><br>
+    Cota Pilot Project.
   </div>
 </div>
 
@@ -93,6 +78,8 @@ canvas.height = height;
 const gridSize = 18;
 let cols, rows, grid = [];
 
+const charSet = ['|', '/', '\\', '-', '_', '.', '[', ']', '(', ')'];
+
 window.addEventListener("resize", () => {
   width = window.innerWidth;
   height = window.innerHeight;
@@ -100,8 +87,6 @@ window.addEventListener("resize", () => {
   canvas.height = height;
   initGrid();
 });
-
-const patternChars = ['|', '/', '\\', '-', '_', '.', '[', ']', '(', ')'];
 
 function initGrid() {
   cols = Math.floor(width / gridSize);
@@ -113,7 +98,9 @@ function initGrid() {
     for (let x = 0; x < cols; x++) {
       row.push({
         char: randomChar(),
-        flicker: Math.random() * 1000
+        flicker: Math.random() * 1000,
+        locked: false,
+        target: patternCharFor(x, y)
       });
     }
     grid.push(row);
@@ -121,18 +108,32 @@ function initGrid() {
 }
 
 function randomChar() {
-  return patternChars[Math.floor(Math.random() * patternChars.length)];
+  return charSet[Math.floor(Math.random() * charSet.length)];
+}
+
+function patternCharFor(x, y) {
+  // Create diagonal X-pattern
+  const index = (x - y + charSet.length) % charSet.length;
+  return charSet[index];
 }
 
 function drawGrid(time) {
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, width, height);
 
+  const totalFrames = 60 * 5 * 60; // ~5 min at 60fps
+  const progress = Math.min(1, time / totalFrames);
+
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
       const cell = grid[y][x];
 
-      if (time % Math.floor(cell.flicker) === 0) {
+      if (!cell.locked && Math.random() < progress / 500) {
+        cell.char = cell.target;
+        cell.locked = true;
+      }
+
+      if (!cell.locked && time % Math.floor(cell.flicker) === 0) {
         cell.char = randomChar();
       }
 
@@ -140,7 +141,7 @@ function drawGrid(time) {
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.font = `${gridSize}px monospace`;
-      ctx.fillText(cell.char, x * gridSize + gridSize / 2, y * gridSize + gridSize / 2);
+      ctx.fillText(cell.char, x * gridSize + gridSize/2, y * gridSize + gridSize/2);
     }
   }
 }

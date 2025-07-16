@@ -28,37 +28,37 @@
     position: relative;
     z-index: 1;
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: flex-start;
     height: 100%;
-    gap: 40px;
+    align-items: center;
+    justify-content: center;
+    gap: 50px;
     padding: 20px;
   }
 
   .left {
-    flex: 2;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    width: 350px;
   }
 
   .right {
-    flex: 1;
     display: flex;
     flex-direction: column;
     gap: 20px;
+    width: 200px;
   }
 
   .window {
     background: rgba(80, 80, 80, 0.4);
     backdrop-filter: blur(4px);
     padding: 20px;
-    border-radius: 15px;
+    border-radius: 12px;
     color: white;
-    max-width: 300px;
     font-size: 0.9rem;
     box-shadow: 0 0 10px rgba(0,0,0,0.4);
+  }
+
+  .window strong {
+    display: block;
+    margin-bottom: 10px;
   }
 </style>
 </head>
@@ -68,19 +68,17 @@
 <canvas id="canvas"></canvas>
 
 <div class="content">
-  <div class="left">
-    <div class="window">
-      <strong>Helm</strong><br>
-      [ Image Placeholder ]
-    </div>
+  <div class="left window">
+    <strong>Helm</strong>
+    [ Image Placeholder ]
   </div>
   <div class="right">
     <div class="window">
-      <strong>Price</strong><br>
+      <strong>Price</strong>
       $100.69
     </div>
     <div class="window">
-      <strong>Description</strong><br>
+      <strong>Description</strong>
       Cota Pilot Project.
     </div>
   </div>

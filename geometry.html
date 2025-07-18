@@ -329,12 +329,14 @@
                 this.pulses = [];
                 this.quantumTunnels = [];
                 this.magneticFields = [];
+                this.sacredGeometry = [];
                 this.mouseX = 0;
                 this.mouseY = 0;
                 this.fontSize = 12;
                 this.nodeCount = 120;
                 this.connectionDistance = 150;
                 this.time = 0;
+                this.goldenRatio = 1.618033988749;
                 
                 this.resizeCanvas();
                 this.init();
@@ -380,6 +382,55 @@
                 ];
                 
                 this.createConnections();
+                this.createSacredGeometry();
+            }
+            
+            createSacredGeometry() {
+                this.sacredGeometry = [];
+                const centerX = this.canvas.width / 2;
+                const centerY = this.canvas.height / 2;
+                
+                // Flower of Life pattern
+                const flowerRadius = 80;
+                const circles = [];
+                for (let i = 0; i < 6; i++) {
+                    const angle = (Math.PI * 2 / 6) * i;
+                    circles.push({
+                        x: centerX + Math.cos(angle) * flowerRadius,
+                        y: centerY + Math.sin(angle) * flowerRadius,
+                        radius: flowerRadius,
+                        type: 'flower',
+                        phase: i * Math.PI / 3
+                    });
+                }
+                circles.push({ x: centerX, y: centerY, radius: flowerRadius, type: 'flower', phase: 0 });
+                
+                // Merkaba (3D Star Tetrahedron)
+                const merkaba = {
+                    x: this.canvas.width * 0.8,
+                    y: this.canvas.height * 0.2,
+                    size: 60,
+                    rotation: 0,
+                    type: 'merkaba'
+                };
+                
+                // Golden Ratio Spiral
+                const spiral = {
+                    x: this.canvas.width * 0.2,
+                    y: this.canvas.height * 0.8,
+                    size: 100,
+                    segments: 16,
+                    type: 'spiral'
+                };
+                
+                // Platonic Solids positions
+                const platonics = [
+                    { x: this.canvas.width * 0.15, y: this.canvas.height * 0.3, type: 'tetrahedron', size: 40, rotation: 0 },
+                    { x: this.canvas.width * 0.85, y: this.canvas.height * 0.7, type: 'octahedron', size: 45, rotation: 0 },
+                    { x: this.canvas.width * 0.5, y: this.canvas.height * 0.15, type: 'icosahedron', size: 35, rotation: 0 }
+                ];
+                
+                this.sacredGeometry = [...circles, merkaba, spiral, ...platonics];
             }
             
             createConnections() {
@@ -485,6 +536,16 @@
                             intensity: 1,
                             direction: connection.nodeA === this.nodes.indexOf(node) ? 1 : -1
                         });
+                    }
+                }
+            }
+            
+            updateSacredGeometry() {
+                // Animate sacred geometry patterns
+                for (let geometry of this.sacredGeometry) {
+                    if (geometry.type === 'merkaba' || geometry.type === 'tetrahedron' || 
+                        geometry.type === 'octahedron' || geometry.type === 'icosahedron') {
+                        geometry.rotation += 0.01;
                     }
                 }
             }
@@ -628,6 +689,9 @@
                     this.ctx.setLineDash([]);
                 }
                 
+                // Draw sacred geometry
+                this.renderSacredGeometry();
+                
                 // Draw nodes
                 this.ctx.font = `${this.fontSize}px 'Courier New'`;
                 for (let node of this.nodes) {
@@ -672,10 +736,142 @@
                 }
             }
             
+            renderSacredGeometry() {
+                for (let geometry of this.sacredGeometry) {
+                    const pulse = Math.sin(this.time * 0.02) * 0.3 + 0.7;
+                    const alpha = 0.15 * pulse;
+                    
+                    this.ctx.save();
+                    
+                    if (geometry.type === 'flower') {
+                        // Flower of Life circles
+                        this.ctx.strokeStyle = `rgba(255, 215, 0, ${alpha})`;
+                        this.ctx.lineWidth = 1;
+                        this.ctx.beginPath();
+                        this.ctx.arc(geometry.x, geometry.y, geometry.radius, 0, Math.PI * 2);
+                        this.ctx.stroke();
+                        
+                        // Inner sacred ratios
+                        this.ctx.strokeStyle = `rgba(255, 215, 0, ${alpha * 0.5})`;
+                        this.ctx.beginPath();
+                        this.ctx.arc(geometry.x, geometry.y, geometry.radius / this.goldenRatio, 0, Math.PI * 2);
+                        this.ctx.stroke();
+                    }
+                    
+                    else if (geometry.type === 'merkaba') {
+                        // Merkaba (3D Star Tetrahedron)
+                        this.ctx.translate(geometry.x, geometry.y);
+                        this.ctx.rotate(geometry.rotation);
+                        this.ctx.strokeStyle = `rgba(138, 43, 226, ${alpha})`;
+                        this.ctx.lineWidth = 2;
+                        
+                        // Upper tetrahedron
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(0, -geometry.size);
+                        this.ctx.lineTo(-geometry.size * 0.866, geometry.size * 0.5);
+                        this.ctx.lineTo(geometry.size * 0.866, geometry.size * 0.5);
+                        this.ctx.closePath();
+                        this.ctx.stroke();
+                        
+                        // Lower tetrahedron (inverted)
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(0, geometry.size);
+                        this.ctx.lineTo(-geometry.size * 0.866, -geometry.size * 0.5);
+                        this.ctx.lineTo(geometry.size * 0.866, -geometry.size * 0.5);
+                        this.ctx.closePath();
+                        this.ctx.stroke();
+                    }
+                    
+                    else if (geometry.type === 'spiral') {
+                        // Golden Ratio Spiral
+                        this.ctx.strokeStyle = `rgba(255, 165, 0, ${alpha})`;
+                        this.ctx.lineWidth = 1.5;
+                        this.ctx.beginPath();
+                        
+                        let angle = 0;
+                        let radius = 1;
+                        this.ctx.moveTo(geometry.x, geometry.y);
+                        
+                        for (let i = 0; i < geometry.segments * 20; i++) {
+                            angle += 0.1;
+                            radius *= Math.pow(this.goldenRatio, 0.1 / (Math.PI * 2));
+                            const x = geometry.x + Math.cos(angle) * radius;
+                            const y = geometry.y + Math.sin(angle) * radius;
+                            this.ctx.lineTo(x, y);
+                        }
+                        this.ctx.stroke();
+                    }
+                    
+                    else if (geometry.type === 'tetrahedron') {
+                        // Tetrahedron
+                        this.ctx.translate(geometry.x, geometry.y);
+                        this.ctx.rotate(geometry.rotation);
+                        this.ctx.strokeStyle = `rgba(255, 105, 180, ${alpha})`;
+                        this.ctx.lineWidth = 1;
+                        
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(0, -geometry.size);
+                        this.ctx.lineTo(-geometry.size, geometry.size);
+                        this.ctx.lineTo(geometry.size, geometry.size);
+                        this.ctx.closePath();
+                        this.ctx.stroke();
+                    }
+                    
+                    else if (geometry.type === 'octahedron') {
+                        // Octahedron
+                        this.ctx.translate(geometry.x, geometry.y);
+                        this.ctx.rotate(geometry.rotation);
+                        this.ctx.strokeStyle = `rgba(0, 255, 255, ${alpha})`;
+                        this.ctx.lineWidth = 1;
+                        
+                        // Diamond shape representing octahedron
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(0, -geometry.size);
+                        this.ctx.lineTo(geometry.size, 0);
+                        this.ctx.lineTo(0, geometry.size);
+                        this.ctx.lineTo(-geometry.size, 0);
+                        this.ctx.closePath();
+                        this.ctx.stroke();
+                        
+                        // Inner diamond
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(0, -geometry.size * 0.5);
+                        this.ctx.lineTo(geometry.size * 0.5, 0);
+                        this.ctx.lineTo(0, geometry.size * 0.5);
+                        this.ctx.lineTo(-geometry.size * 0.5, 0);
+                        this.ctx.closePath();
+                        this.ctx.stroke();
+                    }
+                    
+                    else if (geometry.type === 'icosahedron') {
+                        // Icosahedron (simplified as pentagram)
+                        this.ctx.translate(geometry.x, geometry.y);
+                        this.ctx.rotate(geometry.rotation);
+                        this.ctx.strokeStyle = `rgba(50, 205, 50, ${alpha})`;
+                        this.ctx.lineWidth = 1;
+                        
+                        // Pentagram
+                        this.ctx.beginPath();
+                        for (let i = 0; i < 5; i++) {
+                            const angle = (i * 4 * Math.PI) / 5 - Math.PI / 2;
+                            const x = Math.cos(angle) * geometry.size;
+                            const y = Math.sin(angle) * geometry.size;
+                            if (i === 0) this.ctx.moveTo(x, y);
+                            else this.ctx.lineTo(x, y);
+                        }
+                        this.ctx.closePath();
+                        this.ctx.stroke();
+                    }
+                    
+                    this.ctx.restore();
+                }
+            }
+            
             animate() {
                 this.time++;
                 this.updateNodes();
                 this.updatePulses();
+                this.updateSacredGeometry();
                 this.render();
                 requestAnimationFrame(() => this.animate());
             }

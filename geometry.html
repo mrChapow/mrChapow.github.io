@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cota Helm - Futuristic Pilot Helmet</title>
+    <title>Product Landing Page</title>
     <style>
         * {
             margin: 0;
@@ -11,491 +11,649 @@
             box-sizing: border-box;
         }
 
-        html, body {
-            background: black;
-            overflow: hidden;
-            height: 100%;
-            font-family: 'Courier New', monospace;
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0;
             color: white;
         }
 
-        /* Animated Background */
-        .animated-background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
+        h1 {
+            font-size: 3rem;
+            font-weight: 300;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
-        .animated-background canvas {
-            display: block;
-            width: 100%;
-            height: 100%;
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 40px;
         }
 
-        /* Content Layout */
-        .content-container {
-            position: relative;
-            z-index: 10;
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            margin: 60px 0;
+        }
+
+        .product-showcase {
             display: flex;
-            height: 100vh;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
+            perspective: 1000px;
+        }
+
+        .product-3d {
+            width: 250px;
+            height: 250px;
+            position: relative;
+            transform-style: preserve-3d;
+            transform: rotateX(-15deg) rotateY(45deg);
+            animation: rotateY 8s infinite linear;
+            cursor: grab;
+            transition: none;
+        }
+
+        .product-3d:active {
+            cursor: grabbing;
+        }
+
+        .product-3d:hover {
+            animation-play-state: paused;
+        }
+
+        .product-3d.dragging {
+            animation-play-state: paused;
+        }
+
+        .face {
+            position: absolute;
+            width: 250px;
+            height: 250px;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            border: 3px solid #fff;
+            border-radius: 20px;
+            display: flex;
             align-items: center;
             justify-content: center;
-            gap: 48px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .front { transform: rotateY(0deg) translateZ(125px); }
+        .back { transform: rotateY(180deg) translateZ(125px); }
+        .right { transform: rotateY(90deg) translateZ(125px); }
+        .left { transform: rotateY(-90deg) translateZ(125px); }
+        .top { transform: rotateX(90deg) translateZ(125px); }
+        .bottom { transform: rotateX(-90deg) translateZ(125px); }
+
+        @keyframes rotateY {
+            0% { transform: rotateX(-15deg) rotateY(45deg); }
+            100% { transform: rotateX(-15deg) rotateY(405deg); }
+        }
+
+        .product-info {
+            background: rgba(255, 255, 255, 0.95);
             padding: 40px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .left-panel {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            max-width: 500px;
-        }
-
-        .right-panel {
-            flex: 0 0 320px;
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
-
-        /* Liquid Glass Boxes */
-        .liquid-glass-box {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.002) 0%,
-                rgba(255, 255, 255, 0.0005) 50%,
-                rgba(255, 255, 255, 0.001) 100%);
-            backdrop-filter: blur(1px) saturate(150%);
-            border: 1px solid rgba(255, 255, 255, 0.02);
             border-radius: 20px;
-            padding: 24px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 
-                inset 2px 2px 0 rgba(255, 255, 255, 0.06),
-                inset -1px -1px 0 rgba(255, 255, 255, 0.01),
-                inset 0 -2px 8px rgba(0, 0, 0, 0.03),
-                inset -2px 0 8px rgba(0, 0, 0, 0.03),
-                0 0 0 0.5px rgba(255, 255, 255, 0.01);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
         }
 
-        .liquid-glass-box::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, transparent 15%),
-                linear-gradient(315deg, rgba(255, 255, 255, 0.05) 0%, transparent 12%),
-                linear-gradient(45deg, transparent 88%, rgba(0, 0, 0, 0.04) 100%);
-            border-radius: 20px;
-            pointer-events: none;
-        }
-
-        .liquid-glass-box::after {
-            content: '';
-            position: absolute;
-            top: 1px;
-            left: 1px;
-            width: 30%;
-            height: 1px;
-            background: linear-gradient(90deg, 
-                rgba(255, 255, 255, 0.6) 0%, 
-                rgba(255, 255, 255, 0.3) 70%, 
-                transparent 100%);
-            filter: blur(0.5px);
-        }
-
-        .liquid-glass-box:before {
-            z-index: 1;
-        }
-
-        .liquid-glass-box:after {
-            z-index: 1;
-        }
-
-        .liquid-glass-box:hover {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.004) 0%,
-                rgba(255, 255, 255, 0.001) 50%,
-                rgba(255, 255, 255, 0.002) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            transform: translateY(-3px) scale(1.002);
-            box-shadow: 
-                inset 3px 3px 0 rgba(255, 255, 255, 0.15),
-                inset -2px -2px 0 rgba(255, 255, 255, 0.02),
-                inset 0 -3px 12px rgba(0, 0, 0, 0.05),
-                inset -3px 0 12px rgba(0, 0, 0, 0.05),
-                0 0 0 0.5px rgba(255, 255, 255, 0.03),
-                0 8px 25px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(1.5px) saturate(180%);
-        }
-
-        .liquid-glass-box:hover::before {
-            background: 
-                linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, transparent 15%),
-                linear-gradient(315deg, rgba(255, 255, 255, 0.12) 0%, transparent 12%),
-                linear-gradient(45deg, transparent 88%, rgba(0, 0, 0, 0.08) 100%);
-        }
-
-        .liquid-glass-box:hover::after {
-            background: linear-gradient(90deg, 
-                rgba(255, 255, 255, 0.9) 0%, 
-                rgba(255, 255, 255, 0.5) 70%, 
-                transparent 100%);
-        }
-
-        /* Price Box Styles */
-        .price-content {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .price-info h2 {
-            font-size: 1.25rem;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-
-        .price-amount {
+        .product-info h2 {
             font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .product-info p {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .price {
+            font-size: 2rem;
             font-weight: bold;
+            color: #ee5a24;
+            margin-bottom: 30px;
         }
 
         .buy-button {
-            background: #16a34a;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
             color: white;
-            padding: 12px 24px;
-            font-family: 'Courier New', monospace;
-            font-size: 1.125rem;
             border: none;
-            border-radius: 4px;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 50px;
             cursor: pointer;
-            transition: background-color 0.2s;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(238, 90, 36, 0.3);
+            width: 100%;
         }
 
         .buy-button:hover {
-            background: #15803d;
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(238, 90, 36, 0.4);
         }
 
-        /* Description Box */
-        .description-title {
-            font-size: 1.25rem;
-            font-weight: bold;
-            margin-bottom: 12px;
+        .buy-button:active {
+            transform: translateY(-1px);
         }
 
-        .description-text {
-            font-size: 1.125rem;
-        }
-
-        /* 3D Cube Styles */
-        .cube-container {
-            position: relative;
-            width: 200px;
-            height: 200px;
-            perspective: 800px;
-            margin: 0 auto;
-        }
-
-        .cube-wireframe {
-            position: relative;
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
             width: 100%;
             height: 100%;
-            transform-style: preserve-3d;
-            animation: rotateCube 20s infinite linear;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
         }
 
-        .cube-face {
-            position: absolute;
-            width: 200px;
-            height: 200px;
-            border: 2px solid rgba(100, 255, 100, 0.6);
-            background: rgba(0, 100, 0, 0.02);
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 40px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: modalSlideIn 0.3s ease;
         }
 
-        .cube-face.front {
-            transform: rotateY(0deg) translateZ(100px);
+        @keyframes modalSlideIn {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .cube-face.back {
-            transform: rotateY(180deg) translateZ(100px);
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
         }
 
-        .cube-face.right {
-            transform: rotateY(90deg) translateZ(100px);
+        .close:hover {
+            color: #000;
         }
 
-        .cube-face.left {
-            transform: rotateY(-90deg) translateZ(100px);
+        .modal h3 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 1.8rem;
         }
 
-        .cube-face.top {
-            transform: rotateX(90deg) translateZ(100px);
+        .form-group {
+            margin-bottom: 20px;
         }
 
-        .cube-face.bottom {
-            transform: rotateX(-90deg) translateZ(100px);
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
         }
 
-        @keyframes rotateCube {
-            0% {
-                transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
-            }
-            100% {
-                transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg);
-            }
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
         }
 
-        .cube-placeholder {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: rgba(100, 255, 100, 0.7);
-            font-size: 14px;
+        .form-group input:focus {
+            outline: none;
+            border-color: #ff6b6b;
+        }
+
+        .form-group input.error {
+            border-color: #e74c3c;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .submit-button {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(238, 90, 36, 0.3);
+        }
+
+        .success-message {
+            background-color: #2ecc71;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
             text-align: center;
-            z-index: 10;
-            pointer-events: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+                text-align: center;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .product-info h2 {
+                font-size: 2rem;
+            }
+
+            .product-3d {
+                width: 200px;
+                height: 200px;
+            }
+
+            .face {
+                width: 200px;
+                height: 200px;
+            }
+
+            .front { transform: rotateY(0deg) translateZ(100px); }
+            .back { transform: rotateY(180deg) translateZ(100px); }
+            .right { transform: rotateY(90deg) translateZ(100px); }
+            .left { transform: rotateY(-90deg) translateZ(100px); }
+            .top { transform: rotateX(90deg) translateZ(100px); }
+            .bottom { transform: rotateX(-90deg) translateZ(100px); }
+
+            .modal-content {
+                margin: 20% auto;
+                padding: 30px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+
+            .product-info {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="animated-background">
-        <canvas id="background-canvas"></canvas>
+    <div class="container">
+        <header>
+            <h1>Revolutionary Product</h1>
+            <p class="subtitle">Experience the future of innovation</p>
+        </header>
+
+        <main class="main-content">
+            <div class="product-showcase">
+                <div class="product-3d" id="product3d">
+                    <div class="face front">PREMIUM</div>
+                    <div class="face back">QUALITY</div>
+                    <div class="face right">DESIGN</div>
+                    <div class="face left">INNOVATION</div>
+                    <div class="face top">FUTURE</div>
+                    <div class="face bottom">TODAY</div>
+                </div>
+            </div>
+
+            <div class="product-info">
+                <h2>Amazing Product</h2>
+                <p>Discover our revolutionary product that combines cutting-edge technology with elegant design. Perfect for modern professionals who demand excellence in every detail.</p>
+                <p>Features include premium materials, innovative functionality, and a design that speaks to your sophisticated taste.</p>
+                <div class="price">$299.99</div>
+                <button class="buy-button" id="buyButton">Get Started Today</button>
+            </div>
+        </main>
     </div>
-    
-    <div class="content-container">
-        <!-- Left Panel - 3D Cube -->
-        <div class="left-panel">
-            <div class="cube-container">
-                <div class="cube-wireframe">
-                    <div class="cube-face front"></div>
-                    <div class="cube-face back"></div>
-                    <div class="cube-face right"></div>
-                    <div class="cube-face left"></div>
-                    <div class="cube-face top"></div>
-                    <div class="cube-face bottom"></div>
-                </div>
-                <div class="cube-placeholder">
-                    3D Model Loading...
-                </div>
-            </div>
-        </div>
 
-        <!-- Right Panel - Liquid Glass Boxes -->
-        <div class="right-panel">
-            <!-- Price Box -->
-            <div class="liquid-glass-box">
-                <div class="price-content">
-                    <div class="price-info">
-                        <h2>Cota Helm</h2>
-                        <div class="price-amount">$100.69</div>
-                    </div>
-                    <button class="buy-button" onclick="handlePurchase()">
-                        Buy
-                    </button>
+    <!-- Contact Modal -->
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <h3>Get Your Product Now!</h3>
+            <p>Enter your details below and we'll contact you shortly to complete your order.</p>
+            
+            <form id="contactForm">
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" required>
+                    <div class="error-message" id="emailError">Please enter a valid email address</div>
                 </div>
-            </div>
-
-            <!-- Description Box -->
-            <div class="liquid-glass-box">
-                <h2 class="description-title">Description</h2>
-                <div class="description-text">
-                    Cota Pilot Project
+                
+                <div class="form-group">
+                    <label for="instagram">Instagram Handle (Optional)</label>
+                    <input type="text" id="instagram" name="instagram" placeholder="@yourusername">
+                    <div class="error-message" id="instagramError">Please enter a valid Instagram handle</div>
                 </div>
-            </div>
+                
+                <button type="submit" class="submit-button" id="submitButton">Submit Order Request</button>
+                
+                <div class="success-message" id="successMessage">
+                    Thank you! We'll contact you soon to complete your order.
+                </div>
+            </form>
         </div>
     </div>
 
     <script>
-        // ASCII Wallpaper Formation Background
-        class AnimatedBackground {
-            constructor(canvasId) {
-                this.canvas = document.getElementById(canvasId);
-                this.ctx = this.canvas.getContext('2d');
-                this.characters = '║│┤├┼┬┴┐┌└┘═╪╫╬╠╣╚╝╔╗╦╩╬⁞◊◈◇◆⬢⬡▲▼◄►';
-                this.fontSize = 12;
-                this.grid = [];
-                this.targetPattern = [];
-                this.solvedCells = new Set();
-                this.animationSpeed = 60; // frames per second
-                this.totalDuration = 180000; // 3 minutes in milliseconds
-                this.startTime = Date.now();
-                this.cols = 0;
-                this.rows = 0;
-                
-                this.resizeCanvas();
-                this.createTargetPattern();
-                this.init();
-                this.animate();
-                
-                window.addEventListener('resize', () => this.resizeCanvas());
+        // Get DOM elements
+        const buyButton = document.getElementById('buyButton');
+        const modal = document.getElementById('contactModal');
+        const closeModal = document.getElementById('closeModal');
+        const contactForm = document.getElementById('contactForm');
+        const product3d = document.getElementById('product3d');
+
+        // Modal functionality
+        buyButton.addEventListener('click', function() {
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        });
+
+        closeModal.addEventListener('click', function() {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        });
+
+        window.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
             }
-            
-            resizeCanvas() {
-                this.canvas.width = window.innerWidth;
-                this.canvas.height = window.innerHeight;
-                this.cols = Math.floor(this.canvas.width / this.fontSize);
-                this.rows = Math.floor(this.canvas.height / this.fontSize);
+        });
+
+        // 3D product interaction
+        let isDragging = false;
+        let startX = 0;
+        let startY = 0;
+        let rotationX = -15; // Start with tilted view
+        let rotationY = 45;  // Start at 45 degrees
+
+        product3d.addEventListener('mouseenter', function() {
+            this.style.animationPlayState = 'paused';
+        });
+
+        product3d.addEventListener('mouseleave', function() {
+            if (!isDragging) {
+                this.style.animationPlayState = 'running';
             }
+        });
+
+        // Mouse drag functionality
+        product3d.addEventListener('mousedown', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            isDragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            this.classList.add('dragging');
+            this.style.animationPlayState = 'paused';
+            this.style.cursor = 'grabbing';
+        });
+
+        document.addEventListener('mousemove', function(e) {
+            if (!isDragging) return;
             
-            createTargetPattern() {
-                // Create a beautiful ASCII art pattern - a geometric mandala
-                this.targetPattern = [];
-                for (let row = 0; row < this.rows; row++) {
-                    this.targetPattern[row] = [];
-                    for (let col = 0; col < this.cols; col++) {
-                        this.targetPattern[row][col] = this.generatePatternCharacter(row, col);
+            e.preventDefault();
+            
+            const deltaX = e.clientX - startX;
+            const deltaY = e.clientY - startY;
+            
+            // Update rotation based on mouse movement
+            rotationY += deltaX * 0.8;
+            rotationX -= deltaY * 0.8;
+            
+            // Apply rotation
+            product3d.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg)`;
+            
+            startX = e.clientX;
+            startY = e.clientY;
+        });
+
+        document.addEventListener('mouseup', function() {
+            if (isDragging) {
+                isDragging = false;
+                product3d.classList.remove('dragging');
+                product3d.style.cursor = 'grab';
+                
+                // Resume animation after delay
+                setTimeout(function() {
+                    if (!product3d.matches(':hover')) {
+                        product3d.style.animationPlayState = 'running';
                     }
+                }, 2000);
+            }
+        });
+
+        // Touch support for mobile
+        product3d.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            isDragging = true;
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+            this.classList.add('dragging');
+            this.style.animationPlayState = 'paused';
+        });
+
+        document.addEventListener('touchmove', function(e) {
+            if (!isDragging) return;
+            
+            e.preventDefault();
+            
+            const deltaX = e.touches[0].clientX - startX;
+            const deltaY = e.touches[0].clientY - startY;
+            
+            rotationY += deltaX * 0.8;
+            rotationX -= deltaY * 0.8;
+            
+            product3d.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg)`;
+            
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+        });
+
+        document.addEventListener('touchend', function() {
+            if (isDragging) {
+                isDragging = false;
+                product3d.classList.remove('dragging');
+                
+                setTimeout(function() {
+                    product3d.style.animationPlayState = 'running';
+                }, 2000);
+            }
+        });
+
+        // Click to open modal (with drag detection)
+        let mouseDownTime = 0;
+        let mouseUpTime = 0;
+        let hasMoved = false;
+
+        product3d.addEventListener('mousedown', function() {
+            mouseDownTime = Date.now();
+            hasMoved = false;
+        });
+
+        document.addEventListener('mousemove', function() {
+            if (isDragging) {
+                hasMoved = true;
+            }
+        });
+
+        product3d.addEventListener('mouseup', function(e) {
+            mouseUpTime = Date.now();
+            const clickDuration = mouseUpTime - mouseDownTime;
+            
+            // If it was a quick click (less than 200ms) and no dragging occurred
+            if (clickDuration < 200 && !hasMoved) {
+                modal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            }
+        });
+
+        // Form validation and submission
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email');
+            const instagram = document.getElementById('instagram');
+            const emailError = document.getElementById('emailError');
+            const instagramError = document.getElementById('instagramError');
+            const successMessage = document.getElementById('successMessage');
+            const submitButton = document.getElementById('submitButton');
+            
+            // Reset previous errors
+            email.classList.remove('error');
+            instagram.classList.remove('error');
+            emailError.style.display = 'none';
+            instagramError.style.display = 'none';
+            successMessage.style.display = 'none';
+            
+            let isValid = true;
+            
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!email.value || !emailRegex.test(email.value)) {
+                email.classList.add('error');
+                emailError.style.display = 'block';
+                isValid = false;
+            }
+            
+            // Instagram validation (optional but if provided, should be valid)
+            if (instagram.value) {
+                const instagramRegex = /^@?[a-zA-Z0-9._]{1,30}$/;
+                let instagramValue = instagram.value.trim();
+                
+                // Add @ if not present
+                if (instagramValue && !instagramValue.startsWith('@')) {
+                    instagramValue = '@' + instagramValue;
+                    instagram.value = instagramValue;
+                }
+                
+                if (!instagramRegex.test(instagramValue)) {
+                    instagram.classList.add('error');
+                    instagramError.textContent = 'Please enter a valid Instagram handle (e.g., @username)';
+                    instagramError.style.display = 'block';
+                    isValid = false;
                 }
             }
             
-            generatePatternCharacter(row, col) {
-                const centerX = this.cols / 2;
-                const centerY = this.rows / 2;
-                const dx = col - centerX;
-                const dy = row - centerY;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                const angle = Math.atan2(dy, dx);
+            if (isValid) {
+                // Simulate form submission
+                submitButton.textContent = 'Submitting...';
+                submitButton.disabled = true;
                 
-                // Create concentric patterns
-                const normalizedDistance = distance / Math.min(centerX, centerY);
-                const angleSegment = Math.floor((angle + Math.PI) / (Math.PI / 8));
+                // In a real application, you would send this data to your server
+                setTimeout(function() {
+                    successMessage.style.display = 'block';
+                    submitButton.textContent = 'Submit Order Request';
+                    submitButton.disabled = false;
+                    
+                    // Reset form
+                    contactForm.reset();
+                    
+                    // Close modal after 3 seconds
+                    setTimeout(function() {
+                        modal.style.display = 'none';
+                        document.body.style.overflow = 'auto';
+                        successMessage.style.display = 'none';
+                    }, 3000);
+                }, 1000);
                 
-                if (normalizedDistance < 0.1) {
-                    return '◈';
-                } else if (normalizedDistance < 0.3) {
-                    return angleSegment % 2 === 0 ? '◊' : '◇';
-                } else if (normalizedDistance < 0.5) {
-                    return ['║', '═', '╬', '╫'][angleSegment % 4];
-                } else if (normalizedDistance < 0.7) {
-                    return ['┌', '┐', '└', '┘', '├', '┤', '┬', '┴'][angleSegment % 8];
-                } else if (normalizedDistance < 0.9) {
-                    return ['▲', '►', '▼', '◄'][angleSegment % 4];
-                } else {
-                    return ['.', '·', '˙', '°'][Math.floor(Math.random() * 4)];
-                }
+                // Log the collected data (in production, send to your server)
+                console.log('Form submitted:', {
+                    email: email.value,
+                    instagram: instagram.value || 'Not provided',
+                    timestamp: new Date().toISOString()
+                });
             }
-            
-            init() {
-                this.grid = [];
-                this.solvedCells.clear();
-                
-                for (let row = 0; row < this.rows; row++) {
-                    this.grid[row] = [];
-                    for (let col = 0; col < this.cols; col++) {
-                        this.grid[row][col] = {
-                            current: this.getRandomCharacter(),
-                            target: this.targetPattern[row][col],
-                            solved: false,
-                            flipRate: Math.random() * 30 + 10, // 10-40 frames between flips
-                            lastFlip: 0,
-                            solveTime: Math.random() * this.totalDuration + this.startTime
-                        };
+        });
+
+        // Add some interactive effects
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add scroll effect for better UX
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
                     }
-                }
+                });
+            }, observerOptions);
+
+            // Initially hide elements for animation
+            const animatedElements = document.querySelectorAll('.product-showcase, .product-info');
+            animatedElements.forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(50px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
+            });
+        });
+
+        // Keyboard accessibility
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && modal.style.display === 'block') {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
             }
-            
-            getRandomCharacter() {
-                return this.characters[Math.floor(Math.random() * this.characters.length)];
-            }
-            
-            updateGrid() {
-                const currentTime = Date.now();
-                const elapsed = currentTime - this.startTime;
-                const progress = Math.min(elapsed / this.totalDuration, 1);
-                
-                for (let row = 0; row < this.rows; row++) {
-                    for (let col = 0; col < this.cols; col++) {
-                        const cell = this.grid[row][col];
-                        
-                        if (!cell.solved) {
-                            // Check if this cell should be solved based on time
-                            if (currentTime >= cell.solveTime) {
-                                cell.solved = true;
-                                cell.current = cell.target;
-                                this.solvedCells.add(`${row}-${col}`);
-                            } else {
-                                // Continue flipping characters
-                                cell.lastFlip++;
-                                if (cell.lastFlip >= cell.flipRate) {
-                                    cell.current = this.getRandomCharacter();
-                                    cell.lastFlip = 0;
-                                    
-                                    // Occasionally guess the correct character early
-                                    if (Math.random() < 0.001) {
-                                        cell.current = cell.target;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            
-            render() {
-                // Clear canvas
-                this.ctx.fillStyle = 'rgba(0, 0, 0, 1)';
-                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-                
-                this.ctx.font = `${this.fontSize}px 'Courier New'`;
-                
-                for (let row = 0; row < this.rows; row++) {
-                    for (let col = 0; col < this.cols; col++) {
-                        const cell = this.grid[row][col];
-                        const x = col * this.fontSize;
-                        const y = (row + 1) * this.fontSize;
-                        
-                        if (cell.solved) {
-                            // Solved characters are brighter and more stable
-                            this.ctx.fillStyle = 'rgba(100, 150, 100, 0.8)';
-                        } else {
-                            // Unsolved characters are dimmer and flickering
-                            const flicker = 0.3 + Math.random() * 0.3;
-                            this.ctx.fillStyle = `rgba(60, 60, 60, ${flicker})`;
-                        }
-                        
-                        this.ctx.fillText(cell.current, x, y);
-                    }
-                }
-                
-                // Show progress indicator
-                const currentTime = Date.now();
-                const elapsed = currentTime - this.startTime;
-                const progress = Math.min(elapsed / this.totalDuration, 1);
-                
-                // Progress bar in corner
-                this.ctx.fillStyle = 'rgba(0, 255, 0, 0.3)';
-                this.ctx.fillRect(10, 10, 200 * progress, 4);
-                this.ctx.strokeStyle = 'rgba(0, 255, 0, 0.5)';
-                this.ctx.strokeRect(10, 10, 200, 4);
-            }
-            
-            animate() {
-                this.updateGrid();
-                this.render();
-                requestAnimationFrame(() => this.animate());
-            }
-        }
-        
-        // Purchase handler
-        function handlePurchase() {
-            alert("Buy button clicked! (Stripe Elements integration pending)");
-        }
-        
-        // Initialize when page loads
-        window.addEventListener('load', () => {
-            new QuantumNeuralASCII('background-canvas');
         });
     </script>
 </body>

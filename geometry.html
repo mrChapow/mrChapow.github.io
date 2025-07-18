@@ -187,7 +187,7 @@ animate(0);
 
 document.getElementById('buy-button').addEventListener('click', async () => {
   try {
-    const res = await fetch('https://your-worker-name.youraccount.workers.dev/', {
+    const res = await fetch('https://checkout-endpoint.mcvicker-allen.workers.dev/', {
       method: 'POST'
     });
     const data = await res.json();

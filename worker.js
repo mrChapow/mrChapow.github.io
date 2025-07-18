@@ -18,8 +18,8 @@ export default {
           },
         ],
         mode: 'payment',
-        success_url: 'https://yourdomain.com/success',
-        cancel_url: 'https://yourdomain.com/cancel',
+        success_url: 'https://allenmmc.com/success',
+        cancel_url: 'https://allenmmc.com/cancel',
       });
 
       return new Response(

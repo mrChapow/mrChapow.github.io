@@ -9,7 +9,7 @@
     margin: 0;
     background-color: #000;
     color: #fff;
-    font-family: Arial, sans-serif;
+    font-family: monospace;
     height: 100vh;
     overflow: hidden;
     display: flex;
@@ -19,15 +19,23 @@
   .background {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: repeating-linear-gradient(90deg, #222 0px, #222 1px, transparent 1px, transparent 20px),
-                repeating-linear-gradient(0deg, #222 0px, #222 1px, transparent 1px, transparent 20px);
-    opacity: 0.3;
+    color: #222;
+    font-size: 12px;
+    line-height: 12px;
+    white-space: pre;
+    overflow: hidden;
     z-index: -1;
+    animation: scroll 30s linear infinite;
+  }
+  @keyframes scroll {
+    from { transform: translateY(0); }
+    to { transform: translateY(-50%); }
   }
   .scene {
     display: flex;
     gap: 20px;
     align-items: center;
+    z-index: 1;
   }
   .cube {
     width: 300px;
@@ -92,7 +100,7 @@
 </style>
 </head>
 <body>
-<div class="background"></div>
+<div class="background" id="ascii"></div>
 <div class="scene">
   <div class="cube">
     <div class="cube-face front">3D Model Loading...</div>
@@ -116,5 +124,14 @@
     </div>
   </div>
 </div>
+<script>
+  const ascii = document.getElementById('ascii');
+  let text = '';
+  for (let i = 0; i < 2000; i++) {
+    text += '{}[]()<>|-=+*'.charAt(Math.floor(Math.random() * 13));
+    if (i % 80 === 79) text += '\n';
+  }
+  ascii.textContent = text.repeat(3);
+</script>
 </body>
 </html>

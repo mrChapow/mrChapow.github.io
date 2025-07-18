@@ -62,21 +62,18 @@
   }
 
   .buy-button {
-    display: inline-block;
     margin-top: 10px;
-    padding: 8px 12px;
-    font-family: monospace;
-    font-size: 0.9rem;
-    color: black;
-    background-color: #fff;
+    background: #222;
+    color: #fff;
     border: none;
-    border-radius: 6px;
+    padding: 10px 20px;
     cursor: pointer;
-    transition: background 0.3s ease;
+    font-family: monospace;
+    border-radius: 6px;
   }
 
   .buy-button:hover {
-    background-color: #ddd;
+    background: #444;
   }
 </style>
 </head>
@@ -94,15 +91,13 @@
     <div class="window">
       <strong>Price</strong>
       $100.69
-
-      <form action="https://checkout-endpoint.mcvicker-allen.workers.dev/" method="POST">
-        <input type="hidden" name="product_id" value="prod_SgvuFh54tkmXJw">
-        <button type="submit" class="buy-button">Buy</button>
-      </form>
     </div>
     <div class="window">
       <strong>Description</strong>
       Cota Pilot Project.
+    </div>
+    <div class="window">
+      <button class="buy-button" id="buyBtn">Buy</button>
     </div>
   </div>
 </div>
@@ -193,6 +188,11 @@ function animate(time) {
 
 initGrid();
 animate(0);
+
+// Buy button currently does nothing
+document.getElementById("buyBtn").addEventListener("click", () => {
+  alert("Buy button clicked! (Stripe Elements will go here.)");
+});
 </script>
 
 </body>

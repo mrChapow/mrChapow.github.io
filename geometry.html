@@ -318,63 +318,365 @@
     </div>
 
     <script>
-        // Animated Background
-        class AnimatedBackground {
+        // Mind-Blowing Neural Network ASCII Background
+        class QuantumNeuralASCII {
             constructor(canvasId) {
                 this.canvas = document.getElementById(canvasId);
                 this.ctx = this.canvas.getContext('2d');
-                this.characters = '║│┤├┼┬┴┐┌└┘═╪╫╬╠╣╚╝╔╗╦╩╬⁞';
-                this.columns = [];
-                this.fontSize = 14;
+                this.characters = '║│┤├┼┬┴┐┌└┘═╪╫╬╠╣╚╝╔╗╦╩╬⁞◊◈◇◆⬢⬡⬟⬠⬞⬝';
+                this.nodes = [];
+                this.connections = [];
+                this.pulses = [];
+                this.quantumTunnels = [];
+                this.magneticFields = [];
+                this.mouseX = 0;
+                this.mouseY = 0;
+                this.fontSize = 12;
+                this.nodeCount = 120;
+                this.connectionDistance = 150;
+                this.time = 0;
                 
                 this.resizeCanvas();
                 this.init();
+                this.setupEventListeners();
                 this.animate();
-                
-                window.addEventListener('resize', () => this.resizeCanvas());
             }
             
             resizeCanvas() {
                 this.canvas.width = window.innerWidth;
                 this.canvas.height = window.innerHeight;
-                this.numColumns = Math.floor(this.canvas.width / this.fontSize);
                 this.init();
             }
             
             init() {
-                this.columns = [];
-                for (let i = 0; i < this.numColumns; i++) {
-                    this.columns[i] = {
+                this.nodes = [];
+                this.connections = [];
+                this.pulses = [];
+                this.quantumTunnels = [];
+                
+                // Create neural nodes
+                for (let i = 0; i < this.nodeCount; i++) {
+                    this.nodes.push({
+                        x: Math.random() * this.canvas.width,
                         y: Math.random() * this.canvas.height,
-                        speed: Math.random() * 3 + 1,
-                        opacity: Math.random() * 0.5 + 0.1
-                    };
+                        vx: (Math.random() - 0.5) * 0.5,
+                        vy: (Math.random() - 0.5) * 0.5,
+                        char: this.characters[Math.floor(Math.random() * this.characters.length)],
+                        energy: Math.random(),
+                        charge: Math.random() > 0.5 ? 1 : -1,
+                        quantum: Math.random() > 0.95,
+                        tunnelTarget: null,
+                        lastFire: 0,
+                        connections: [],
+                        magneticInfluence: 0
+                    });
+                }
+                
+                // Create electromagnetic field sources
+                this.magneticFields = [
+                    { x: this.canvas.width * 0.3, y: this.canvas.height * 0.5, strength: 50, type: 'cube' },
+                    { x: this.canvas.width * 0.7, y: this.canvas.height * 0.4, strength: 30, type: 'glass' },
+                    { x: this.canvas.width * 0.7, y: this.canvas.height * 0.6, strength: 30, type: 'glass' }
+                ];
+                
+                this.createConnections();
+            }
+            
+            createConnections() {
+                this.connections = [];
+                for (let i = 0; i < this.nodes.length; i++) {
+                    for (let j = i + 1; j < this.nodes.length; j++) {
+                        const dx = this.nodes[i].x - this.nodes[j].x;
+                        const dy = this.nodes[i].y - this.nodes[j].y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (distance < this.connectionDistance) {
+                            const connection = {
+                                nodeA: i,
+                                nodeB: j,
+                                strength: 1 - (distance / this.connectionDistance),
+                                activity: 0,
+                                lastPulse: 0
+                            };
+                            this.connections.push(connection);
+                            this.nodes[i].connections.push(connection);
+                            this.nodes[j].connections.push(connection);
+                        }
+                    }
+                }
+            }
+            
+            setupEventListeners() {
+                this.canvas.addEventListener('mousemove', (e) => {
+                    this.mouseX = e.clientX;
+                    this.mouseY = e.clientY;
+                    this.createElectromagneticDisturbance(this.mouseX, this.mouseY);
+                });
+                
+                // Detect interactions with glass panels
+                document.addEventListener('mouseover', (e) => {
+                    if (e.target.closest('.liquid-glass-box')) {
+                        this.triggerNeuralActivity();
+                    }
+                });
+                
+                document.addEventListener('click', (e) => {
+                    if (e.target.closest('.buy-button')) {
+                        this.triggerQuantumCollapse();
+                    }
+                });
+                
+                window.addEventListener('resize', () => this.resizeCanvas());
+            }
+            
+            createElectromagneticDisturbance(x, y) {
+                // Create ripple effect from mouse position
+                for (let node of this.nodes) {
+                    const dx = node.x - x;
+                    const dy = node.y - y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < 200) {
+                        const force = (200 - distance) / 200;
+                        node.vx += (dx / distance) * force * 0.1;
+                        node.vy += (dy / distance) * force * 0.1;
+                        node.energy = Math.min(1, node.energy + force * 0.3);
+                    }
+                }
+            }
+            
+            triggerNeuralActivity() {
+                // Cascade neural firing when hovering glass panels
+                const activeNodes = this.nodes.filter(n => n.energy > 0.7);
+                for (let node of activeNodes) {
+                    this.fireNeuron(node);
+                }
+            }
+            
+            triggerQuantumCollapse() {
+                // Dramatic quantum collapse effect on buy button click
+                for (let i = 0; i < 20; i++) {
+                    setTimeout(() => {
+                        this.quantumTunnels.push({
+                            fromX: Math.random() * this.canvas.width,
+                            fromY: Math.random() * this.canvas.height,
+                            toX: this.canvas.width * 0.7,
+                            toY: this.canvas.height * 0.4,
+                            progress: 0,
+                            life: 60,
+                            intensity: 1
+                        });
+                    }, i * 50);
+                }
+            }
+            
+            fireNeuron(node) {
+                if (this.time - node.lastFire < 30) return;
+                
+                node.lastFire = this.time;
+                node.energy = 1;
+                
+                // Create pulses along connections
+                for (let connection of node.connections) {
+                    if (Math.random() > 0.7) {
+                        this.pulses.push({
+                            connection: connection,
+                            progress: 0,
+                            intensity: 1,
+                            direction: connection.nodeA === this.nodes.indexOf(node) ? 1 : -1
+                        });
+                    }
+                }
+            }
+            
+            updateNodes() {
+                for (let i = 0; i < this.nodes.length; i++) {
+                    const node = this.nodes[i];
+                    
+                    // Apply electromagnetic forces
+                    for (let field of this.magneticFields) {
+                        const dx = field.x - node.x;
+                        const dy = field.y - node.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (distance < field.strength * 3) {
+                            const force = (field.strength / (distance + 1)) * 0.001;
+                            node.vx += (dx / distance) * force * node.charge;
+                            node.vy += (dy / distance) * force * node.charge;
+                            node.magneticInfluence = force;
+                        }
+                    }
+                    
+                    // Quantum tunneling
+                    if (node.quantum && Math.random() > 0.995) {
+                        node.tunnelTarget = {
+                            x: Math.random() * this.canvas.width,
+                            y: Math.random() * this.canvas.height,
+                            progress: 0
+                        };
+                    }
+                    
+                    if (node.tunnelTarget) {
+                        node.tunnelTarget.progress += 0.05;
+                        if (node.tunnelTarget.progress >= 1) {
+                            node.x = node.tunnelTarget.x;
+                            node.y = node.tunnelTarget.y;
+                            node.tunnelTarget = null;
+                        }
+                    }
+                    
+                    // Update position
+                    node.x += node.vx;
+                    node.y += node.vy;
+                    
+                    // Apply friction
+                    node.vx *= 0.99;
+                    node.vy *= 0.99;
+                    
+                    // Energy decay
+                    node.energy *= 0.995;
+                    
+                    // Boundary conditions with wrapping
+                    if (node.x < 0) node.x = this.canvas.width;
+                    if (node.x > this.canvas.width) node.x = 0;
+                    if (node.y < 0) node.y = this.canvas.height;
+                    if (node.y > this.canvas.height) node.y = 0;
+                    
+                    // Random character mutation
+                    if (Math.random() > 0.999) {
+                        node.char = this.characters[Math.floor(Math.random() * this.characters.length)];
+                    }
+                }
+                
+                // Update connections
+                this.createConnections();
+            }
+            
+            updatePulses() {
+                for (let i = this.pulses.length - 1; i >= 0; i--) {
+                    const pulse = this.pulses[i];
+                    pulse.progress += 0.02;
+                    pulse.intensity *= 0.98;
+                    
+                    if (pulse.progress >= 1 || pulse.intensity < 0.1) {
+                        // Transfer energy to target node
+                        const targetIndex = pulse.direction > 0 ? pulse.connection.nodeB : pulse.connection.nodeA;
+                        this.nodes[targetIndex].energy = Math.min(1, this.nodes[targetIndex].energy + 0.3);
+                        this.pulses.splice(i, 1);
+                    }
+                }
+                
+                // Update quantum tunnels
+                for (let i = this.quantumTunnels.length - 1; i >= 0; i--) {
+                    const tunnel = this.quantumTunnels[i];
+                    tunnel.progress += 0.02;
+                    tunnel.life--;
+                    tunnel.intensity *= 0.95;
+                    
+                    if (tunnel.life <= 0 || tunnel.intensity < 0.1) {
+                        this.quantumTunnels.splice(i, 1);
+                    }
+                }
+            }
+            
+            render() {
+                // Clear with quantum fade
+                this.ctx.fillStyle = 'rgba(0, 0, 0, 0.02)';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                // Draw connections
+                for (let connection of this.connections) {
+                    const nodeA = this.nodes[connection.nodeA];
+                    const nodeB = this.nodes[connection.nodeB];
+                    
+                    const opacity = connection.strength * 0.1 + connection.activity * 0.3;
+                    this.ctx.strokeStyle = `rgba(40, 100, 40, ${opacity})`;
+                    this.ctx.lineWidth = 0.5;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(nodeA.x, nodeA.y);
+                    this.ctx.lineTo(nodeB.x, nodeB.y);
+                    this.ctx.stroke();
+                }
+                
+                // Draw pulses
+                for (let pulse of this.pulses) {
+                    const nodeA = this.nodes[pulse.connection.nodeA];
+                    const nodeB = this.nodes[pulse.connection.nodeB];
+                    
+                    const x = nodeA.x + (nodeB.x - nodeA.x) * pulse.progress;
+                    const y = nodeA.y + (nodeB.y - nodeA.y) * pulse.progress;
+                    
+                    this.ctx.fillStyle = `rgba(100, 255, 100, ${pulse.intensity})`;
+                    this.ctx.beginPath();
+                    this.ctx.arc(x, y, 2, 0, Math.PI * 2);
+                    this.ctx.fill();
+                }
+                
+                // Draw quantum tunnels
+                for (let tunnel of this.quantumTunnels) {
+                    const alpha = tunnel.intensity * 0.8;
+                    this.ctx.strokeStyle = `rgba(200, 100, 255, ${alpha})`;
+                    this.ctx.lineWidth = 2;
+                    this.ctx.setLineDash([5, 5]);
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(tunnel.fromX, tunnel.fromY);
+                    this.ctx.lineTo(
+                        tunnel.fromX + (tunnel.toX - tunnel.fromX) * tunnel.progress,
+                        tunnel.fromY + (tunnel.toY - tunnel.fromY) * tunnel.progress
+                    );
+                    this.ctx.stroke();
+                    this.ctx.setLineDash([]);
+                }
+                
+                // Draw nodes
+                this.ctx.font = `${this.fontSize}px 'Courier New'`;
+                for (let node of this.nodes) {
+                    let alpha = 0.3 + node.energy * 0.7;
+                    let red = 64;
+                    let green = 64 + node.energy * 191;
+                    let blue = 64 + node.magneticInfluence * 100;
+                    
+                    // Quantum glow effect
+                    if (node.quantum) {
+                        alpha *= (1 + Math.sin(this.time * 0.1) * 0.3);
+                        blue += 100;
+                    }
+                    
+                    // Tunneling effect
+                    if (node.tunnelTarget) {
+                        alpha *= (1 - node.tunnelTarget.progress);
+                        red += 100;
+                        blue += 100;
+                    }
+                    
+                    this.ctx.fillStyle = `rgba(${red}, ${green}, ${blue}, ${alpha})`;
+                    this.ctx.fillText(node.char, node.x, node.y);
+                    
+                    // Energy aura
+                    if (node.energy > 0.8) {
+                        this.ctx.fillStyle = `rgba(100, 255, 100, ${(node.energy - 0.8) * 2})`;
+                        this.ctx.beginPath();
+                        this.ctx.arc(node.x, node.y, node.energy * 15, 0, Math.PI * 2);
+                        this.ctx.fill();
+                    }
+                }
+                
+                // Draw electromagnetic field visualization
+                for (let field of this.magneticFields) {
+                    const pulseRadius = field.strength + Math.sin(this.time * 0.05) * 10;
+                    this.ctx.strokeStyle = `rgba(50, 150, 255, 0.1)`;
+                    this.ctx.lineWidth = 1;
+                    this.ctx.beginPath();
+                    this.ctx.arc(field.x, field.y, pulseRadius, 0, Math.PI * 2);
+                    this.ctx.stroke();
                 }
             }
             
             animate() {
-                this.ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-                
-                this.ctx.font = `${this.fontSize}px 'Courier New'`;
-                
-                for (let i = 0; i < this.columns.length; i++) {
-                    const char = this.characters[Math.floor(Math.random() * this.characters.length)];
-                    const x = i * this.fontSize;
-                    const y = this.columns[i].y;
-                    
-                    this.ctx.fillStyle = `rgba(64, 64, 64, ${this.columns[i].opacity})`;
-                    this.ctx.fillText(char, x, y);
-                    
-                    this.columns[i].y += this.columns[i].speed;
-                    
-                    if (this.columns[i].y > this.canvas.height) {
-                        this.columns[i].y = -this.fontSize;
-                        this.columns[i].speed = Math.random() * 3 + 1;
-                        this.columns[i].opacity = Math.random() * 0.5 + 0.1;
-                    }
-                }
-                
+                this.time++;
+                this.updateNodes();
+                this.updatePulses();
+                this.render();
                 requestAnimationFrame(() => this.animate());
             }
         }
@@ -386,7 +688,7 @@
         
         // Initialize when page loads
         window.addEventListener('load', () => {
-            new AnimatedBackground('background-canvas');
+            new QuantumNeuralASCII('background-canvas');
         });
     </script>
 </body>

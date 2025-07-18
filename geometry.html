@@ -61,17 +61,22 @@
     margin-bottom: 10px;
   }
 
-  #buy-button {
-    margin-top: 10px;
+  .buy-button {
     display: inline-block;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid #888;
-    border-radius: 6px;
-    color: white;
-    padding: 5px 15px;
-    cursor: pointer;
+    margin-top: 10px;
+    padding: 8px 12px;
     font-family: monospace;
     font-size: 0.9rem;
+    color: black;
+    background-color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  .buy-button:hover {
+    background-color: #ddd;
   }
 </style>
 </head>
@@ -89,7 +94,11 @@
     <div class="window">
       <strong>Price</strong>
       $100.69
-      <button id="buy-button">Buy Now</button>
+
+      <form action="https://checkout-endpoint.mcvicker-allen.workers.dev/" method="POST">
+        <input type="hidden" name="product_id" value="prod_SgvuFh54tkmXJw">
+        <button type="submit" class="buy-button">Buy</button>
+      </form>
     </div>
     <div class="window">
       <strong>Description</strong>
@@ -184,23 +193,6 @@ function animate(time) {
 
 initGrid();
 animate(0);
-
-document.getElementById('buy-button').addEventListener('click', async () => {
-  try {
-    const res = await fetch('https://checkout-endpoint.mcvicker-allen.workers.dev/', {
-      method: 'POST'
-    });
-    const data = await res.json();
-    if (data.url) {
-      window.location.href = data.url;
-    } else {
-      alert('Failed to create checkout session.');
-    }
-  } catch (err) {
-    console.error(err);
-    alert('Error communicating with server.');
-  }
-});
 </script>
 
 </body>

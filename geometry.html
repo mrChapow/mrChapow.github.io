@@ -3,197 +3,118 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cota</title>
-
-<link rel="icon" type="image/png" href="cota_cloud_pixelart.png">
-
+<title>Cota Helm</title>
 <style>
-  html, body {
+  body {
     margin: 0;
-    padding: 0;
-    background: black;
+    background-color: #000;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    height: 100vh;
     overflow: hidden;
-    height: 100%;
-    font-family: monospace;
-    color: white;
-  }
-
-  canvas {
-    display: block;
-    position: absolute;
-    top: 0; left: 0;
-  }
-
-  .content {
-    position: relative;
-    z-index: 1;
     display: flex;
-    height: 100%;
-    align-items: center;
     justify-content: center;
-    gap: 50px;
-    padding: 20px;
+    align-items: center;
   }
-
-  .left {
-    width: 350px;
+  .background {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(90deg, #222 0px, #222 1px, transparent 1px, transparent 20px),
+                repeating-linear-gradient(0deg, #222 0px, #222 1px, transparent 1px, transparent 20px);
+    opacity: 0.3;
+    z-index: -1;
   }
-
-  .right {
+  .scene {
     display: flex;
-    flex-direction: column;
     gap: 20px;
-    width: 200px;
+    align-items: center;
+  }
+  .cube {
+    width: 300px;
+    height: 300px;
+    position: relative;
+    transform-style: preserve-3d;
+    animation: spin 20s linear infinite;
+  }
+  .cube-face {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    color: #ccc;
+  }
+  .cube-face.front  { transform: translateZ(150px); }
+  .cube-face.back   { transform: rotateY(180deg) translateZ(150px); }
+  .cube-face.right  { transform: rotateY(90deg) translateZ(150px); }
+  .cube-face.left   { transform: rotateY(-90deg) translateZ(150px); }
+  .cube-face.top    { transform: rotateX(90deg) translateZ(150px); }
+  .cube-face.bottom { transform: rotateX(-90deg) translateZ(150px); }
+
+  @keyframes spin {
+    from { transform: rotateX(0) rotateY(0); }
+    to { transform: rotateX(360deg) rotateY(360deg); }
   }
 
-  .window {
-    background: rgba(80, 80, 80, 0.4);
-    backdrop-filter: blur(4px);
+  .card {
+    backdrop-filter: blur(20px) brightness(1.1);
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
     padding: 20px;
-    border-radius: 12px;
-    color: white;
-    font-size: 0.9rem;
-    box-shadow: 0 0 10px rgba(0,0,0,0.4);
-  }
-
-  .window strong {
-    display: block;
+    width: 250px;
     margin-bottom: 10px;
   }
-
-  .buy-button {
+  .card h2 {
+    margin: 0;
+    font-size: 16px;
+  }
+  .price-buy {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-top: 10px;
-    background: #222;
+    font-weight: bold;
+    font-size: 20px;
+  }
+  .buy-button {
+    background: #28a745;
     color: #fff;
     border: none;
-    padding: 10px 20px;
+    padding: 5px 10px;
     cursor: pointer;
-    font-family: monospace;
-    border-radius: 6px;
-  }
-
-  .buy-button:hover {
-    background: #444;
+    border-radius: 5px;
   }
 </style>
 </head>
-
 <body>
-
-<canvas id="canvas"></canvas>
-
-<div class="content">
-  <div class="left window">
-    <strong>Helm</strong>
-    [ Image Placeholder ]
+<div class="background"></div>
+<div class="scene">
+  <div class="cube">
+    <div class="cube-face front">3D Model Loading...</div>
+    <div class="cube-face back"></div>
+    <div class="cube-face right"></div>
+    <div class="cube-face left"></div>
+    <div class="cube-face top"></div>
+    <div class="cube-face bottom"></div>
   </div>
-  <div class="right">
-    <div class="window">
-      <strong>Price</strong>
-      $100.69
+  <div>
+    <div class="card">
+      <h2>Cota Helm</h2>
+      <div class="price-buy">
+        <span>$100.69</span>
+        <button class="buy-button">Buy</button>
+      </div>
     </div>
-    <div class="window">
-      <strong>Description</strong>
-      Cota Pilot Project.
-    </div>
-    <div class="window">
-      <button class="buy-button" id="buyBtn">Buy</button>
+    <div class="card">
+      <h2>Description</h2>
+      <p>Cota Pilot Project</p>
     </div>
   </div>
 </div>
-
-<script>
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-
-let width = window.innerWidth;
-let height = window.innerHeight;
-canvas.width = width;
-canvas.height = height;
-
-const gridSize = 18;
-let cols, rows, grid = [];
-
-window.addEventListener("resize", () => {
-  width = window.innerWidth;
-  height = window.innerHeight;
-  canvas.width = width;
-  canvas.height = height;
-  initGrid();
-});
-
-const patternChars = ['|', '/', '\\', '-', '_', '.', '[', ']', '(', ')'];
-
-function initGrid() {
-  cols = Math.floor(width / gridSize);
-  rows = Math.floor(height / gridSize);
-  grid = [];
-
-  for (let y = 0; y < rows; y++) {
-    let row = [];
-    for (let x = 0; x < cols; x++) {
-      row.push({
-        char: randomChar(),
-        flicker: Math.random() * 1000,
-        locked: false,
-        target: patternCharFor(x, y)
-      });
-    }
-    grid.push(row);
-  }
-}
-
-function randomChar() {
-  return patternChars[Math.floor(Math.random() * patternChars.length)];
-}
-
-function patternCharFor(x, y) {
-  const index = (x + y) % patternChars.length;
-  return patternChars[index];
-}
-
-function drawGrid(time) {
-  ctx.fillStyle = "black";
-  ctx.fillRect(0, 0, width, height);
-
-  const totalFrames = 60 * 5 * 60; // ~5 min @60fps
-  const progress = Math.min(1, time / totalFrames);
-
-  for (let y = 0; y < rows; y++) {
-    for (let x = 0; x < cols; x++) {
-      const cell = grid[y][x];
-
-      if (!cell.locked && Math.random() < progress / 500) {
-        cell.char = cell.target;
-        cell.locked = true;
-      }
-
-      if (!cell.locked && time % Math.floor(cell.flicker) === 0) {
-        cell.char = randomChar();
-      }
-
-      ctx.fillStyle = "#333";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.font = `${gridSize}px monospace`;
-      ctx.fillText(cell.char, x * gridSize + gridSize/2, y * gridSize + gridSize/2);
-    }
-  }
-}
-
-function animate(time) {
-  drawGrid(time);
-  requestAnimationFrame(animate);
-}
-
-initGrid();
-animate(0);
-
-// Buy button currently does nothing
-document.getElementById("buyBtn").addEventListener("click", () => {
-  alert("Buy button clicked! (Stripe Elements will go here.)");
-});
-</script>
-
 </body>
 </html>

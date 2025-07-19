@@ -3,658 +3,453 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Landing Page</title>
+    <title>Helm - 3D Interactive Product</title>
     <style>
+        /* Custom CSS Variables for Easy Spacing Adjustments */
+        :root {
+          --desktop-price-top: 20vh;
+          --desktop-desc-top: 40vh;
+          --desktop-panels-right: 3vw;
+          --desktop-panel-width: 280px;
+          --mobile-price-bottom: 140px;
+          --mobile-desc-bottom: 60px;
+          --mobile-panel-width: 90vw;
+          --mobile-panel-max-width: 350px;
+        }
+
         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          min-height: 100vh;
+          overflow: hidden;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+        #root {
+          width: 100vw;
+          height: 100vh;
+          position: relative;
         }
 
-        header {
-            text-align: center;
-            padding: 40px 0;
-            color: white;
+        .canvas-container {
+          width: 100%;
+          height: 100%;
+          position: relative;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
 
-        h1 {
-            font-size: 3rem;
-            font-weight: 300;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        .glass-panel {
+          background: rgba(255, 255, 255, 0.08);
+          backdrop-filter: blur(12px);
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          border-radius: 24px;
+          padding: 20px;
+          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+          color: white;
         }
 
-        .subtitle {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            margin-bottom: 40px;
+        .glass-panel-mobile {
+          background: rgba(255, 255, 255, 0.1);
+          backdrop-filter: blur(12px);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          border-radius: 16px;
+          padding: 16px;
+          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+          color: white;
         }
 
-        .main-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 60px;
-            align-items: center;
-            margin: 60px 0;
+        .btn-primary {
+          background-color: #22c55e;
+          color: white;
+          border: none;
+          padding: 8px 24px;
+          border-radius: 16px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s;
         }
 
-        .product-showcase {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 400px;
-            perspective: 1000px;
+        .btn-primary:hover {
+          background-color: #16a34a;
+          transform: translateY(-1px);
         }
 
-        .product-3d {
-            width: 250px;
-            height: 250px;
-            position: relative;
-            transform-style: preserve-3d;
-            transform: rotateX(-15deg) rotateY(45deg);
-            animation: rotateY 8s infinite linear;
-            cursor: grab;
-            transition: none;
-        }
-
-        .product-3d:active {
-            cursor: grabbing;
-        }
-
-        .product-3d:hover {
-            animation-play-state: paused;
-        }
-
-        .product-3d.dragging {
-            animation-play-state: paused;
-        }
-
-        .face {
+        /* Desktop Layout */
+        @media (min-width: 768px) {
+          .desktop-panels { display: block; }
+          .mobile-panels { display: none; }
+          
+          .price-panel-desktop {
             position: absolute;
-            width: 250px;
-            height: 250px;
-            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
-            border: 3px solid #fff;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 10;
+            top: var(--desktop-price-top);
+            right: var(--desktop-panels-right);
+            width: var(--desktop-panel-width);
+          }
+          
+          .desc-panel-desktop {
+            position: absolute;
+            z-index: 10;
+            top: var(--desktop-desc-top);
+            right: var(--desktop-panels-right);
+            width: var(--desktop-panel-width);
+          }
         }
 
-        .front { transform: rotateY(0deg) translateZ(125px); }
-        .back { transform: rotateY(180deg) translateZ(125px); }
-        .right { transform: rotateY(90deg) translateZ(125px); }
-        .left { transform: rotateY(-90deg) translateZ(125px); }
-        .top { transform: rotateX(90deg) translateZ(125px); }
-        .bottom { transform: rotateX(-90deg) translateZ(125px); }
-
-        @keyframes rotateY {
-            0% { transform: rotateX(-15deg) rotateY(45deg); }
-            100% { transform: rotateX(-15deg) rotateY(405deg); }
+        /* Mobile Layout */
+        @media (max-width: 767px) {
+          .desktop-panels { display: none; }
+          .mobile-panels { display: block; }
+          
+          .price-panel-mobile {
+            position: absolute;
+            z-index: 10;
+            bottom: var(--mobile-price-bottom);
+            left: 50%;
+            transform: translateX(-50%);
+            width: var(--mobile-panel-width);
+            max-width: var(--mobile-panel-max-width);
+          }
+          
+          .desc-panel-mobile {
+            position: absolute;
+            z-index: 10;
+            bottom: var(--mobile-desc-bottom);
+            left: 50%;
+            transform: translateX(-50%);
+            width: var(--mobile-panel-width);
+            max-width: var(--mobile-panel-max-width);
+          }
         }
 
-        .product-info {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
-            backdrop-filter: blur(10px);
-        }
+        .flex { display: flex; }
+        .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+        .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+        .text-2xl { font-size: 1.5rem; line-height: 2rem; }
+        .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+        .font-bold { font-weight: 700; }
+        .font-semibold { font-weight: 600; }
+        .mb-2 { margin-bottom: 8px; }
+        .mb-3 { margin-bottom: 12px; }
 
-        .product-info h2 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            color: #333;
-        }
-
-        .product-info p {
-            font-size: 1.1rem;
-            margin-bottom: 30px;
-            color: #666;
-            line-height: 1.8;
-        }
-
-        .price {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #ee5a24;
-            margin-bottom: 30px;
-        }
-
-        .buy-button {
-            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(238, 90, 36, 0.3);
-            width: 100%;
-        }
-
-        .buy-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(238, 90, 36, 0.4);
-        }
-
-        .buy-button:active {
-            transform: translateY(-1px);
-        }
-
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            backdrop-filter: blur(5px);
-        }
-
-        .modal-content {
-            background-color: #fff;
-            margin: 10% auto;
-            padding: 40px;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 500px;
-            position: relative;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            animation: modalSlideIn 0.3s ease;
-        }
-
-        @keyframes modalSlideIn {
-            from { opacity: 0; transform: translateY(-50px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            line-height: 1;
-        }
-
-        .close:hover {
-            color: #000;
-        }
-
-        .modal h3 {
-            margin-bottom: 20px;
-            color: #333;
-            font-size: 1.8rem;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #555;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #ff6b6b;
-        }
-
-        .form-group input.error {
-            border-color: #e74c3c;
-        }
-
-        .error-message {
-            color: #e74c3c;
-            font-size: 0.9rem;
-            margin-top: 5px;
-            display: none;
-        }
-
-        .submit-button {
-            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            width: 100%;
-        }
-
-        .submit-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(238, 90, 36, 0.3);
-        }
-
-        .success-message {
-            background-color: #2ecc71;
-            color: white;
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 20px;
-            display: none;
-            text-align: center;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .main-content {
-                grid-template-columns: 1fr;
-                gap: 40px;
-                text-align: center;
-            }
-
-            h1 {
-                font-size: 2rem;
-            }
-
-            .product-info h2 {
-                font-size: 2rem;
-            }
-
-            .product-3d {
-                width: 200px;
-                height: 200px;
-            }
-
-            .face {
-                width: 200px;
-                height: 200px;
-            }
-
-            .front { transform: rotateY(0deg) translateZ(100px); }
-            .back { transform: rotateY(180deg) translateZ(100px); }
-            .right { transform: rotateY(90deg) translateZ(100px); }
-            .left { transform: rotateY(-90deg) translateZ(100px); }
-            .top { transform: rotateX(90deg) translateZ(100px); }
-            .bottom { transform: rotateX(-90deg) translateZ(100px); }
-
-            .modal-content {
-                margin: 20% auto;
-                padding: 30px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 10px;
-            }
-
-            .product-info {
-                padding: 30px 20px;
-            }
-
-            h1 {
-                font-size: 1.8rem;
-            }
+        canvas {
+          display: block;
+          width: 100% !important;
+          height: 100% !important;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Revolutionary Product</h1>
-            <p class="subtitle">Experience the future of innovation</p>
-        </header>
-
-        <main class="main-content">
-            <div class="product-showcase">
-                <div class="product-3d" id="product3d">
-                    <div class="face front">PREMIUM</div>
-                    <div class="face back">QUALITY</div>
-                    <div class="face right">DESIGN</div>
-                    <div class="face left">INNOVATION</div>
-                    <div class="face top">FUTURE</div>
-                    <div class="face bottom">TODAY</div>
-                </div>
-            </div>
-
-            <div class="product-info">
-                <h2>Amazing Product</h2>
-                <p>Discover our revolutionary product that combines cutting-edge technology with elegant design. Perfect for modern professionals who demand excellence in every detail.</p>
-                <p>Features include premium materials, innovative functionality, and a design that speaks to your sophisticated taste.</p>
-                <div class="price">$299.99</div>
-                <button class="buy-button" id="buyButton">Get Started Today</button>
-            </div>
-        </main>
-    </div>
-
-    <!-- Contact Modal -->
-    <div id="contactModal" class="modal">
-        <div class="modal-content">
-            <span class="close" id="closeModal">&times;</span>
-            <h3>Get Your Product Now!</h3>
-            <p>Enter your details below and we'll contact you shortly to complete your order.</p>
+    <div id="root">
+        <div class="canvas-container">
+            <canvas id="three-canvas"></canvas>
             
-            <form id="contactForm">
-                <div class="form-group">
-                    <label for="email">Email Address *</label>
-                    <input type="email" id="email" name="email" required>
-                    <div class="error-message" id="emailError">Please enter a valid email address</div>
+            <!-- Desktop Layout -->
+            <div class="desktop-panels">
+                <div class="price-panel-desktop">
+                    <div class="glass-panel">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h2 class="text-lg font-bold">Helm</h2>
+                                <p class="text-2xl font-bold">$299.99</p>
+                            </div>
+                            <button class="btn-primary" onclick="handlePurchase()">Buy</button>
+                        </div>
+                    </div>
                 </div>
-                
-                <div class="form-group">
-                    <label for="instagram">Instagram Handle (Optional)</label>
-                    <input type="text" id="instagram" name="instagram" placeholder="@yourusername">
-                    <div class="error-message" id="instagramError">Please enter a valid Instagram handle</div>
+
+                <div class="desc-panel-desktop">
+                    <div class="glass-panel">
+                        <h3 class="text-base font-semibold mb-3">Product Description:</h3>
+                        <p class="text-sm" style="opacity: 0.9;">Cota Pilot Project</p>
+                    </div>
                 </div>
-                
-                <button type="submit" class="submit-button" id="submitButton">Submit Order Request</button>
-                
-                <div class="success-message" id="successMessage">
-                    Thank you! We'll contact you soon to complete your order.
+            </div>
+
+            <!-- Mobile Layout -->
+            <div class="mobile-panels">
+                <div class="price-panel-mobile">
+                    <div class="glass-panel-mobile">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h2 class="text-lg font-bold">Helm</h2>
+                                <p class="text-xl font-bold">$299.99</p>
+                            </div>
+                            <button class="btn-primary" onclick="handlePurchase()">Buy</button>
+                        </div>
+                    </div>
                 </div>
-            </form>
+
+                <div class="desc-panel-mobile">
+                    <div class="glass-panel-mobile">
+                        <h3 class="text-sm font-semibold mb-2">Product Description:</h3>
+                        <p class="text-sm" style="opacity: 0.9;">Cota Pilot Project</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
+    <!-- Three.js from CDN -->
+    <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+
     <script>
-        // Get DOM elements
-        const buyButton = document.getElementById('buyButton');
-        const modal = document.getElementById('contactModal');
-        const closeModal = document.getElementById('closeModal');
-        const contactForm = document.getElementById('contactForm');
-        const product3d = document.getElementById('product3d');
+        // 3D Scene Variables
+        let scene, camera, renderer, cube, isDragging = false;
+        let mouseX = 0, mouseY = 0, targetRotationY = 0, targetRotationX = 0;
+        let rotationVelocityY = 0, rotationVelocityX = 0;
+        let lastTap = 0, isSecretMode = false;
 
-        // Modal functionality
-        buyButton.addEventListener('click', function() {
-            modal.style.display = 'block';
-            document.body.style.overflow = 'hidden';
-        });
-
-        closeModal.addEventListener('click', function() {
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto';
-        });
-
-        window.addEventListener('click', function(event) {
-            if (event.target === modal) {
-                modal.style.display = 'none';
-                document.body.style.overflow = 'auto';
-            }
-        });
-
-        // 3D product interaction
-        let isDragging = false;
-        let startX = 0;
-        let startY = 0;
-        let rotationX = -15; // Start with tilted view
-        let rotationY = 45;  // Start at 45 degrees
-
-        product3d.addEventListener('mouseenter', function() {
-            this.style.animationPlayState = 'paused';
-        });
-
-        product3d.addEventListener('mouseleave', function() {
-            if (!isDragging) {
-                this.style.animationPlayState = 'running';
-            }
-        });
-
-        // Mouse drag functionality
-        product3d.addEventListener('mousedown', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            isDragging = true;
-            startX = e.clientX;
-            startY = e.clientY;
-            this.classList.add('dragging');
-            this.style.animationPlayState = 'paused';
-            this.style.cursor = 'grabbing';
-        });
-
-        document.addEventListener('mousemove', function(e) {
-            if (!isDragging) return;
+        function init() {
+            // Scene setup
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
             
-            e.preventDefault();
-            
-            const deltaX = e.clientX - startX;
-            const deltaY = e.clientY - startY;
-            
-            // Update rotation based on mouse movement
-            rotationY += deltaX * 0.8;
-            rotationX -= deltaY * 0.8;
-            
-            // Apply rotation
-            product3d.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg)`;
-            
-            startX = e.clientX;
-            startY = e.clientY;
-        });
+            // Renderer setup
+            const canvas = document.getElementById('three-canvas');
+            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setClearColor(0x000000, 0);
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-        document.addEventListener('mouseup', function() {
-            if (isDragging) {
-                isDragging = false;
-                product3d.classList.remove('dragging');
-                product3d.style.cursor = 'grab';
-                
-                // Resume animation after delay
-                setTimeout(function() {
-                    if (!product3d.matches(':hover')) {
-                        product3d.style.animationPlayState = 'running';
-                    }
-                }, 2000);
-            }
-        });
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
 
-        // Touch support for mobile
-        product3d.addEventListener('touchstart', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            isDragging = true;
-            startX = e.touches[0].clientX;
-            startY = e.touches[0].clientY;
-            this.classList.add('dragging');
-            this.style.animationPlayState = 'paused';
-        });
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(10, 10, 5);
+            directionalLight.castShadow = true;
+            scene.add(directionalLight);
 
-        document.addEventListener('touchmove', function(e) {
-            if (!isDragging) return;
-            
-            e.preventDefault();
-            
-            const deltaX = e.touches[0].clientX - startX;
-            const deltaY = e.touches[0].clientY - startY;
-            
-            rotationY += deltaX * 0.8;
-            rotationX -= deltaY * 0.8;
-            
-            product3d.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg)`;
-            
-            startX = e.touches[0].clientX;
-            startY = e.touches[0].clientY;
-        });
+            // Create cube
+            createCube();
 
-        document.addEventListener('touchend', function() {
-            if (isDragging) {
-                isDragging = false;
-                product3d.classList.remove('dragging');
-                
-                setTimeout(function() {
-                    product3d.style.animationPlayState = 'running';
-                }, 2000);
-            }
-        });
+            // Camera position
+            camera.position.set(-2, 0, 5);
 
-        // Click to open modal (with drag detection)
-        let mouseDownTime = 0;
-        let mouseUpTime = 0;
-        let hasMoved = false;
+            // Event listeners
+            addEventListeners();
 
-        product3d.addEventListener('mousedown', function() {
-            mouseDownTime = Date.now();
-            hasMoved = false;
-        });
+            // Start animation
+            animate();
+        }
 
-        document.addEventListener('mousemove', function() {
-            if (isDragging) {
-                hasMoved = true;
-            }
-        });
-
-        product3d.addEventListener('mouseup', function(e) {
-            mouseUpTime = Date.now();
-            const clickDuration = mouseUpTime - mouseDownTime;
-            
-            // If it was a quick click (less than 200ms) and no dragging occurred
-            if (clickDuration < 200 && !hasMoved) {
-                modal.style.display = 'block';
-                document.body.style.overflow = 'hidden';
-            }
-        });
-
-        // Form validation and submission
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const email = document.getElementById('email');
-            const instagram = document.getElementById('instagram');
-            const emailError = document.getElementById('emailError');
-            const instagramError = document.getElementById('instagramError');
-            const successMessage = document.getElementById('successMessage');
-            const submitButton = document.getElementById('submitButton');
-            
-            // Reset previous errors
-            email.classList.remove('error');
-            instagram.classList.remove('error');
-            emailError.style.display = 'none';
-            instagramError.style.display = 'none';
-            successMessage.style.display = 'none';
-            
-            let isValid = true;
-            
-            // Email validation
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!email.value || !emailRegex.test(email.value)) {
-                email.classList.add('error');
-                emailError.style.display = 'block';
-                isValid = false;
-            }
-            
-            // Instagram validation (optional but if provided, should be valid)
-            if (instagram.value) {
-                const instagramRegex = /^@?[a-zA-Z0-9._]{1,30}$/;
-                let instagramValue = instagram.value.trim();
-                
-                // Add @ if not present
-                if (instagramValue && !instagramValue.startsWith('@')) {
-                    instagramValue = '@' + instagramValue;
-                    instagram.value = instagramValue;
-                }
-                
-                if (!instagramRegex.test(instagramValue)) {
-                    instagram.classList.add('error');
-                    instagramError.textContent = 'Please enter a valid Instagram handle (e.g., @username)';
-                    instagramError.style.display = 'block';
-                    isValid = false;
-                }
-            }
-            
-            if (isValid) {
-                // Simulate form submission
-                submitButton.textContent = 'Submitting...';
-                submitButton.disabled = true;
-                
-                // In a real application, you would send this data to your server
-                setTimeout(function() {
-                    successMessage.style.display = 'block';
-                    submitButton.textContent = 'Submit Order Request';
-                    submitButton.disabled = false;
-                    
-                    // Reset form
-                    contactForm.reset();
-                    
-                    // Close modal after 3 seconds
-                    setTimeout(function() {
-                        modal.style.display = 'none';
-                        document.body.style.overflow = 'auto';
-                        successMessage.style.display = 'none';
-                    }, 3000);
-                }, 1000);
-                
-                // Log the collected data (in production, send to your server)
-                console.log('Form submitted:', {
-                    email: email.value,
-                    instagram: instagram.value || 'Not provided',
-                    timestamp: new Date().toISOString()
-                });
-            }
-        });
-
-        // Add some interactive effects
-        document.addEventListener('DOMContentLoaded', function() {
-            // Add scroll effect for better UX
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            };
-
-            const observer = new IntersectionObserver(function(entries) {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                    }
-                });
-            }, observerOptions);
-
-            // Initially hide elements for animation
-            const animatedElements = document.querySelectorAll('.product-showcase, .product-info');
-            animatedElements.forEach(el => {
-                el.style.opacity = '0';
-                el.style.transform = 'translateY(50px)';
-                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-                observer.observe(el);
+        function createCube() {
+            // Main cube
+            const geometry = new THREE.BoxGeometry(1, 1, 1);
+            const material = new THREE.MeshStandardMaterial({
+                color: 0x22C55E,
+                metalness: 0.9,
+                roughness: 0.1,
+                emissive: 0x16A34A,
+                emissiveIntensity: 0.1
             });
-        });
+            
+            cube = new THREE.Mesh(geometry, material);
+            cube.position.set(-2, 0, 0);
+            cube.castShadow = true;
+            cube.receiveShadow = true;
+            scene.add(cube);
 
-        // Keyboard accessibility
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && modal.style.display === 'block') {
-                modal.style.display = 'none';
-                document.body.style.overflow = 'auto';
+            // Add text labels
+            addCubeLabels();
+        }
+
+        function addCubeLabels() {
+            const labels = [
+                { text: 'HELM', position: [0, 0, 0.51], rotation: [0, 0, 0] },
+                { text: 'PREMIUM', position: [0.51, 0, 0], rotation: [0, Math.PI/2, 0] },
+                { text: 'COTA', position: [0, 0.51, 0], rotation: [-Math.PI/2, 0, 0] },
+                { text: 'DESIGN', position: [-0.51, 0, 0], rotation: [0, -Math.PI/2, 0] },
+                { text: 'PILOT', position: [0, 0, -0.51], rotation: [0, Math.PI, 0] },
+                { text: 'PROJECT', position: [0, -0.51, 0], rotation: [Math.PI/2, 0, 0] }
+            ];
+
+            labels.forEach(label => {
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.width = 256;
+                canvas.height = 64;
+
+                // Background
+                context.fillStyle = 'rgba(255, 255, 255, 0.9)';
+                context.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Text
+                context.fillStyle = 'black';
+                context.font = 'bold 24px Arial';
+                context.textAlign = 'center';
+                context.textBaseline = 'middle';
+                context.fillText(label.text, canvas.width / 2, canvas.height / 2);
+
+                // Create texture and material
+                const texture = new THREE.CanvasTexture(canvas);
+                const textMaterial = new THREE.MeshBasicMaterial({ 
+                    map: texture, 
+                    transparent: true 
+                });
+
+                // Create plane for text
+                const textGeometry = new THREE.PlaneGeometry(0.8, 0.2);
+                const textMesh = new THREE.Mesh(textGeometry, textMaterial);
+                
+                textMesh.position.set(...label.position);
+                textMesh.rotation.set(...label.rotation);
+                
+                cube.add(textMesh);
+            });
+        }
+
+        function addEventListeners() {
+            const canvas = document.getElementById('three-canvas');
+            
+            // Mouse events
+            canvas.addEventListener('mousedown', onMouseDown);
+            canvas.addEventListener('mousemove', onMouseMove);
+            canvas.addEventListener('mouseup', onMouseUp);
+            
+            // Touch events
+            canvas.addEventListener('touchstart', onTouchStart, { passive: false });
+            canvas.addEventListener('touchmove', onTouchMove, { passive: false });
+            canvas.addEventListener('touchend', onTouchEnd, { passive: false });
+            
+            // Window resize
+            window.addEventListener('resize', onWindowResize);
+            canvas.addEventListener('contextmenu', e => e.preventDefault());
+        }
+
+        function onMouseDown(event) {
+            isDragging = true;
+            mouseX = event.clientX;
+            mouseY = event.clientY;
+        }
+
+        function onMouseMove(event) {
+            if (!isDragging) return;
+
+            const deltaX = event.clientX - mouseX;
+            const deltaY = event.clientY - mouseY;
+
+            if (!isSecretMode) {
+                const rotationSpeedY = deltaX * 0.008;
+                const rotationSpeedX = deltaY * 0.008;
+                
+                targetRotationY += rotationSpeedY;
+                targetRotationX += rotationSpeedX;
+                
+                targetRotationX = Math.max(-Math.PI/2, Math.min(Math.PI/2, targetRotationX));
+                
+                rotationVelocityY = rotationSpeedY * 0.5;
+                rotationVelocityX = rotationSpeedX * 0.5;
+            } else {
+                const sensitivity = 10;
+                cube.position.x += (deltaX / window.innerWidth) * sensitivity;
+                cube.position.y -= (deltaY / window.innerHeight) * sensitivity;
             }
-        });
+
+            mouseX = event.clientX;
+            mouseY = event.clientY;
+        }
+
+        function onMouseUp() {
+            isDragging = false;
+        }
+
+        function onTouchStart(event) {
+            event.preventDefault();
+            
+            // Double tap detection
+            const currentTime = new Date().getTime();
+            const tapLength = currentTime - lastTap;
+            
+            if (tapLength < 500 && tapLength > 0) {
+                isSecretMode = !isSecretMode;
+                console.log('🎉 Secret mode activated! Move the cube freely!');
+            }
+            lastTap = currentTime;
+
+            if (event.touches.length === 1) {
+                isDragging = true;
+                mouseX = event.touches[0].clientX;
+                mouseY = event.touches[0].clientY;
+            }
+        }
+
+        function onTouchMove(event) {
+            event.preventDefault();
+            if (!isDragging || event.touches.length !== 1) return;
+
+            const deltaX = event.touches[0].clientX - mouseX;
+            const deltaY = event.touches[0].clientY - mouseY;
+
+            if (!isSecretMode) {
+                const rotationSpeedY = deltaX * 0.008;
+                const rotationSpeedX = deltaY * 0.008;
+                
+                targetRotationY += rotationSpeedY;
+                targetRotationX += rotationSpeedX;
+                
+                targetRotationX = Math.max(-Math.PI/2, Math.min(Math.PI/2, targetRotationX));
+                
+                rotationVelocityY = rotationSpeedY * 0.5;
+                rotationVelocityX = rotationSpeedX * 0.5;
+            } else {
+                const sensitivity = 10;
+                cube.position.x += (deltaX / window.innerWidth) * sensitivity;
+                cube.position.y -= (deltaY / window.innerHeight) * sensitivity;
+            }
+
+            mouseX = event.touches[0].clientX;
+            mouseY = event.touches[0].clientY;
+        }
+
+        function onTouchEnd(event) {
+            event.preventDefault();
+            isDragging = false;
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            if (!isDragging && !isSecretMode) {
+                // Apply momentum and drift
+                cube.rotation.y += rotationVelocityY;
+                cube.rotation.x += rotationVelocityX;
+                
+                // Damping
+                rotationVelocityY *= 0.95;
+                rotationVelocityX *= 0.95;
+                
+                // Natural drift
+                cube.rotation.y += 0.005;
+                
+                // Clamp X rotation
+                cube.rotation.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, cube.rotation.x));
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        function handlePurchase() {
+            alert('Purchase functionality would be integrated here!\n\nFeatures:\n• Interactive 3D Product\n• Drag to rotate\n• Double-tap for secret mode\n• Mobile optimized');
+        }
+
+        // Initialize when page loads
+        window.addEventListener('load', init);
     </script>
 </body>
 </html>

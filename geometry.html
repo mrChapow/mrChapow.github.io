@@ -25,7 +25,7 @@
 
         body {
           font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          background: #000000;
           min-height: 100vh;
           overflow: hidden;
         }
@@ -40,12 +40,12 @@
           width: 100%;
           height: 100%;
           position: relative;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          background: #000000;
         }
 
         .glass-panel {
           background: rgba(255, 255, 255, 0.08);
-          backdrop-filter: blur(12px);
+          backdrop-filter: blur(48px);
           border: 1px solid rgba(255, 255, 255, 0.15);
           border-radius: 24px;
           padding: 20px;
@@ -54,10 +54,10 @@
         }
 
         .glass-panel-mobile {
-          background: rgba(255, 255, 255, 0.1);
-          backdrop-filter: blur(12px);
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          border-radius: 16px;
+          background: rgba(255, 255, 255, 0.08);
+          backdrop-filter: blur(48px);
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          border-radius: 24px;
           padding: 16px;
           box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
           color: white;
@@ -143,6 +143,12 @@
           display: block;
           width: 100% !important;
           height: 100% !important;
+          touch-action: none;
+          cursor: grab;
+        }
+
+        canvas:active {
+          cursor: grabbing;
         }
     </style>
 </head>
@@ -221,20 +227,27 @@
             renderer.shadowMap.enabled = true;
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-            // Lighting
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            // Lighting (matching .replit.dev exactly)
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
             scene.add(ambientLight);
 
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
             directionalLight.position.set(10, 10, 5);
             directionalLight.castShadow = true;
+            directionalLight.shadow.mapSize.width = 2048;
+            directionalLight.shadow.mapSize.height = 2048;
             scene.add(directionalLight);
+
+            const pointLight = new THREE.PointLight(0xffffff, 0.3);
+            pointLight.position.set(-10, -10, -10);
+            scene.add(pointLight);
 
             // Create cube
             createCube();
 
-            // Camera position
-            camera.position.set(-2, 0, 5);
+            // Camera position (matching .replit.dev)
+            camera.position.set(0, 0, 5);
+            camera.fov = 50;
 
             // Event listeners
             addEventListeners();

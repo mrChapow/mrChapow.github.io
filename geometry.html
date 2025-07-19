@@ -44,23 +44,69 @@
         }
 
         .glass-panel {
-          background: rgba(255, 255, 255, 0.08);
-          backdrop-filter: blur(48px);
-          border: 1px solid rgba(255, 255, 255, 0.15);
+          background: linear-gradient(135deg, 
+            rgba(255, 255, 255, 0.18) 0%,
+            rgba(255, 255, 255, 0.12) 50%,
+            rgba(255, 255, 255, 0.15) 100%);
+          backdrop-filter: blur(40px) saturate(180%);
+          border: 1px solid rgba(255, 255, 255, 0.35);
+          border-top: 2px solid rgba(255, 255, 255, 0.5);
           border-radius: 24px;
           padding: 20px;
-          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+          box-shadow: 
+            0 25px 50px -12px rgba(0, 0, 0, 0.4),
+            inset 0 2px 4px rgba(255, 255, 255, 0.2),
+            inset 0 -2px 4px rgba(255, 255, 255, 0.1);
           color: white;
+          overflow: hidden;
+          position: relative;
+        }
+        
+        .glass-panel::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 1px;
+          background: linear-gradient(90deg, 
+            transparent 0%, 
+            rgba(255, 255, 255, 0.6) 50%, 
+            transparent 100%);
+          z-index: 1;
         }
 
         .glass-panel-mobile {
-          background: rgba(255, 255, 255, 0.08);
-          backdrop-filter: blur(48px);
-          border: 1px solid rgba(255, 255, 255, 0.15);
+          background: linear-gradient(135deg, 
+            rgba(255, 255, 255, 0.18) 0%,
+            rgba(255, 255, 255, 0.12) 50%,
+            rgba(255, 255, 255, 0.15) 100%);
+          backdrop-filter: blur(40px) saturate(180%);
+          border: 1px solid rgba(255, 255, 255, 0.35);
+          border-top: 2px solid rgba(255, 255, 255, 0.5);
           border-radius: 24px;
           padding: 16px;
-          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+          box-shadow: 
+            0 25px 50px -12px rgba(0, 0, 0, 0.4),
+            inset 0 2px 4px rgba(255, 255, 255, 0.2),
+            inset 0 -2px 4px rgba(255, 255, 255, 0.1);
           color: white;
+          overflow: hidden;
+          position: relative;
+        }
+        
+        .glass-panel-mobile::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 1px;
+          background: linear-gradient(90deg, 
+            transparent 0%, 
+            rgba(255, 255, 255, 0.6) 50%, 
+            transparent 100%);
+          z-index: 1;
         }
 
         .btn-primary {
@@ -269,9 +315,9 @@
             });
             
             cube = new THREE.Mesh(geometry, material);
-            cube.position.set(-1, 0, 0);
+            cube.position.set(-0.3, 0, 0);
             // Initialize saved position
-            savedPosition = { x: -1, y: 0, z: 0 };
+            savedPosition = { x: -0.3, y: 0, z: 0 };
             cube.castShadow = true;
             cube.receiveShadow = true;
             scene.add(cube);

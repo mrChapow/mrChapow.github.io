@@ -213,6 +213,7 @@
         let rotationVelocityY = 0, rotationVelocityX = 0;
         let lastTap = 0, isSecretMode = false, isHolding = false;
         let floatingTime = 0, clickCount = 0, clickTimer = null;
+        let savedPosition = { x: -1, y: 0, z: 0 }; // Remember cube position
 
         function init() {
             // Scene setup
@@ -269,6 +270,8 @@
             
             cube = new THREE.Mesh(geometry, material);
             cube.position.set(-1, 0, 0);
+            // Initialize saved position
+            savedPosition = { x: -1, y: 0, z: 0 };
             cube.castShadow = true;
             cube.receiveShadow = true;
             scene.add(cube);
@@ -395,6 +398,11 @@
                 const sensitivity = 5;
                 cube.position.x += (deltaX / window.innerWidth) * sensitivity;
                 cube.position.y -= (deltaY / window.innerHeight) * sensitivity;
+                
+                // Save the new position
+                savedPosition.x = cube.position.x;
+                savedPosition.y = cube.position.y;
+                savedPosition.z = cube.position.z;
             }
 
             mouseX = event.clientX;
@@ -471,6 +479,11 @@
                 const sensitivity = 5;
                 cube.position.x += (deltaX / window.innerWidth) * sensitivity;
                 cube.position.y -= (deltaY / window.innerHeight) * sensitivity;
+                
+                // Save the new position
+                savedPosition.x = cube.position.x;
+                savedPosition.y = cube.position.y;
+                savedPosition.z = cube.position.z;
             }
 
             mouseX = event.touches[0].clientX;
@@ -514,8 +527,10 @@
                 cube.rotation.y += 0.005;
                 
                 // Very subtle floating animation (matching .replit.dev)
-                const baseY = -0.0;
-                cube.position.y = baseY + Math.sin(floatingTime * 0.8) * 0.002;
+                // Use saved position as base to prevent reset after drag
+                cube.position.x = savedPosition.x;
+                cube.position.y = savedPosition.y + Math.sin(floatingTime * 0.8) * 0.002;
+                cube.position.z = savedPosition.z;
                 
                 // Clamp X rotation
                 cube.rotation.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, cube.rotation.x));

@@ -206,6 +206,7 @@
         let mouseX = 0, mouseY = 0, targetRotationY = 0, targetRotationX = 0;
         let rotationVelocityY = 0, rotationVelocityX = 0;
         let lastTap = 0, isSecretMode = false;
+        let floatingTime = 0;
 
         function init() {
             // Scene setup
@@ -339,18 +340,22 @@
             const deltaY = event.clientY - mouseY;
 
             if (!isSecretMode) {
-                const rotationSpeedY = deltaX * 0.008;
-                const rotationSpeedX = deltaY * 0.008;
+                const rotationSpeedY = deltaX * 0.01;
+                const rotationSpeedX = deltaY * 0.01;
                 
-                targetRotationY += rotationSpeedY;
-                targetRotationX += rotationSpeedX;
+                // Apply rotation directly to the cube
+                cube.rotation.y += rotationSpeedY;
+                cube.rotation.x += rotationSpeedX;
                 
-                targetRotationX = Math.max(-Math.PI/2, Math.min(Math.PI/2, targetRotationX));
+                // Clamp X rotation to prevent flipping
+                cube.rotation.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, cube.rotation.x));
                 
-                rotationVelocityY = rotationSpeedY * 0.5;
-                rotationVelocityX = rotationSpeedX * 0.5;
+                // Set momentum for after drag ends
+                rotationVelocityY = rotationSpeedY * 0.3;
+                rotationVelocityX = rotationSpeedX * 0.3;
             } else {
-                const sensitivity = 10;
+                // Secret mode: move cube freely
+                const sensitivity = 5;
                 cube.position.x += (deltaX / window.innerWidth) * sensitivity;
                 cube.position.y -= (deltaY / window.innerHeight) * sensitivity;
             }
@@ -372,7 +377,14 @@
             
             if (tapLength < 500 && tapLength > 0) {
                 isSecretMode = !isSecretMode;
-                console.log('🎉 Secret mode activated! Move the cube freely!');
+                console.log(isSecretMode ? '🎉 Secret mode ON! Move the cube freely!' : '✨ Back to rotation mode');
+                
+                // Visual feedback
+                if (isSecretMode) {
+                    cube.material.emissiveIntensity = 0.3;
+                } else {
+                    cube.material.emissiveIntensity = 0.1;
+                }
             }
             lastTap = currentTime;
 
@@ -391,18 +403,22 @@
             const deltaY = event.touches[0].clientY - mouseY;
 
             if (!isSecretMode) {
-                const rotationSpeedY = deltaX * 0.008;
-                const rotationSpeedX = deltaY * 0.008;
+                const rotationSpeedY = deltaX * 0.01;
+                const rotationSpeedX = deltaY * 0.01;
                 
-                targetRotationY += rotationSpeedY;
-                targetRotationX += rotationSpeedX;
+                // Apply rotation directly to the cube
+                cube.rotation.y += rotationSpeedY;
+                cube.rotation.x += rotationSpeedX;
                 
-                targetRotationX = Math.max(-Math.PI/2, Math.min(Math.PI/2, targetRotationX));
+                // Clamp X rotation
+                cube.rotation.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, cube.rotation.x));
                 
-                rotationVelocityY = rotationSpeedY * 0.5;
-                rotationVelocityX = rotationSpeedX * 0.5;
+                // Set momentum for after drag ends
+                rotationVelocityY = rotationSpeedY * 0.3;
+                rotationVelocityX = rotationSpeedX * 0.3;
             } else {
-                const sensitivity = 10;
+                // Secret mode: move cube freely
+                const sensitivity = 5;
                 cube.position.x += (deltaX / window.innerWidth) * sensitivity;
                 cube.position.y -= (deltaY / window.innerHeight) * sensitivity;
             }
@@ -424,6 +440,7 @@
 
         function animate() {
             requestAnimationFrame(animate);
+            floatingTime += 0.016; // ~60fps
 
             if (!isDragging && !isSecretMode) {
                 // Apply momentum and drift
@@ -436,6 +453,9 @@
                 
                 // Natural drift
                 cube.rotation.y += 0.005;
+                
+                // Subtle floating animation
+                cube.position.y += Math.sin(floatingTime * 1.5) * 0.004;
                 
                 // Clamp X rotation
                 cube.rotation.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, cube.rotation.x));

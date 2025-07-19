@@ -3,23 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Helm - 3D Interactive Product Landing Page</title>
+    <title>Helm - 3D Interactive Product</title>
     <style>
         /* Custom CSS Variables for Easy Spacing Adjustments */
         :root {
-          /* Desktop Panel Positioning */
           --desktop-price-top: 20vh;
           --desktop-desc-top: 40vh;
           --desktop-panels-right: 3vw;
           --desktop-panel-width: 280px;
-          --desktop-panel-gap: 20vh;
-          
-          /* Mobile Panel Positioning */
           --mobile-price-bottom: 140px;
           --mobile-desc-bottom: 60px;
           --mobile-panel-width: 90vw;
           --mobile-panel-max-width: 350px;
-          --mobile-panel-gap: 80px;
         }
 
         * {
@@ -29,7 +24,7 @@
         }
 
         body {
-          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
           min-height: 100vh;
           overflow: hidden;
@@ -41,7 +36,6 @@
           position: relative;
         }
 
-        /* 3D Canvas Container */
         .canvas-container {
           width: 100%;
           height: 100%;
@@ -49,7 +43,6 @@
           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
 
-        /* Glass Panel Styling */
         .glass-panel {
           background: rgba(255, 255, 255, 0.08);
           backdrop-filter: blur(12px);
@@ -70,7 +63,6 @@
           color: white;
         }
 
-        /* Button Styling */
         .btn-primary {
           background-color: #22c55e;
           color: white;
@@ -89,12 +81,8 @@
 
         /* Desktop Layout */
         @media (min-width: 768px) {
-          .desktop-panels {
-            display: block;
-          }
-          .mobile-panels {
-            display: none;
-          }
+          .desktop-panels { display: block; }
+          .mobile-panels { display: none; }
           
           .price-panel-desktop {
             position: absolute;
@@ -115,12 +103,8 @@
 
         /* Mobile Layout */
         @media (max-width: 767px) {
-          .desktop-panels {
-            display: none;
-          }
-          .mobile-panels {
-            display: block;
-          }
+          .desktop-panels { display: none; }
+          .mobile-panels { display: block; }
           
           .price-panel-mobile {
             position: absolute;
@@ -143,51 +127,18 @@
           }
         }
 
-        /* Flex utilities */
-        .flex {
-          display: flex;
-        }
-        .items-center {
-          align-items: center;
-        }
-        .justify-between {
-          justify-content: space-between;
-        }
-        .gap-3 {
-          gap: 12px;
-        }
+        .flex { display: flex; }
+        .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+        .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+        .text-2xl { font-size: 1.5rem; line-height: 2rem; }
+        .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+        .font-bold { font-weight: 700; }
+        .font-semibold { font-weight: 600; }
+        .mb-2 { margin-bottom: 8px; }
+        .mb-3 { margin-bottom: 12px; }
 
-        /* Text styling */
-        .text-lg {
-          font-size: 1.125rem;
-          line-height: 1.75rem;
-        }
-        .text-xl {
-          font-size: 1.25rem;
-          line-height: 1.75rem;
-        }
-        .text-2xl {
-          font-size: 1.5rem;
-          line-height: 2rem;
-        }
-        .text-sm {
-          font-size: 0.875rem;
-          line-height: 1.25rem;
-        }
-        .font-bold {
-          font-weight: 700;
-        }
-        .font-semibold {
-          font-weight: 600;
-        }
-        .mb-2 {
-          margin-bottom: 8px;
-        }
-        .mb-3 {
-          margin-bottom: 12px;
-        }
-
-        /* 3D Scene Container */
         canvas {
           display: block;
           width: 100% !important;
@@ -198,12 +149,10 @@
 <body>
     <div id="root">
         <div class="canvas-container">
-            <!-- 3D Scene will be injected here by JavaScript -->
             <canvas id="three-canvas"></canvas>
             
             <!-- Desktop Layout -->
             <div class="desktop-panels">
-                <!-- Price Panel -->
                 <div class="price-panel-desktop">
                     <div class="glass-panel">
                         <div class="flex items-center justify-between">
@@ -211,12 +160,11 @@
                                 <h2 class="text-lg font-bold">Helm</h2>
                                 <p class="text-2xl font-bold">$299.99</p>
                             </div>
-                            <button class="btn-primary">Buy</button>
+                            <button class="btn-primary" onclick="handlePurchase()">Buy</button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Description Panel -->
                 <div class="desc-panel-desktop">
                     <div class="glass-panel">
                         <h3 class="text-base font-semibold mb-3">Product Description:</h3>
@@ -227,7 +175,6 @@
 
             <!-- Mobile Layout -->
             <div class="mobile-panels">
-                <!-- Price Panel Mobile -->
                 <div class="price-panel-mobile">
                     <div class="glass-panel-mobile">
                         <div class="flex items-center justify-between">
@@ -235,12 +182,11 @@
                                 <h2 class="text-lg font-bold">Helm</h2>
                                 <p class="text-xl font-bold">$299.99</p>
                             </div>
-                            <button class="btn-primary">Buy</button>
+                            <button class="btn-primary" onclick="handlePurchase()">Buy</button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Description Panel Mobile -->
                 <div class="desc-panel-mobile">
                     <div class="glass-panel-mobile">
                         <h3 class="text-sm font-semibold mb-2">Product Description:</h3>
@@ -251,18 +197,16 @@
         </div>
     </div>
 
-    <!-- Three.js and React Libraries from CDN -->
+    <!-- Three.js from CDN -->
     <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 
-    <!-- 3D Application Script -->
     <script>
-        // 3D Scene Setup
+        // 3D Scene Variables
         let scene, camera, renderer, cube, isDragging = false;
         let mouseX = 0, mouseY = 0, targetRotationY = 0, targetRotationX = 0;
         let rotationVelocityY = 0, rotationVelocityX = 0;
         let lastTap = 0, isSecretMode = false;
+        let floatingTime = 0;
 
         function init() {
             // Scene setup
@@ -286,7 +230,7 @@
             directionalLight.castShadow = true;
             scene.add(directionalLight);
 
-            // Create cube with labels
+            // Create cube
             createCube();
 
             // Camera position
@@ -295,7 +239,7 @@
             // Event listeners
             addEventListeners();
 
-            // Animation loop
+            // Start animation
             animate();
         }
 
@@ -316,12 +260,11 @@
             cube.receiveShadow = true;
             scene.add(cube);
 
-            // Add text labels to faces
+            // Add text labels
             addCubeLabels();
         }
 
         function addCubeLabels() {
-            // Create text textures for each face
             const labels = [
                 { text: 'HELM', position: [0, 0, 0.51], rotation: [0, 0, 0] },
                 { text: 'PREMIUM', position: [0.51, 0, 0], rotation: [0, Math.PI/2, 0] },
@@ -367,20 +310,20 @@
         }
 
         function addEventListeners() {
+            const canvas = document.getElementById('three-canvas');
+            
             // Mouse events
             canvas.addEventListener('mousedown', onMouseDown);
             canvas.addEventListener('mousemove', onMouseMove);
             canvas.addEventListener('mouseup', onMouseUp);
             
             // Touch events
-            canvas.addEventListener('touchstart', onTouchStart);
-            canvas.addEventListener('touchmove', onTouchMove);
-            canvas.addEventListener('touchend', onTouchEnd);
+            canvas.addEventListener('touchstart', onTouchStart, { passive: false });
+            canvas.addEventListener('touchmove', onTouchMove, { passive: false });
+            canvas.addEventListener('touchend', onTouchEnd, { passive: false });
             
             // Window resize
             window.addEventListener('resize', onWindowResize);
-
-            // Prevent context menu
             canvas.addEventListener('contextmenu', e => e.preventDefault());
         }
 
@@ -397,20 +340,22 @@
             const deltaY = event.clientY - mouseY;
 
             if (!isSecretMode) {
-                const rotationSpeedY = deltaX * 0.008;
-                const rotationSpeedX = deltaY * 0.008;
+                const rotationSpeedY = deltaX * 0.01;
+                const rotationSpeedX = deltaY * 0.01;
                 
-                targetRotationY += rotationSpeedY;
-                targetRotationX += rotationSpeedX;
+                // Apply rotation directly to the cube
+                cube.rotation.y += rotationSpeedY;
+                cube.rotation.x += rotationSpeedX;
                 
-                // Clamp X rotation
-                targetRotationX = Math.max(-Math.PI/2, Math.min(Math.PI/2, targetRotationX));
+                // Clamp X rotation to prevent flipping
+                cube.rotation.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, cube.rotation.x));
                 
-                rotationVelocityY = rotationSpeedY * 0.5;
-                rotationVelocityX = rotationSpeedX * 0.5;
+                // Set momentum for after drag ends
+                rotationVelocityY = rotationSpeedY * 0.3;
+                rotationVelocityX = rotationSpeedX * 0.3;
             } else {
                 // Secret mode: move cube freely
-                const sensitivity = 10;
+                const sensitivity = 5;
                 cube.position.x += (deltaX / window.innerWidth) * sensitivity;
                 cube.position.y -= (deltaY / window.innerHeight) * sensitivity;
             }
@@ -426,13 +371,20 @@
         function onTouchStart(event) {
             event.preventDefault();
             
-            // Double tap detection for secret mode
+            // Double tap detection
             const currentTime = new Date().getTime();
             const tapLength = currentTime - lastTap;
             
             if (tapLength < 500 && tapLength > 0) {
                 isSecretMode = !isSecretMode;
-                console.log('🎉 Secret mode activated! You can now move the product freely!');
+                console.log(isSecretMode ? '🎉 Secret mode ON! Move the cube freely!' : '✨ Back to rotation mode');
+                
+                // Visual feedback
+                if (isSecretMode) {
+                    cube.material.emissiveIntensity = 0.3;
+                } else {
+                    cube.material.emissiveIntensity = 0.1;
+                }
             }
             lastTap = currentTime;
 
@@ -451,18 +403,22 @@
             const deltaY = event.touches[0].clientY - mouseY;
 
             if (!isSecretMode) {
-                const rotationSpeedY = deltaX * 0.008;
-                const rotationSpeedX = deltaY * 0.008;
+                const rotationSpeedY = deltaX * 0.01;
+                const rotationSpeedX = deltaY * 0.01;
                 
-                targetRotationY += rotationSpeedY;
-                targetRotationX += rotationSpeedX;
+                // Apply rotation directly to the cube
+                cube.rotation.y += rotationSpeedY;
+                cube.rotation.x += rotationSpeedX;
                 
-                targetRotationX = Math.max(-Math.PI/2, Math.min(Math.PI/2, targetRotationX));
+                // Clamp X rotation
+                cube.rotation.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, cube.rotation.x));
                 
-                rotationVelocityY = rotationSpeedY * 0.5;
-                rotationVelocityX = rotationSpeedX * 0.5;
+                // Set momentum for after drag ends
+                rotationVelocityY = rotationSpeedY * 0.3;
+                rotationVelocityX = rotationSpeedX * 0.3;
             } else {
-                const sensitivity = 10;
+                // Secret mode: move cube freely
+                const sensitivity = 5;
                 cube.position.x += (deltaX / window.innerWidth) * sensitivity;
                 cube.position.y -= (deltaY / window.innerHeight) * sensitivity;
             }
@@ -484,6 +440,7 @@
 
         function animate() {
             requestAnimationFrame(animate);
+            floatingTime += 0.016; // ~60fps
 
             if (!isDragging && !isSecretMode) {
                 // Apply momentum and drift
@@ -497,11 +454,18 @@
                 // Natural drift
                 cube.rotation.y += 0.005;
                 
+                // Subtle floating animation
+                cube.position.y += Math.sin(floatingTime * 1.5) * 0.004;
+                
                 // Clamp X rotation
                 cube.rotation.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, cube.rotation.x));
             }
 
             renderer.render(scene, camera);
+        }
+
+        function handlePurchase() {
+            alert('Purchase functionality would be integrated here!\n\nFeatures:\n• Interactive 3D Product\n• Drag to rotate\n• Double-tap for secret mode\n• Mobile optimized');
         }
 
         // Initialize when page loads

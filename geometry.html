@@ -305,7 +305,7 @@
 
         function createCube() {
             // Main cube
-            const geometry = new THREE.BoxGeometry(1, 1, 1);
+            const geometry = new THREE.BoxGeometry(1.5, 1.5, 1.5);
             const material = new THREE.MeshStandardMaterial({
                 color: 0x22C55E,
                 metalness: 0.9,
@@ -328,12 +328,12 @@
 
         function addCubeLabels() {
             const labels = [
-                { text: 'HELM', position: [0, 0, 0.51], rotation: [0, 0, 0] },
-                { text: 'PREMIUM', position: [0.51, 0, 0], rotation: [0, Math.PI/2, 0] },
-                { text: 'COTA', position: [0, 0.51, 0], rotation: [-Math.PI/2, 0, 0] },
-                { text: 'DESIGN', position: [-0.51, 0, 0], rotation: [0, -Math.PI/2, 0] },
-                { text: 'PILOT', position: [0, 0, -0.51], rotation: [0, Math.PI, 0] },
-                { text: 'PROJECT', position: [0, -0.51, 0], rotation: [Math.PI/2, 0, 0] }
+                { text: 'HELM', position: [0, 0, 0.76], rotation: [0, 0, 0] },
+                { text: 'PREMIUM', position: [0.76, 0, 0], rotation: [0, Math.PI/2, 0] },
+                { text: 'COTA', position: [0, 0.76, 0], rotation: [-Math.PI/2, 0, 0] },
+                { text: 'DESIGN', position: [-0.76, 0, 0], rotation: [0, -Math.PI/2, 0] },
+                { text: 'PILOT', position: [0, 0, -0.76], rotation: [0, Math.PI, 0] },
+                { text: 'PROJECT', position: [0, -0.76, 0], rotation: [Math.PI/2, 0, 0] }
             ];
 
             labels.forEach(label => {
@@ -360,8 +360,8 @@
                     transparent: true 
                 });
 
-                // Create plane for text
-                const textGeometry = new THREE.PlaneGeometry(0.8, 0.2);
+                // Create plane for text (scaled for larger cube)
+                const textGeometry = new THREE.PlaneGeometry(1.2, 0.3);
                 const textMesh = new THREE.Mesh(textGeometry, textMaterial);
                 
                 textMesh.position.set(...label.position);

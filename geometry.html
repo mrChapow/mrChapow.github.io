@@ -11,10 +11,10 @@
           --desktop-desc-top: 45vh;
           --desktop-panels-right: 25vw;
           --desktop-panel-width: 350px;
-          --mobile-price-bottom: 200px;
-          --mobile-desc-bottom: 80px;
-          --mobile-panel-width: 85vw;
-          --mobile-panel-max-width: 320px;
+          --mobile-price-bottom: 25vh;
+          --mobile-desc-bottom: 12vh;
+          --mobile-panel-width: 90vw;
+          --mobile-panel-max-width: 400px;
         }
 
         * {
@@ -252,8 +252,8 @@
         let tapCount = 0;
         let tapTimer = null;
         
-        // Position persistence - move cube more to the left
-        let cubePosition = { x: -1.2, y: 0, z: 0 };
+        // Position persistence - responsive positioning
+        let cubePosition = window.innerWidth <= 768 ? { x: 0, y: 0.8, z: 0 } : { x: -1.2, y: 0, z: 0 };
         
         // Animation timing
         let time = 0;
@@ -305,7 +305,11 @@
 
         function createCube() {
             // Main cube with holy green metallic material
-            const geometry = new THREE.BoxGeometry(1.5, 1.5, 1.5);
+            const geometry = new THREE.BoxGeometry(
+                window.innerWidth <= 768 ? 1.0 : 1.5, 
+                window.innerWidth <= 768 ? 1.0 : 1.5, 
+                window.innerWidth <= 768 ? 1.0 : 1.5
+            );
             const material = new THREE.MeshStandardMaterial({
                 color: 0x22C55E,
                 metalness: 0.9,
@@ -326,13 +330,15 @@
 
         function addCubeLabels() {
             // Create labels as children to maintain proper alignment
+            const isMobile = window.innerWidth <= 768;
+            const labelDistance = isMobile ? 0.51 : 0.76;
             const labels = [
-                { text: 'HELM', position: [0, 0, 0.76], rotation: [0, 0, 0] },
-                { text: 'PREMIUM', position: [0.76, 0, 0], rotation: [0, Math.PI/2, 0] },
-                { text: 'COTA', position: [0, 0.76, 0], rotation: [-Math.PI/2, 0, 0] },
-                { text: 'DESIGN', position: [-0.76, 0, 0], rotation: [0, -Math.PI/2, 0] },
-                { text: 'PILOT', position: [0, 0, -0.76], rotation: [0, Math.PI, 0] },
-                { text: 'PROJECT', position: [0, -0.76, 0], rotation: [Math.PI/2, 0, 0] }
+                { text: 'HELM', position: [0, 0, labelDistance], rotation: [0, 0, 0] },
+                { text: 'PREMIUM', position: [labelDistance, 0, 0], rotation: [0, Math.PI/2, 0] },
+                { text: 'COTA', position: [0, labelDistance, 0], rotation: [-Math.PI/2, 0, 0] },
+                { text: 'DESIGN', position: [-labelDistance, 0, 0], rotation: [0, -Math.PI/2, 0] },
+                { text: 'PILOT', position: [0, 0, -labelDistance], rotation: [0, Math.PI, 0] },
+                { text: 'PROJECT', position: [0, -labelDistance, 0], rotation: [Math.PI/2, 0, 0] }
             ];
 
             labels.forEach(label => {
@@ -359,8 +365,12 @@
                     transparent: true 
                 });
 
-                // Create plane for text (properly scaled for larger cube)
-                const textGeometry = new THREE.PlaneGeometry(1.2, 0.3);
+                // Create plane for text (properly scaled for cube size)
+                const isMobile = window.innerWidth <= 768;
+                const textGeometry = new THREE.PlaneGeometry(
+                    isMobile ? 0.8 : 1.2, 
+                    isMobile ? 0.2 : 0.3
+                );
                 const textMesh = new THREE.Mesh(textGeometry, textMaterial);
                 
                 textMesh.position.set(...label.position);

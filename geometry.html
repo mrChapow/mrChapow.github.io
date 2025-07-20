@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="background:#000!important;background-color:#000!important">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,11 +8,10 @@
     <meta name="msapplication-navbutton-color" content="#000000" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <style>
-      html,body{background:#000!important;margin:0;padding:0;min-height:100vh}
-      html{background-color:#000!important}
-      body{background-color:#000!important}
-      @keyframes preventFlash{0%{background:#000!important}100%{background:#000!important}}
-      html{animation:preventFlash 0.1s}
+      html{background:#000!important;background-color:#000!important;color-scheme:dark}
+      body{background:#000!important;background-color:#000!important;margin:0;padding:0;min-height:100vh}
+      *{box-sizing:border-box}
+      html::before{content:'';position:fixed;top:0;left:0;width:100vw;height:100vh;background:#000!important;z-index:-1}
     </style>
     <style>
         /* Custom CSS Variables for Easy Spacing Adjustments */

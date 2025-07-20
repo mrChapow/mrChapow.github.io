@@ -388,26 +388,27 @@
             const intersects = raycaster.intersectObject(cube);
             
             if (intersects.length > 0) {
-                // Handle tap counting for double-tap detection
-                tapCount++;
                 lastPointer.x = event.clientX;
                 lastPointer.y = event.clientY;
                 
+                // Handle tap counting for double-tap detection
+                tapCount++;
+                
                 if (tapCount === 1) {
-                    // Single tap - prepare for rotation
+                    // Start rotation immediately on first tap
+                    isRotating = true;
+                    isDragging = true;
+                    console.log('🔄 Rotation mode activated');
+                    
+                    // Set timer to reset tap count
                     tapTimer = setTimeout(() => {
-                        if (tapCount === 1) {
-                            // Single tap confirmed - start rotation mode
-                            isRotating = true;
-                            isDragging = true;
-                            console.log('🔄 Rotation mode activated');
-                        }
                         tapCount = 0;
-                    }, 250); // Wait for potential second tap
+                    }, 300);
                     
                 } else if (tapCount === 2) {
-                    // Double tap - start movement mode
+                    // Switch to movement mode on double tap
                     clearTimeout(tapTimer);
+                    isRotating = false;
                     isMoving = true;
                     isDragging = true;
                     tapCount = 0;

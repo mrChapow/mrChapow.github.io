@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Helm - 3D Interactive Product</title>
-    <style>html{background:#000!important}</style>
+    <meta name="theme-color" content="#000000" />
+    <meta name="msapplication-navbutton-color" content="#000000" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <style>html,body{background:#000!important;margin:0;padding:0;min-height:100vh}</style>
     <style>
         /* Custom CSS Variables for Easy Spacing Adjustments */
         :root {
@@ -505,7 +508,7 @@
             time += 0.016; // ~60fps
             
             if (!isDragging) {
-                // : soft spin and bounce
+                // Holy idle behavior: soft spin and bounce
                 
                 // Very slow, soft Y-axis spin (holy rotation)
                 cube.rotation.y += 0.003;

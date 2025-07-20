@@ -54,147 +54,148 @@
           border-radius: 24px;
           padding: 20px;
           box-shadow: 
-            0 25px 50px -12px rgba(0, 0, 0, 0.4),
-            inset 0 2px 4px rgba(255, 255, 255, 0.2),
-            inset 0 -2px 4px rgba(255, 255, 255, 0.1);
-          color: white;
-          overflow: hidden;
-          position: relative;
-        }
-        
-        .glass-panel::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          height: 1px;
-          background: linear-gradient(90deg, 
-            transparent 0%, 
-            rgba(255, 255, 255, 0.6) 50%, 
-            transparent 100%);
-          z-index: 1;
+            0 20px 40px rgba(0, 0, 0, 0.3),
+            0 8px 16px rgba(0, 0, 0, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.4);
+          position: fixed;
+          z-index: 10;
+          width: var(--desktop-panel-width);
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .glass-panel-mobile {
-          background: linear-gradient(135deg, 
-            rgba(255, 255, 255, 0.18) 0%,
-            rgba(255, 255, 255, 0.12) 50%,
-            rgba(255, 255, 255, 0.15) 100%);
-          backdrop-filter: blur(40px) saturate(180%);
-          border: 1px solid rgba(255, 255, 255, 0.35);
-          border-top: 2px solid rgba(255, 255, 255, 0.5);
-          border-radius: 24px;
-          padding: 16px;
+        .glass-panel:hover {
+          transform: translateY(-2px);
           box-shadow: 
-            0 25px 50px -12px rgba(0, 0, 0, 0.4),
-            inset 0 2px 4px rgba(255, 255, 255, 0.2),
-            inset 0 -2px 4px rgba(255, 255, 255, 0.1);
-          color: white;
-          overflow: hidden;
-          position: relative;
-        }
-        
-        .glass-panel-mobile::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          height: 1px;
-          background: linear-gradient(90deg, 
-            transparent 0%, 
-            rgba(255, 255, 255, 0.6) 50%, 
-            transparent 100%);
-          z-index: 1;
+            0 25px 50px rgba(0, 0, 0, 0.4),
+            0 12px 20px rgba(0, 0, 0, 0.25),
+            inset 0 1px 0 rgba(255, 255, 255, 0.5);
         }
 
-        .btn-primary {
-          background-color: #22c55e;
+        .price-panel {
+          top: var(--desktop-price-top);
+          right: var(--desktop-panels-right);
+        }
+
+        .description-panel {
+          top: var(--desktop-desc-top);
+          right: var(--desktop-panels-right);
+        }
+
+        .glass-panel h1 {
+          font-size: 2.5rem;
+          font-weight: 700;
+          color: #ffffff;
+          margin: 0 0 8px 0;
+          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .glass-panel h2 {
+          font-size: 1.5rem;
+          font-weight: 600;
+          color: #ffffff;
+          margin: 0 0 12px 0;
+          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .glass-panel p {
+          color: rgba(255, 255, 255, 0.9);
+          font-size: 1rem;
+          line-height: 1.5;
+          margin: 0 0 20px 0;
+        }
+
+        .glass-panel .text-sm {
+          font-size: 0.9rem;
+          line-height: 1.4;
+        }
+
+        .buy-button {
+          background: linear-gradient(135deg, #22C55E 0%, #16A34A 100%);
           color: white;
           border: none;
-          padding: 8px 24px;
           border-radius: 16px;
+          padding: 14px 28px;
+          font-size: 1.1rem;
           font-weight: 600;
           cursor: pointer;
-          transition: all 0.2s;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: 
+            0 8px 16px rgba(34, 197, 94, 0.3),
+            0 4px 8px rgba(34, 197, 94, 0.2);
+          width: 100%;
         }
 
-        .btn-primary:hover {
-          background-color: #16a34a;
-          transform: translateY(-1px);
+        .buy-button:hover {
+          transform: translateY(-2px);
+          box-shadow: 
+            0 12px 24px rgba(34, 197, 94, 0.4),
+            0 6px 12px rgba(34, 197, 94, 0.3);
+          background: linear-gradient(135deg, #16A34A 0%, #15803D 100%);
         }
 
-        /* Desktop Layout */
-        @media (min-width: 768px) {
-          .desktop-panels { display: block; }
-          .mobile-panels { display: none; }
-          
-          .price-panel-desktop {
-            position: absolute;
-            z-index: 10;
-            top: var(--desktop-price-top);
-            right: var(--desktop-panels-right);
-            width: var(--desktop-panel-width);
+        .buy-button:active {
+          transform: translateY(0);
+          box-shadow: 
+            0 4px 8px rgba(34, 197, 94, 0.3),
+            0 2px 4px rgba(34, 197, 94, 0.2);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+          .glass-panel {
+            position: fixed;
+            width: var(--mobile-panel-width);
+            max-width: var(--mobile-panel-max-width);
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 16px;
           }
-          
-          .desc-panel-desktop {
-            position: absolute;
-            z-index: 10;
-            top: var(--desktop-desc-top);
-            right: var(--desktop-panels-right);
-            width: var(--desktop-panel-width);
-          }
-        }
 
-        /* Mobile Layout */
-        @media (max-width: 767px) {
-          .desktop-panels { display: none; }
-          .mobile-panels { display: block; }
-          
-          .price-panel-mobile {
-            position: absolute;
-            z-index: 10;
+          .price-panel {
             bottom: var(--mobile-price-bottom);
-            left: 50%;
-            transform: translateX(-50%);
-            width: var(--mobile-panel-width);
-            max-width: var(--mobile-panel-max-width);
+            top: auto;
+            right: auto;
           }
-          
-          .desc-panel-mobile {
-            position: absolute;
-            z-index: 10;
+
+          .description-panel {
             bottom: var(--mobile-desc-bottom);
-            left: 50%;
-            transform: translateX(-50%);
-            width: var(--mobile-panel-width);
-            max-width: var(--mobile-panel-max-width);
+            top: auto;
+            right: auto;
+          }
+
+          .glass-panel h1 {
+            font-size: 2rem;
+          }
+
+          .glass-panel h2 {
+            font-size: 1.3rem;
+          }
+
+          .glass-panel p {
+            font-size: 0.95rem;
+          }
+
+          .buy-button {
+            padding: 12px 24px;
+            font-size: 1rem;
           }
         }
 
-        .flex { display: flex; }
-        .items-center { align-items: center; }
-        .justify-between { justify-content: space-between; }
-        .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
-        .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
-        .text-2xl { font-size: 1.5rem; line-height: 2rem; }
-        .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
-        .font-bold { font-weight: 700; }
-        .font-semibold { font-weight: 600; }
-        .mb-2 { margin-bottom: 8px; }
-        .mb-3 { margin-bottom: 12px; }
-
-        canvas {
-          display: block;
-          width: 100% !important;
-          height: 100% !important;
-          touch-action: none;
-          cursor: grab;
+        /* Hide scrollbars */
+        ::-webkit-scrollbar {
+          display: none;
+        }
+        
+        html {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
         }
 
-        canvas:active {
-          cursor: grabbing;
+        /* Canvas styling */
+        #three-canvas {
+          display: block;
+          width: 100%;
+          height: 100%;
         }
     </style>
 </head>
@@ -203,45 +204,19 @@
         <div class="canvas-container">
             <canvas id="three-canvas"></canvas>
             
-            <!-- Desktop Layout -->
-            <div class="desktop-panels">
-                <div class="price-panel-desktop">
-                    <div class="glass-panel">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <h2 class="text-lg font-bold">Helm</h2>
-                                <p class="text-2xl font-bold">$299.99</p>
-                            </div>
-                            <button class="btn-primary" onclick="handlePurchase()">Buy</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="desc-panel-desktop">
-                    <div class="glass-panel">
-                        <h3 class="text-base font-semibold mb-3">Product Description:</h3>
-                        <p class="text-sm" style="opacity: 0.9;">Cota Pilot Project</p>
-                    </div>
+            <!-- Price Panel -->
+            <div class="glass-panel price-panel">
+                <div style="text-align: center;">
+                    <h1>$299.99</h1>
+                    <button class="buy-button" onclick="handlePurchase()">Buy</button>
                 </div>
             </div>
 
-            <!-- Mobile Layout -->
-            <div class="mobile-panels">
-                <div class="price-panel-mobile">
-                    <div class="glass-panel-mobile">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <h2 class="text-lg font-bold">Helm</h2>
-                                <p class="text-xl font-bold">$299.99</p>
-                            </div>
-                            <button class="btn-primary" onclick="handlePurchase()">Buy</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="desc-panel-mobile">
-                    <div class="glass-panel-mobile">
-                        <h3 class="text-sm font-semibold mb-2">Product Description:</h3>
+            <!-- Description Panel -->
+            <div class="glass-panel description-panel">
+                <div>
+                    <h2>Helm</h2>
+                    <div style="margin-top: 8px;">
                         <p class="text-sm" style="opacity: 0.9;">Cota Pilot Project</p>
                     </div>
                 </div>
@@ -253,20 +228,32 @@
     <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
 
     <script>
-        // 3D Scene Variables
-        let scene, camera, renderer, cube, isDragging = false;
-        let mouseX = 0, mouseY = 0, targetRotationY = 0, targetRotationX = 0;
-        let rotationVelocityY = 0, rotationVelocityX = 0;
-        let lastTap = 0, isSecretMode = false, isHolding = false;
-        let floatingTime = 0, clickCount = 0, clickTimer = null;
-        let savedPosition = { x: -1, y: 0, z: 0 }; // Remember cube position
+        // 3D Scene Variables - Clean and minimal
+        let scene, camera, renderer, cube;
+        let raycaster, mouse;
+        
+        // Interaction state
+        let isRotating = false;
+        let isMoving = false;
+        let isDragging = false;
+        
+        // Input tracking
+        let lastPointer = { x: 0, y: 0 };
+        let tapCount = 0;
+        let tapTimer = null;
+        
+        // Position persistence
+        let cubePosition = { x: -0.3, y: 0, z: 0 };
+        
+        // Animation timing
+        let time = 0;
 
         function init() {
             // Scene setup
             scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
             
-            // Renderer setup
+            // Renderer setup with soft, holy lighting
             const canvas = document.getElementById('three-canvas');
             renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
@@ -274,7 +261,7 @@
             renderer.shadowMap.enabled = true;
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-            // Lighting (matching .replit.dev exactly)
+            // Holy, soft lighting setup
             const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
             scene.add(ambientLight);
 
@@ -289,22 +276,25 @@
             pointLight.position.set(-10, -10, -10);
             scene.add(pointLight);
 
-            // Create cube
+            // Raycaster for picking
+            raycaster = new THREE.Raycaster();
+            mouse = new THREE.Vector2();
+
+            // Create holy cube
             createCube();
 
-            // Camera position (matching .replit.dev)
+            // Camera position
             camera.position.set(0, 0, 5);
-            camera.fov = 50;
 
-            // Event listeners
+            // Event listeners for precise input
             addEventListeners();
 
-            // Start animation
+            // Start holy animation
             animate();
         }
 
         function createCube() {
-            // Main cube
+            // Main cube with holy green metallic material
             const geometry = new THREE.BoxGeometry(1.5, 1.5, 1.5);
             const material = new THREE.MeshStandardMaterial({
                 color: 0x22C55E,
@@ -315,18 +305,17 @@
             });
             
             cube = new THREE.Mesh(geometry, material);
-            cube.position.set(-0.3, 0, 0);
-            // Initialize saved position
-            savedPosition = { x: -0.3, y: 0, z: 0 };
+            cube.position.set(cubePosition.x, cubePosition.y, cubePosition.z);
             cube.castShadow = true;
             cube.receiveShadow = true;
             scene.add(cube);
 
-            // Add text labels
+            // Add holy labels that stay properly aligned
             addCubeLabels();
         }
 
         function addCubeLabels() {
+            // Create labels as children to maintain proper alignment
             const labels = [
                 { text: 'HELM', position: [0, 0, 0.76], rotation: [0, 0, 0] },
                 { text: 'PREMIUM', position: [0.76, 0, 0], rotation: [0, Math.PI/2, 0] },
@@ -342,11 +331,11 @@
                 canvas.width = 256;
                 canvas.height = 64;
 
-                // Background
+                // Holy white background
                 context.fillStyle = 'rgba(255, 255, 255, 0.9)';
                 context.fillRect(0, 0, canvas.width, canvas.height);
 
-                // Text
+                // Clean black text
                 context.fillStyle = 'black';
                 context.font = 'bold 24px Arial';
                 context.textAlign = 'center';
@@ -360,13 +349,14 @@
                     transparent: true 
                 });
 
-                // Create plane for text (scaled for larger cube)
+                // Create plane for text (properly scaled for larger cube)
                 const textGeometry = new THREE.PlaneGeometry(1.2, 0.3);
                 const textMesh = new THREE.Mesh(textGeometry, textMaterial);
                 
                 textMesh.position.set(...label.position);
                 textMesh.rotation.set(...label.rotation);
                 
+                // Add as child to maintain proper alignment
                 cube.add(textMesh);
             });
         }
@@ -374,180 +364,112 @@
         function addEventListeners() {
             const canvas = document.getElementById('three-canvas');
             
-            // Mouse events
-            canvas.addEventListener('mousedown', onMouseDown);
-            canvas.addEventListener('mousemove', onMouseMove);
-            canvas.addEventListener('mouseup', onMouseUp);
-            
-            // Touch events
-            canvas.addEventListener('touchstart', onTouchStart, { passive: false });
-            canvas.addEventListener('touchmove', onTouchMove, { passive: false });
-            canvas.addEventListener('touchend', onTouchEnd, { passive: false });
+            // Unified pointer events for precise control
+            canvas.addEventListener('pointerdown', onPointerDown);
+            canvas.addEventListener('pointermove', onPointerMove);
+            canvas.addEventListener('pointerup', onPointerUp);
+            canvas.addEventListener('pointerleave', onPointerUp);
             
             // Window resize
             window.addEventListener('resize', onWindowResize);
+            
+            // Prevent context menu
             canvas.addEventListener('contextmenu', e => e.preventDefault());
         }
 
-        function onMouseDown(event) {
-            clickCount++;
+        function onPointerDown(event) {
+            event.preventDefault();
             
-            if (clickCount === 1) {
-                // First click - start rotation mode
-                isDragging = true;
-                isSecretMode = false;
-                mouseX = event.clientX;
-                mouseY = event.clientY;
+            // Update mouse position for raycasting
+            updateMousePosition(event);
+            
+            // Check if clicking on cube
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObject(cube);
+            
+            if (intersects.length > 0) {
+                // Handle tap counting for double-tap detection
+                tapCount++;
+                lastPointer.x = event.clientX;
+                lastPointer.y = event.clientY;
                 
-                clickTimer = setTimeout(() => {
-                    clickCount = 0;
-                }, 150);
-                
-            } else if (clickCount === 2) {
-                // Second click - enter drag mode if held
-                clearTimeout(clickTimer);
-                isHolding = true;
-                isSecretMode = true;
-                isDragging = true;
-                
-                console.log('🎉 Drag mode activated! Hold to move cube freely!');
-                cube.material.emissiveIntensity = 0.3;
-                
-                mouseX = event.clientX;
-                mouseY = event.clientY;
-                clickCount = 0;
+                if (tapCount === 1) {
+                    // Single tap - prepare for rotation
+                    tapTimer = setTimeout(() => {
+                        if (tapCount === 1) {
+                            // Single tap confirmed - start rotation mode
+                            isRotating = true;
+                            isDragging = true;
+                            console.log('🔄 Rotation mode activated');
+                        }
+                        tapCount = 0;
+                    }, 250); // Wait for potential second tap
+                    
+                } else if (tapCount === 2) {
+                    // Double tap - start movement mode
+                    clearTimeout(tapTimer);
+                    isMoving = true;
+                    isDragging = true;
+                    tapCount = 0;
+                    console.log('🎯 Movement mode activated');
+                }
             }
         }
 
-        function onMouseMove(event) {
+        function onPointerMove(event) {
             if (!isDragging) return;
-
-            const deltaX = event.clientX - mouseX;
-            const deltaY = event.clientY - mouseY;
-
-            if (!isSecretMode) {
-                const rotationSpeedY = deltaX * 0.01;
-                const rotationSpeedX = deltaY * 0.01;
-                
-                // Apply rotation directly to the cube
-                cube.rotation.y += rotationSpeedY;
-                cube.rotation.x += rotationSpeedX;
+            
+            event.preventDefault();
+            
+            const deltaX = event.clientX - lastPointer.x;
+            const deltaY = event.clientY - lastPointer.y;
+            
+            if (isRotating) {
+                // 1:1 rotation input - precise and responsive
+                const rotationSpeed = 0.01;
+                cube.rotation.y += deltaX * rotationSpeed;
+                cube.rotation.x += deltaY * rotationSpeed;
                 
                 // Clamp X rotation to prevent flipping
                 cube.rotation.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, cube.rotation.x));
                 
-                // Set momentum for after drag ends
-                rotationVelocityY = rotationSpeedY * 0.3;
-                rotationVelocityX = rotationSpeedX * 0.3;
-            } else {
-                // Secret mode: move cube freely
-                const sensitivity = 5;
-                cube.position.x += (deltaX / window.innerWidth) * sensitivity;
-                cube.position.y -= (deltaY / window.innerHeight) * sensitivity;
+            } else if (isMoving) {
+                // 1:1 movement input - no lag, no offset
+                const sensitivity = 4;
+                const newX = cubePosition.x + (deltaX / window.innerWidth) * sensitivity;
+                const newY = cubePosition.y - (deltaY / window.innerHeight) * sensitivity;
                 
-                // Save the new position
-                savedPosition.x = cube.position.x;
-                savedPosition.y = cube.position.y;
-                savedPosition.z = cube.position.z;
-            }
-
-            mouseX = event.clientX;
-            mouseY = event.clientY;
-        }
-
-        function onMouseUp() {
-            if (isHolding && isSecretMode) {
-                // Release from drag mode
-                isSecretMode = false;
-                isHolding = false;
-                cube.material.emissiveIntensity = 0.1;
-                console.log('✨ Back to rotation mode');
+                // Keep within reasonable bounds
+                cubePosition.x = Math.max(-3, Math.min(3, newX));
+                cubePosition.y = Math.max(-2, Math.min(2, newY));
+                
+                // Apply immediately for 1:1 feel
+                cube.position.x = cubePosition.x;
+                cube.position.y = cubePosition.y;
             }
             
+            lastPointer.x = event.clientX;
+            lastPointer.y = event.clientY;
+        }
+
+        function onPointerUp(event) {
+            // Release all interaction modes
+            isRotating = false;
+            isMoving = false;
             isDragging = false;
-        }
-
-        function onTouchStart(event) {
-            event.preventDefault();
             
-            clickCount++;
-            
-            if (clickCount === 1) {
-                // First click - start rotation mode
-                isDragging = true;
-                isSecretMode = false;
-                mouseX = event.touches[0].clientX;
-                mouseY = event.touches[0].clientY;
-                
-                clickTimer = setTimeout(() => {
-                    clickCount = 0;
-                }, 150);
-                
-            } else if (clickCount === 2) {
-                // Second click - enter drag mode if held
-                clearTimeout(clickTimer);
-                isHolding = true;
-                isSecretMode = true;
-                isDragging = true;
-                
-                console.log('🎉 Drag mode activated! Hold to move cube freely!');
-                cube.material.emissiveIntensity = 0.3;
-                
-                mouseX = event.touches[0].clientX;
-                mouseY = event.touches[0].clientY;
-                clickCount = 0;
-            }
-        }
-
-        function onTouchMove(event) {
-            event.preventDefault();
-            if (!isDragging || event.touches.length !== 1) return;
-
-            const deltaX = event.touches[0].clientX - mouseX;
-            const deltaY = event.touches[0].clientY - mouseY;
-
-            if (!isSecretMode) {
-                const rotationSpeedY = deltaX * 0.01;
-                const rotationSpeedX = deltaY * 0.01;
-                
-                // Apply rotation directly to the cube
-                cube.rotation.y += rotationSpeedY;
-                cube.rotation.x += rotationSpeedX;
-                
-                // Clamp X rotation
-                cube.rotation.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, cube.rotation.x));
-                
-                // Set momentum for after drag ends
-                rotationVelocityY = rotationSpeedY * 0.3;
-                rotationVelocityX = rotationSpeedX * 0.3;
-            } else {
-                // Secret mode: move cube freely
-                const sensitivity = 5;
-                cube.position.x += (deltaX / window.innerWidth) * sensitivity;
-                cube.position.y -= (deltaY / window.innerHeight) * sensitivity;
-                
-                // Save the new position
-                savedPosition.x = cube.position.x;
-                savedPosition.y = cube.position.y;
-                savedPosition.z = cube.position.z;
-            }
-
-            mouseX = event.touches[0].clientX;
-            mouseY = event.touches[0].clientY;
-        }
-
-        function onTouchEnd(event) {
-            event.preventDefault();
-            
-            if (isHolding && isSecretMode) {
-                // Release from drag mode
-                isSecretMode = false;
-                isHolding = false;
-                cube.material.emissiveIntensity = 0.1;
-                console.log('✨ Back to rotation mode');
+            if (tapTimer) {
+                clearTimeout(tapTimer);
+                tapTimer = null;
             }
             
-            isDragging = false;
+            console.log('✨ Released - returning to holy idle state');
+        }
+
+        function updateMousePosition(event) {
+            const rect = renderer.domElement.getBoundingClientRect();
+            mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+            mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
         }
 
         function onWindowResize() {
@@ -558,35 +480,28 @@
 
         function animate() {
             requestAnimationFrame(animate);
-            floatingTime += 0.016; // ~60fps
-
-            if (!isDragging && !isSecretMode) {
-                // Apply momentum and drift
-                cube.rotation.y += rotationVelocityY;
-                cube.rotation.x += rotationVelocityX;
+            time += 0.016; // ~60fps
+            
+            if (!isDragging) {
+                // Holy idle behavior: soft spin and bounce
                 
-                // Damping
-                rotationVelocityY *= 0.95;
-                rotationVelocityX *= 0.95;
+                // Very slow, soft Y-axis spin (holy rotation)
+                cube.rotation.y += 0.003;
                 
-                // Natural drift
-                cube.rotation.y += 0.005;
+                // Subtle, rhythmic bounce (organic breathing)
+                const bounceOffset = Math.sin(time * 1.5) * 0.02;
+                cube.position.y = cubePosition.y + bounceOffset;
                 
-                // Very subtle floating animation (matching .replit.dev)
-                // Use saved position as base to prevent reset after drag
-                cube.position.x = savedPosition.x;
-                cube.position.y = savedPosition.y + Math.sin(floatingTime * 0.8) * 0.002;
-                cube.position.z = savedPosition.z;
-                
-                // Clamp X rotation
-                cube.rotation.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, cube.rotation.x));
+                // Maintain proper position
+                cube.position.x = cubePosition.x;
+                cube.position.z = cubePosition.z;
             }
-
+            
             renderer.render(scene, camera);
         }
 
         function handlePurchase() {
-            alert('Purchase functionality would be integrated here!\n\nFeatures:\n• Interactive 3D Product\n• Drag to rotate\n• Double-tap for secret mode\n• Mobile optimized');
+            alert('Purchase functionality would be integrated here!\n\nFeatures:\n• Holy Interactive 3D Product\n• Intuitive rotation & movement\n• Sacred, calming experience\n• Mobile optimized');
         }
 
         // Initialize when page loads

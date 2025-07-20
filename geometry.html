@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Helm - 3D Interactive Product</title>
+    <style>html{background:#000!important}</style>
     <style>
         /* Custom CSS Variables for Easy Spacing Adjustments */
         :root {
@@ -211,30 +212,6 @@
 </head>
 <body>
     <div id="root">
-        <!-- Loading Screen -->
-        <div id="loading-screen" style="
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100vw; 
-            height: 100vh; 
-            background: #000000; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            z-index: 1000;
-            transition: opacity 0.5s ease-out;
-        ">
-            <div style="text-align: center;">
-                <h1 style="color: #22C55E; font-size: 2.5rem; font-weight: bold; margin-bottom: 0.5rem;">HELM</h1>
-                <p style="color: rgba(255,255,255,0.7); font-size: 0.875rem;">Cota Pilot Project</p>
-                <div style="width: 16rem; height: 0.25rem; background: rgba(255,255,255,0.2); border-radius: 9999px; overflow: hidden; margin: 2rem auto;">
-                    <div id="loading-bar" style="height: 100%; background: #22C55E; width: 0%; transition: width 0.3s ease-out;"></div>
-                </div>
-                <p style="color: rgba(255,255,255,0.5); font-size: 0.75rem; margin-top: 1rem;">Loading 3D Experience...</p>
-            </div>
-        </div>
-        
         <div class="canvas-container">
             <canvas id="three-canvas"></canvas>
             
@@ -283,9 +260,6 @@
         let time = 0;
 
         function init() {
-            // Start loading animation
-            startLoadingAnimation();
-            
             // Scene setup
             scene = new THREE.Scene();
             camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -328,33 +302,6 @@
 
             // Start holy animation
             animate();
-            
-            // Hide loading screen after scene is ready
-            setTimeout(() => {
-                hideLoadingScreen();
-            }, 1500);
-        }
-        
-        function startLoadingAnimation() {
-            const loadingBar = document.getElementById('loading-bar');
-            let progress = 0;
-            
-            const interval = setInterval(() => {
-                progress += Math.random() * 15 + 5;
-                if (progress >= 100) {
-                    progress = 100;
-                    clearInterval(interval);
-                }
-                loadingBar.style.width = progress + '%';
-            }, 100);
-        }
-        
-        function hideLoadingScreen() {
-            const loadingScreen = document.getElementById('loading-screen');
-            loadingScreen.style.opacity = '0';
-            setTimeout(() => {
-                loadingScreen.style.display = 'none';
-            }, 500);
         }
 
         function createCube() {

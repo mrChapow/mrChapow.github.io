@@ -163,9 +163,14 @@
             right: auto;
           }
           
-          /* Adjust cube positioning on mobile - move right and up */
+          /* Clean mobile canvas - no transforms */
           #three-canvas {
-            transform: translateY(-20vh) translateX(20vw) !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            z-index: 1 !important;
           }
 
           .glass-panel h1 {

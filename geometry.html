@@ -7,14 +7,14 @@
     <style>
         /* Custom CSS Variables for Easy Spacing Adjustments */
         :root {
-          --desktop-price-top: 20vh;
-          --desktop-desc-top: 40vh;
-          --desktop-panels-right: 3vw;
-          --desktop-panel-width: 280px;
-          --mobile-price-bottom: 180px;
-          --mobile-desc-bottom: 100px;
-          --mobile-panel-width: 90vw;
-          --mobile-panel-max-width: 350px;
+          --desktop-price-top: 15vh;
+          --desktop-desc-top: 35vh;
+          --desktop-panels-right: 8vw;
+          --desktop-panel-width: 300px;
+          --mobile-price-bottom: 200px;
+          --mobile-desc-bottom: 80px;
+          --mobile-panel-width: 85vw;
+          --mobile-panel-max-width: 320px;
         }
 
         * {
@@ -148,7 +148,7 @@
             max-width: var(--mobile-panel-max-width);
             left: 50%;
             transform: translateX(-50%);
-            padding: 16px;
+            padding: 18px;
           }
 
           .price-panel {
@@ -161,6 +161,11 @@
             bottom: var(--mobile-desc-bottom);
             top: auto;
             right: auto;
+          }
+          
+          /* Adjust cube positioning on mobile */
+          #three-canvas {
+            transform: translateY(-10vh);
           }
 
           .glass-panel h1 {
@@ -242,8 +247,8 @@
         let tapCount = 0;
         let tapTimer = null;
         
-        // Position persistence
-        let cubePosition = { x: -0.3, y: 0, z: 0 };
+        // Position persistence - move cube more to the left
+        let cubePosition = { x: -1.2, y: 0, z: 0 };
         
         // Animation timing
         let time = 0;

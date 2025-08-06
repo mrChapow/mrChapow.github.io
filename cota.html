@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cota Access</title>
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      color: #00ffcc;
+      font-family: 'Courier New', monospace;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .glow-box {
+      border: 2px solid #00ffcc;
+      padding: 2rem;
+      text-align: center;
+      max-width: 600px;
+      background: rgba(0, 0, 0, 0.6);
+      box-shadow: 0 0 20px #00ffcc;
+      animation: fadeIn 1.5s ease-in-out forwards;
+    }
+
+    h1 {
+      margin: 0 0 1rem;
+      font-size: 2rem;
+      text-shadow: 0 0 5px #00ffcc;
+    }
+
+    p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      margin-top: 0.5rem;
+    }
+
+    img {
+      margin-top: 1.5rem;
+      width: 120px;
+      height: auto;
+      image-rendering: pixelated;
+      filter: drop-shadow(0 0 10px #00ffcc);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="glow-box">
+  <h1>ACCESS GRANTED</h1>
+  <p>
+    Welcome to Cota’s quiet zone.<br>
+    This page is under construction.<br>
+    You weren’t supposed to be here yet.
+  </p>
+
+  <img src="cota_cloud_pixelart.png" alt="Cota Cloud">
+</div>
+
+</body>
+</html>

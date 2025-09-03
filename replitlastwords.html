@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Interactive Product Experience</title>
+    <meta name="color-scheme" content="dark">
+    <style>
+        :root {
+            --primary-green: #22c55e;
+            --secondary-green: #16a34a;
+            --dark-green: #15803d;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.9);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100vh;
+            background: #000000;
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+        }
+
+        html::before, body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000000;
+            z-index: -1;
+        }
+
+        .container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background: #000000;
+        }
+
+        #canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            cursor: grab;
+            touch-action: none;
+        }
+
+        #canvas:active {
+            cursor: grabbing;
+        }
+
+        .glass-panel {
+            position: absolute;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        .glass-panel:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(34, 197, 94, 0.3);
+            box-shadow: 
+                0 12px 40px rgba(0, 0, 0, 0.4),
+                0 0 20px rgba(34, 197, 94, 0.1);
+        }
+
+        .price-panel {
+            top: 25vh;
+            right: 25vw;
+            width: 350px;
+            text-align: center;
+        }
+
+        .price-panel h2 {
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .price-panel h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-green);
+            margin-bottom: 20px;
+            text-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+        }
+
+        .description-panel {
+            top: 45vh;
+            right: 25vw;
+            width: 350px;
+        }
+
+        .description-panel h2 {
+            font-size: 1.3rem;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .description-panel p {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .buy-button {
+            background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(34, 197, 94, 0.3);
+            min-width: 140px;
+        }
+
+        .buy-button:hover {
+            background: linear-gradient(135deg, var(--secondary-green), var(--dark-green));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(34, 197, 94, 0.4);
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            padding: 32px;
+            max-width: 480px;
+            width: 100%;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .close-button {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--text-primary);
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .close-button:hover {
+            opacity: 1;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .modal-text {
+            font-size: 1rem;
+            line-height: 1.6;
+            text-align: center;
+            margin-bottom: 24px;
+            color: var(--text-secondary);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .submit-button {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 16px;
+        }
+
+        .submit-button:hover {
+            background: linear-gradient(135deg, var(--secondary-green), var(--dark-green));
+            transform: translateY(-1px);
+        }
+
+        .early-support-link {
+            display: block;
+            text-align: center;
+            color: var(--primary-green);
+            text-decoration: underline;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .early-support-link:hover {
+            color: var(--secondary-green);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 767px) {
+            .glass-panel {
+                padding: 20px;
+                border-radius: 16px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 90vw;
+                max-width: 400px;
+            }
+            
+            .price-panel {
+                top: auto;
+                bottom: 22vh;
+                right: auto;
+            }
+            
+            .description-panel {
+                top: auto;
+                bottom: 6vh;
+                right: auto;
+            }
+            
+            .price-panel h2 {
+                font-size: 1.3rem;
+            }
+            
+            .price-panel h1 {
+                font-size: 2rem;
+            }
+            
+            .description-panel h2 {
+                font-size: 1.2rem;
+            }
+            
+            .modal-content {
+                padding: 24px;
+                margin: 20px;
+            }
+        }
+
+        /* Prevent text selection on canvas */
+        #canvas {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        /* Animation for glass panels */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .glass-panel {
+            animation: fadeIn 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <canvas id="canvas"></canvas>
+        
+        <!-- Price Panel -->
+        <div class="glass-panel price-panel">
+            <h2>Premium Product</h2>
+            <h1>$299.99</h1>
+            <button class="buy-button" onclick="showModal()">Buy Now</button>
+        </div>
+
+        <!-- Description Panel -->
+        <div class="glass-panel description-panel">
+            <h2>Interactive Experience:</h2>
+            <p>Drag to rotate the cube and explore its interactive surfaces. Double-tap for movement mode.</p>
+            <p style="font-size: 0.9rem; opacity: 0.8;">Questions? support@example.com</p>
+        </div>
+
+        <!-- Email Modal -->
+        <div class="modal-overlay" id="emailModal">
+            <div class="modal-content">
+                <button class="close-button" onclick="closeModal()">&times;</button>
+                <h2 class="modal-title">Thank you for your interest!</h2>
+                <p class="modal-text">Unfortunately, this item isn't available yet. We'd love to keep in contact.</p>
+                
+                <form onsubmit="handleSubmit(event)">
+                    <div class="form-group">
+                        <label class="form-label">📧 Email:</label>
+                        <input type="email" class="form-input" placeholder="your@email.com" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">📷 Instagram:</label>
+                        <input type="text" class="form-input" placeholder="@yourusername">
+                    </div>
+                    
+                    <button type="submit" class="submit-button">Submit</button>
+                </form>
+                
+                <a href="#" class="early-support-link" onclick="handleEarlySupport()">
+                    I don't care, I want to buy this early in support.
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+    <script>
+        // Global variables
+        let scene, camera, renderer, cube, labels = [];
+        let isInteracting = false, rotationMode = false, movementMode = false;
+        let lastTouchTime = 0, touchStartTime = 0;
+        let initialMousePosition = { x: 0, y: 0 };
+        let lastMousePosition = { x: 0, y: 0 };
+        let targetRotation = { x: 0, y: 0 };
+        let currentRotation = { x: 0, y: 0 };
+        let targetPosition = { x: -1.2, y: 0, z: 0 };
+        let currentPosition = { x: -1.2, y: 0, z: 0 };
+        let idleAnimation = { time: 0, bounce: 0 };
+        
+        // Device detection
+        const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+        // Initialize 3D scene
+        function init() {
+            const canvas = document.getElementById('canvas');
+            
+            // Scene
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x000000);
+
+            // Camera
+            const aspect = window.innerWidth / window.innerHeight;
+            camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000);
+            camera.position.set(0, 0, 5);
+
+            // Renderer
+            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+            // Create cube
+            createCube();
+            setupLighting();
+            setupEventListeners();
+            animate();
+
+            console.log('✨ 3D Interactive Experience initialized');
+        }
+
+        function createCube() {
+            // Cube geometry (smaller on mobile)
+            const size = isMobile ? 1.0 : 1.5;
+            const geometry = new THREE.BoxGeometry(size, size, size);
+
+            // Green metallic material
+            const material = new THREE.MeshPhysicalMaterial({
+                color: 0x22c55e,
+                metalness: 0.9,
+                roughness: 0.1,
+                clearcoat: 1.0,
+                clearcoatRoughness: 0.1,
+                envMapIntensity: 1.0
+            });
+
+            cube = new THREE.Mesh(geometry, material);
+            cube.castShadow = true;
+            cube.receiveShadow = true;
+            
+            // Position cube
+            if (isMobile) {
+                cube.position.set(0, 0.8, 0);
+                targetPosition = { x: 0, y: 0.8, z: 0 };
+                currentPosition = { x: 0, y: 0.8, z: 0 };
+            } else {
+                cube.position.set(-1.2, 0, 0);
+                targetPosition = { x: -1.2, y: 0, z: 0 };
+                currentPosition = { x: -1.2, y: 0, z: 0 };
+            }
+
+            scene.add(cube);
+            createLabels();
+        }
+
+        function createLabels() {
+            const labelTexts = ['FRONT', 'RIGHT', 'TOP', 'LEFT', 'BACK', 'BOTTOM'];
+            const positions = [
+                [0, 0, 0.76], [0.76, 0, 0], [0, 0.76, 0],
+                [-0.76, 0, 0], [0, 0, -0.76], [0, -0.76, 0]
+            ];
+
+            labelTexts.forEach((text, index) => {
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.width = 256;
+                canvas.height = 256;
+                
+                context.fillStyle = 'white';
+                context.font = 'bold 24px Arial';
+                context.textAlign = 'center';
+                context.fillText(text, 128, 128);
+                
+                const texture = new THREE.CanvasTexture(canvas);
+                const material = new THREE.MeshBasicMaterial({ 
+                    map: texture, 
+                    transparent: true,
+                    alphaTest: 0.1
+                });
+                
+                const geometry = new THREE.PlaneGeometry(0.3, 0.3);
+                const label = new THREE.Mesh(geometry, material);
+                
+                const scale = isMobile ? 1.0 : 1.5;
+                label.position.set(
+                    positions[index][0] * scale,
+                    positions[index][1] * scale,
+                    positions[index][2] * scale
+                );
+                
+                // Face orientation
+                if (index < 4) { // Side faces
+                    label.rotation.y = (index * Math.PI / 2);
+                } else if (index === 2) { // Top
+                    label.rotation.x = -Math.PI / 2;
+                } else if (index === 5) { // Bottom
+                    label.rotation.x = Math.PI / 2;
+                }
+                
+                cube.add(label);
+                labels.push(label);
+            });
+        }
+
+        function setupLighting() {
+            // Ambient light
+            const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+            scene.add(ambientLight);
+
+            // Directional light
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+            directionalLight.position.set(5, 5, 5);
+            directionalLight.castShadow = true;
+            scene.add(directionalLight);
+
+            // Point light for extra shine
+            const pointLight = new THREE.PointLight(0x22c55e, 0.5, 10);
+            pointLight.position.set(2, 2, 2);
+            scene.add(pointLight);
+        }
+
+        function setupEventListeners() {
+            window.addEventListener('resize', onWindowResize);
+            
+            if (isMobile) {
+                setupMobileControls();
+            } else {
+                setupDesktopControls();
+            }
+        }
+
+        function setupDesktopControls() {
+            const canvas = document.getElementById('canvas');
+            canvas.addEventListener('mousedown', onMouseDown);
+            canvas.addEventListener('mousemove', onMouseMove);
+            canvas.addEventListener('mouseup', onMouseUp);
+            canvas.addEventListener('mouseleave', onMouseUp);
+            canvas.addEventListener('dblclick', onDoubleClick);
+        }
+
+        function setupMobileControls() {
+            const canvas = document.getElementById('canvas');
+            canvas.addEventListener('touchstart', onTouchStart, { passive: false });
+            canvas.addEventListener('touchmove', onTouchMove, { passive: false });
+            canvas.addEventListener('touchend', onTouchEnd, { passive: false });
+        }
+
+        // Event handlers
+        function onMouseDown(event) {
+            isInteracting = true;
+            rotationMode = true;
+            initialMousePosition = { x: event.clientX, y: event.clientY };
+            lastMousePosition = { x: event.clientX, y: event.clientY };
+        }
+
+        function onMouseMove(event) {
+            if (!isInteracting) return;
+            
+            const deltaX = event.clientX - lastMousePosition.x;
+            const deltaY = event.clientY - lastMousePosition.y;
+            
+            if (movementMode) {
+                targetPosition.x += deltaX * 0.01;
+                targetPosition.y -= deltaY * 0.01;
+            } else if (rotationMode) {
+                targetRotation.y += deltaX * 0.01;
+                targetRotation.x += deltaY * 0.01;
+            }
+            
+            lastMousePosition = { x: event.clientX, y: event.clientY };
+        }
+
+        function onMouseUp() {
+            isInteracting = false;
+            rotationMode = false;
+        }
+
+        function onDoubleClick() {
+            movementMode = true;
+            setTimeout(() => { movementMode = false; }, 3000);
+        }
+
+        function onTouchStart(event) {
+            event.preventDefault();
+            const touch = event.touches[0];
+            const currentTime = Date.now();
+            
+            // Double tap detection
+            if (currentTime - lastTouchTime < 300) {
+                movementMode = true;
+                setTimeout(() => { movementMode = false; }, 3000);
+                return;
+            }
+            
+            lastTouchTime = currentTime;
+            touchStartTime = currentTime;
+            isInteracting = true;
+            
+            setTimeout(() => {
+                if (isInteracting && Date.now() - touchStartTime > 150) {
+                    rotationMode = true;
+                }
+            }, 150);
+            
+            initialMousePosition = { x: touch.clientX, y: touch.clientY };
+            lastMousePosition = { x: touch.clientX, y: touch.clientY };
+        }
+
+        function onTouchMove(event) {
+            event.preventDefault();
+            if (!isInteracting || event.touches.length === 0) return;
+            
+            const touch = event.touches[0];
+            const deltaX = touch.clientX - lastMousePosition.x;
+            const deltaY = touch.clientY - lastMousePosition.y;
+            
+            if (movementMode) {
+                targetPosition.x += deltaX * 0.008;
+                targetPosition.y -= deltaY * 0.008;
+            } else if (rotationMode) {
+                targetRotation.y += deltaX * 0.008;
+                targetRotation.x += deltaY * 0.008;
+            }
+            
+            lastMousePosition = { x: touch.clientX, y: touch.clientY };
+        }
+
+        function onTouchEnd(event) {
+            event.preventDefault();
+            isInteracting = false;
+            rotationMode = false;
+        }
+
+        function onWindowResize() {
+            const aspect = window.innerWidth / window.innerHeight;
+            camera.aspect = aspect;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            idleAnimation.time += 0.016;
+            
+            if (!isInteracting) {
+                // Holy idle behavior
+                targetRotation.y += 0.005;
+                idleAnimation.bounce = Math.sin(idleAnimation.time * 2) * 0.02;
+                targetPosition.y += idleAnimation.bounce * 0.1;
+            }
+            
+            // Smooth interpolation
+            const lerpFactor = 0.1;
+            currentRotation.x += (targetRotation.x - currentRotation.x) * lerpFactor;
+            currentRotation.y += (targetRotation.y - currentRotation.y) * lerpFactor;
+            
+            currentPosition.x += (targetPosition.x - currentPosition.x) * lerpFactor;
+            currentPosition.y += (targetPosition.y - currentPosition.y) * lerpFactor;
+            currentPosition.z += (targetPosition.z - currentPosition.z) * lerpFactor;
+            
+            // Apply transforms
+            cube.rotation.x = currentRotation.x;
+            cube.rotation.y = currentRotation.y;
+            cube.position.set(currentPosition.x, currentPosition.y, currentPosition.z);
+            
+            renderer.render(scene, camera);
+        }
+
+        // Modal functions
+        function showModal() {
+            document.getElementById('emailModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('emailModal').style.display = 'none';
+        }
+
+        function handleSubmit(event) {
+            event.preventDefault();
+            alert('Thank you! We\'ll be in touch soon.');
+            closeModal();
+        }
+
+        function handleEarlySupport() {
+            alert('Redirecting to early support purchase...');
+            // Replace with your actual payment URL
+            // window.open('YOUR_STRIPE_PAYMENT_URL', '_blank');
+        }
+
+        // Initialize when page loads
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

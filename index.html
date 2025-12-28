@@ -13,13 +13,13 @@
         @import url('https://fonts.googleapis.com/css2?family=Space+Mono&display=swap');
         .mono { font-family: 'Space+Mono', monospace; }
         
-        /* Variable System for Dark/Light Mode */
         :root {
             --bg: #f8fafc;
             --text: #0f172a;
             --card-bg: #ffffff;
             --border: #000000;
             --shadow: #000000;
+            --invert: 0;
         }
 
         body.dark-mode {
@@ -28,6 +28,7 @@
             --card-bg: #111111;
             --border: #334155;
             --shadow: #000000;
+            --invert: 1;
         }
 
         body { 
@@ -37,29 +38,29 @@
             cursor: crosshair;
         }
 
-        /* Override Tailwind with Variables */
-        .bg-white { background-color: var(--card-bg) !important; }
-        .text-slate-900, .text-slate-800, .text-slate-500, .text-slate-400 { color: var(--text) !important; }
-        .border-black, .border-slate-200 { border-color: var(--border) !important; }
+        /* Dynamic Component Styling */
+        .dynamic-card { background-color: var(--card-bg) !important; border-color: var(--border) !important; }
+        .dynamic-text { color: var(--text) !important; }
         .win95-shadow { box-shadow: 6px 6px 0px var(--shadow); }
         .logic-line { border-left: 2px solid var(--text); padding-left: 1.5rem; margin-bottom: 2rem; }
         
-        /* Ensure inputs look good in both modes */
-        input { color: inherit; }
+        /* Utility to prevent bracket breaking */
+        .no-break { white-space: nowrap; }
     </style>
 </head>
 <body class="text-slate-900">
 
-    <nav class="max-w-5xl mx-auto p-8 flex justify-between items-center">
+    <nav class="max-w-5xl mx-auto p-6 md:p-8 flex flex-wrap justify-between items-start md:items-center gap-4">
         <div>
             <div class="font-black text-2xl tracking-tighter uppercase">AllenMMC<span class="text-blue-600">.</span></div>
             <div class="mono text-[10px] text-slate-400 tracking-widest uppercase font-bold">Project: Cota // v2.0</div>
         </div>
-        <div class="flex items-center">
-            <button onclick="toggleDarkMode()" class="mono text-[10px] font-bold border-2 border-black px-2 py-1 hover:bg-black hover:text-white transition-all mr-6 uppercase dark-mode-toggle">
+        
+        <div class="flex items-center gap-2 md:gap-6">
+            <button onclick="toggleDarkMode()" class="mono text-[10px] font-bold border-2 border-black px-2 py-1 hover:bg-black hover:text-white transition-all uppercase no-break dynamic-card dynamic-text">
                 [ Mode: Toggle ]
             </button>
-            <a href="https://www.youtube.com/@Happycota" target="_blank" class="mono text-[10px] font-bold border-b-2 border-red-500 pb-1 hover:bg-red-500 hover:text-white transition-all uppercase">
+            <a href="https://www.youtube.com/@Happycota" target="_blank" class="mono text-[10px] font-bold border-b-2 border-red-500 pb-1 hover:bg-red-500 hover:text-white transition-all uppercase no-break">
                 [ Process Logs ]
             </a>
         </div>
@@ -68,11 +69,11 @@
     <main class="max-w-5xl mx-auto px-8 py-12">
         
         <section class="mb-24 max-w-2xl">
-            <h1 class="text-6xl md:text-7xl font-black mb-8 leading-none tracking-tighter uppercase">Building <br>in Public.</h1>
+            <h1 class="text-6xl md:text-7xl font-black mb-8 leading-none tracking-tighter uppercase dynamic-text">Building <br>in Public.</h1>
             
             <div class="logic-line">
-                <p class="text-xl font-bold mb-4 italic">" Learn, Explore, Experience, Connect, Reflect, and PUBLISH! "</p>
-                <p class="mono text-sm leading-relaxed uppercase opacity-70">
+                <p class="text-xl font-bold mb-4 italic dynamic-text">" Learn, Explore, Experience, Connect, Reflect, and PUBLISH! "</p>
+                <p class="mono text-sm leading-relaxed uppercase opacity-70 dynamic-text">
                     I am a builder, teacher, and experimenter. I don't believe in social media portfolios. 
                     This hub is my live testing ground for exploring how we learn languages, how brands 
                     scale, and how clothing defines our identity. 
@@ -86,36 +87,36 @@
 
         <section class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-32">
             
-            <div class="bg-white border-4 border-black p-8 win95-shadow hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all">
+            <div class="dynamic-card border-4 p-8 win95-shadow hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all">
                 <span class="bg-blue-600 text-white px-2 py-1 text-[10px] font-bold uppercase mb-4 inline-block">Module_01: Language</span>
-                <h2 class="text-2xl font-black mb-2 uppercase">Spanish</h2>
-                <p class="mb-8 mono text-[10px] uppercase leading-tight opacity-70">Unconventional approach to language. Focusing on conversational logic and cultural immersion. 1-on-1 sessions. First lesson is free! </p>
+                <h2 class="text-2xl font-black mb-2 uppercase dynamic-text">Spanish</h2>
+                <p class="mb-8 mono text-[10px] uppercase leading-tight opacity-70 dynamic-text">Unconventional approach to language. Focusing on conversational logic and cultural immersion. 1-on-1 sessions. First lesson is free! </p>
                 <button onclick="Calendly.initPopupWidget({url: 'https://calendly.com/mcvicker-allen'});return false;" class="block w-full text-center bg-blue-600 text-white font-bold py-3 border-2 border-black hover:invert transition-all uppercase">
                     Book Session
                 </button>
             </div>
 
-            <div class="bg-white border-4 border-black p-8 win95-shadow hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all">
+            <div class="dynamic-card border-4 p-8 win95-shadow hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all">
                 <span class="bg-green-500 text-black px-2 py-1 text-[10px] font-bold uppercase mb-4 inline-block">Module_02: Growth</span>
-                <h2 class="text-2xl font-black mb-2 uppercase">Advertising</h2>
-                <p class="mb-8 mono text-[10px] uppercase leading-tight opacity-70">Applying direct-response principles to Meta and PPC campaigns.</p>
+                <h2 class="text-2xl font-black mb-2 uppercase dynamic-text">Advertising</h2>
+                <p class="mb-8 mono text-[10px] uppercase leading-tight opacity-70 dynamic-text">Applying direct-response principles to Meta and PPC campaigns.</p>
                 <a href="mailto:your@email.com" class="block w-full text-center bg-black text-white font-bold py-3 border-2 border-black hover:bg-white hover:text-black transition-all uppercase">
                     Inquire
                 </a>
             </div>
 
-            <div class="bg-black text-white border-4 border-black p-8 win95-shadow hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all">
-                <span class="bg-white text-black px-2 py-1 text-[10px] font-bold uppercase mb-4 inline-block">Module_03: Design</span>
-                <h2 class="text-2xl font-black mb-2 uppercase tracking-widest">COTA</h2>
-                <p class="text-slate-400 mb-8 mono text-[10px] uppercase leading-tight italic">Geometric product design and structural clothing experiments.</p>
-                <a href="geometry.html" class="block w-full text-center bg-white text-black font-black py-3 border-2 border-white hover:bg-black hover:text-white transition-all uppercase">
+            <div class="dynamic-card border-4 p-8 win95-shadow hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all">
+                <span class="bg-slate-500 text-white px-2 py-1 text-[10px] font-bold uppercase mb-4 inline-block">Module_03: Design</span>
+                <h2 class="text-2xl font-black mb-2 uppercase tracking-widest dynamic-text">COTA</h2>
+                <p class="mb-8 mono text-[10px] uppercase leading-tight italic opacity-70 dynamic-text">Geometric product design and structural clothing experiments.</p>
+                <a href="geometry.html" class="block w-full text-center bg-white text-black font-black py-3 border-2 border-black hover:bg-black hover:text-white transition-all uppercase dynamic-text" style="background-color: var(--text); color: var(--bg);">
                     Enter Lab
                 </a>
             </div>
 
         </section>
 
-        <section class="border-t-2 border-slate-200 pt-20">
+        <section class="border-t-2 border-slate-200 pt-20 dynamic-card">
             <div class="max-w-xl mx-auto">
                 <div class="bg-black text-green-400 p-6 rounded-t-lg mono text-xs shadow-2xl border-x-2 border-t-2 border-black">
                     <div id="output" class="mb-4 h-32 overflow-y-auto leading-relaxed opacity-80">
@@ -143,17 +144,12 @@
         const yt = "https://www.youtube.com/@Happycota";
         let idleTimer;
 
-        // Dark Mode Functionality
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
-            const isDark = document.body.classList.contains('dark-mode');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
         }
 
-        // Check for saved theme
-        if (localStorage.getItem('theme') === 'dark') {
-            document.body.classList.add('dark-mode');
-        }
+        if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
 
         const print = (text, type = 'system') => {
             const line = document.createElement('div');
@@ -171,9 +167,7 @@
         const resetIdleTimer = () => {
             clearTimeout(idleTimer);
             idleTimer = setTimeout(() => {
-                if (input.value === "") {
-                    print("System waiting for signal... type 'HELP' to see modules.", "system");
-                }
+                if (input.value === "") print("System waiting for signal... type 'HELP' to see modules.", "system");
             }, 15000);
         };
 
@@ -187,34 +181,17 @@
             setTimeout(() => {
                 switch(cmd) {
                     case 'help':
-                        print("ESTABLISHED SIGNALS:");
-                        print("SPANISH - Launch Scheduling Module", "success");
-                        print("ADS - Access Growth Module", "success");
-                        print("COTA - Access Lab Archives", "success");
-                        print("YOUTUBE - Open Process Logs", "success");
-                        print("DARK / MODE - Toggle Night Vision", "success");
-                        print("CLEAR - Flush Terminal", "success");
+                        print("SIGNALS: [SPANISH, ADS, COTA, YOUTUBE, DARK, CLEAR]");
                         break;
                     case 'dark':
                     case 'mode':
-                    case 'night':
                         toggleDarkMode();
-                        const s = document.body.classList.contains('dark-mode') ? "NIGHT" : "STANDARD";
-                        print(`Atmosphere set to ${s} mode.`, "success");
+                        print(`Atmosphere recalibrated.`, "success");
                         break;
                     case 'spanish':
                     case 'book':
                         print("Launching Scheduling Interface...");
                         setTimeout(() => { Calendly.initPopupWidget({url: 'https://calendly.com/mcvicker-allen'}); }, 500);
-                        break;
-                    case 'ads':
-                        print("Navigating to Growth Module...", "success");
-                        window.scrollTo({top: 500, behavior: 'smooth'});
-                        break;
-                    case 'cota':
-                    case 'geometry':
-                        print("Diverting power to Lab Archives...", "success");
-                        setTimeout(() => { window.location.href = 'geometry.html'; }, 800);
                         break;
                     case 'youtube':
                         print("Connecting to @Happycota...", "success");
@@ -224,12 +201,18 @@
                         output.innerHTML = '';
                         print("Terminal Buffer Flushed.");
                         break;
+                    case 'ads':
+                        window.scrollTo({top: 500, behavior: 'smooth'});
+                        print("Navigating to Growth Module.");
+                        break;
+                    case 'cota':
+                        window.location.href = 'geometry.html';
+                        break;
                     default:
                         print(`Signal "${cmd}" not recognized.`, "error");
                 }
             }, 300);
         });
-
         resetIdleTimer();
     </script>
 </body>

@@ -20,7 +20,7 @@
             <div class="font-black text-2xl tracking-tighter uppercase">AllenMMC<span class="text-blue-600">.</span></div>
             <div class="mono text-[10px] text-slate-400 tracking-widest uppercase font-bold">Project: Cota // v2.0</div>
         </div>
-        <a href="YOUR_YT_URL" class="mono text-[10px] font-bold border-b-2 border-red-500 pb-1 hover:bg-red-500 hover:text-white transition-all uppercase">
+        <a href="https://www.youtube.com/@Happycota" target="_blank" class="mono text-[10px] font-bold border-b-2 border-red-500 pb-1 hover:bg-red-500 hover:text-white transition-all uppercase">
             [ Process Logs ]
         </a>
     </nav>
@@ -49,7 +49,7 @@
             <div class="bg-white border-4 border-black p-8 win95-shadow hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all">
                 <span class="bg-blue-600 text-white px-2 py-1 text-[10px] font-bold uppercase mb-4 inline-block">Module_01: Language</span>
                 <h2 class="text-2xl font-black mb-2 uppercase">Spanish</h2>
-                <p class="text-slate-500 mb-8 mono text-[10px] uppercase leading-tight">Unconventional appreach to language. Focusing on conversational logic and cultural immersion. 1-on-1 sessions. First lesson is free! </p>
+                <p class="text-slate-500 mb-8 mono text-[10px] uppercase leading-tight">Unconventional approach to language. Focusing on conversational logic and cultural immersion. 1-on-1 sessions. First lesson is free! </p>
                 <a href="YOUR_STRIPE_PAYMENT_LINK" class="block w-full text-center bg-blue-600 text-white font-bold py-3 border-2 border-black hover:invert transition-all uppercase">
                     Book Session
                 </a>
@@ -100,6 +100,7 @@
         const form = document.getElementById('terminal-form');
         const input = document.getElementById('terminal-input');
         const output = document.getElementById('output');
+        const yt = "https://www.youtube.com/@Happycota";
 
         form.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -110,8 +111,18 @@
                 output.innerHTML += `<br>> SIGNALS: [spanish, ads, cota, youtube, clear]`;
             } else if(cmd === 'clear') {
                 output.innerHTML = "Terminal Cleared.";
-            } else if(cmd === 'cota' || cmd === 'geometry') {
-                window.location.href = 'geometry.html';
+            } else if(cmd === 'cota') {
+                output.innerHTML += `<br>> Opening Lab Archives...`;
+                setTimeout(() => { window.location.href = 'geometry.html'; }, 500);
+            } else if(cmd === 'youtube') {
+                output.innerHTML += `<br>> Connecting to @Happycota...`;
+                setTimeout(() => { window.open(yt, '_blank'); }, 500);
+            } else if(cmd === 'spanish') {
+                output.innerHTML += `<br>> Accessing Module_01...`;
+                window.scrollTo({top: 500, behavior: 'smooth'});
+            } else if(cmd === 'ads') {
+                output.innerHTML += `<br>> Accessing Module_02...`;
+                window.scrollTo({top: 500, behavior: 'smooth'});
             } else {
                 output.innerHTML += `<br>> Signal processed.`;
             }

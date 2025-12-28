@@ -40,7 +40,10 @@
         .nowrap { white-space: nowrap; }
 
         /* Ensuring Dark Mode actually flips text colors */
-        body.dark-mode p, body.dark-mode h1, body.dark-mode h2 { color: #ffffff !important; }
+        body.dark-mode p, body.dark-mode h1, body.dark-mode h2 { color: #ffffff !important; }body.dark-mode .bg-white p, 
+body.dark-mode .bg-white h2 { 
+    color: #ffffff !important; 
+}
         
         /* Protection for COTA Module - It stays a dark monolith */
         .cota-card { background-color: #000 !important; color: #fff !important; }

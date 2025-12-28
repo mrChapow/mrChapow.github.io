@@ -3,119 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spanish Tutoring | Cota</title>
+    <title>AllenMMC // Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Mono&display=swap');
         .mono { font-family: 'Space+Mono', monospace; }
-        .win95-shadow { box-shadow: 4px 4px 0px #808080; }
+        .win95-shadow { box-shadow: 6px 6px 0px #000; }
+        body { background-color: #f8fafc; cursor: crosshair; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900">
+<body class="text-slate-900">
 
-    <main class="max-w-3xl mx-auto px-6 py-20">
+    <nav class="max-w-5xl mx-auto p-8 flex justify-between items-center">
+        <div class="font-black text-2xl tracking-tighter uppercase">AllenMMC<span class="text-blue-600">.</span></div>
+        <div class="mono text-xs bg-black text-white px-3 py-1 uppercase tracking-widest">v2.0 // Active</div>
+    </nav>
+
+    <main class="max-w-5xl mx-auto px-8 py-12">
         
-        <header class="text-center mb-16">
-            <h1 class="text-5xl font-black tracking-tight mb-4">Habla Español.</h1>
-            <p class="text-xl text-slate-600">No more apps. Just real conversations with a human. <br>Private 1-on-1 tutoring via Google Meet.</p>
-        </header>
+        <section class="mb-20">
+            <h1 class="text-6xl font-black mb-6 leading-none">BUILDER. <br>TEACHER. <br>EXPERIMENTER.</h1>
+            <p class="text-xl text-slate-500 max-w-lg mono uppercase text-sm tracking-tight">
+                Currently exploring the intersection of language, geometry, and low-friction commerce.
+            </p>
+        </section>
 
-        <div class="bg-white border-2 border-black p-8 rounded-2xl shadow-[8px_8px_0px_rgba(0,0,0,1)] mb-20">
-            <div class="flex justify-between items-start mb-6">
-                <div>
-                    <h2 class="text-2xl font-bold italic underline">Private Session</h2>
-                    <p class="text-slate-500">60 Minutes • Personal Curriculum</p>
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-10 mb-32">
+            
+            <div class="bg-white border-4 border-black p-8 win95-shadow hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all">
+                <div class="flex justify-between items-center mb-6">
+                    <span class="bg-yellow-300 border-2 border-black px-2 py-1 text-xs font-bold uppercase">Active Module</span>
+                    <span class="mono text-sm">$40/hr</span>
                 </div>
-                <div class="text-3xl font-black">$40</div>
+                <h2 class="text-3xl font-black mb-2">SPANISH TUTORING</h2>
+                <p class="text-slate-600 mb-8 mono text-xs uppercase tracking-tighter">1-on-1 Conversational Fluency Sessions.</p>
+                <a href="YOUR_STRIPE_PAYMENT_LINK" class="block w-full text-center bg-blue-600 text-white font-bold py-4 border-2 border-black hover:bg-blue-700">
+                    START LEARNING
+                </a>
             </div>
 
-            <a href="YOUR_STRIPE_PAYMENT_LINK" class="block w-full bg-blue-600 text-white text-center py-5 rounded-xl text-xl font-bold hover:bg-blue-700 transition-all hover:translate-y-[-2px] active:translate-y-[0px]">
-                Book My Session
-            </a>
-            <p class="text-center mt-4 text-sm text-slate-400">Secure Checkout via Stripe</p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-32">
-            <div class="text-center">
-                <span class="text-2xl">💳</span>
-                <h3 class="font-bold mt-2">1. Pay</h3>
-                <p class="text-sm text-slate-500">Quick checkout.</p>
+            <div class="bg-slate-100 border-4 border-black border-dashed p-8 flex flex-col items-center justify-center text-slate-400">
+                <span class="text-2xl mb-2">⚡</span>
+                <p class="mono text-xs uppercase font-bold">New Experiment Loading...</p>
+                <p class="text-[10px] mt-2 italic">Type "idea" in terminal to suggest.</p>
             </div>
-            <div class="text-center">
-                <span class="text-2xl">📅</span>
-                <h3 class="font-bold mt-2">2. Schedule</h3>
-                <p class="text-sm text-slate-500">Pick a time on my Google Calendar.</p>
-            </div>
-            <div class="text-center">
-                <span class="text-2xl">🗣️</span>
-                <h3 class="font-bold mt-2">3. Speak</h3>
-                <p class="text-sm text-slate-500">We meet and start learning.</p>
-            </div>
-        </div>
 
-        <hr class="border-slate-200 mb-20">
+        </section>
 
-        <section id="terminal-zone" class="max-w-md mx-auto">
-            <div class="bg-[#c0c0c0] border-2 border-black win95-shadow">
-                <div class="bg-[#000080] text-white px-2 py-1 flex justify-between items-center text-xs font-bold">
-                    <span>COTA_TERMINAL.EXE</span>
-                    <button onclick="document.getElementById('terminal-zone').style.opacity='0.5'" class="bg-[#c0c0c0] text-black border border-white px-1 leading-none">X</button>
+        <section class="mb-32">
+            <h3 class="mono text-xs font-bold mb-6 border-b-2 border-slate-200 pb-2 uppercase tracking-widest">The Archive (Cota Labs)</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                <a href="geometry.html" class="p-4 border-2 border-black bg-white hover:bg-black hover:text-white transition-colors mono text-xs uppercase">Geometry</a>
+                <a href="cota.html" class="p-4 border-2 border-black bg-white hover:bg-black hover:text-white transition-colors mono text-xs uppercase">Archive_v1</a>
+                <a href="replitlastwords.html" class="p-4 border-2 border-black bg-white hover:bg-black hover:text-white transition-colors mono text-xs uppercase">LastWords</a>
+                <a href="myspace.html" class="p-4 border-2 border-black bg-white hover:bg-black hover:text-white transition-colors mono text-xs uppercase">Legacy_MS</a>
+            </div>
+        </section>
+
+        <section id="terminal" class="max-w-2xl mx-auto">
+            <div class="bg-black text-green-400 p-6 rounded-t-lg mono text-sm shadow-2xl">
+                <div class="flex gap-2 mb-4">
+                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                    <span class="ml-2 text-slate-500 uppercase text-[10px]">AllenMMC_Terminal.v2.0</span>
                 </div>
-                
-                <div class="p-4">
-                    <p class="mono text-xs mb-4 text-slate-700 uppercase tracking-widest">// Easter Egg Box</p>
-                    
-                    <form action="https://formspree.io/f/mdkzoqdp" method="POST" id="cotaForm" class="flex flex-col gap-2">
-                        <input 
-                            type="text" 
-                            name="signal" 
-                            placeholder="Type a command..." 
-                            class="mono w-full bg-white border-2 border-inset p-2 outline-none text-sm focus:border-blue-500"
-                            autocomplete="off"
-                            required
-                        />
-                        <button type="submit" class="bg-[#c0c0c0] border-2 border-black text-xs p-1 hover:bg-slate-200">SUBMIT SIGNAL</button>
-                    </form>
-                    
-                    <div id="terminal-output" class="mono text-xs mt-4 text-blue-800"></div>
+                <div id="output" class="mb-4 h-32 overflow-y-auto leading-relaxed">
+                    Welcome to the AllenMMC Hub. <br>
+                    Type "HELP" to see all available signals.
                 </div>
+                <form id="terminal-form" class="flex items-center">
+                    <span class="mr-2">MMC_>></span>
+                    <input type="text" id="terminal-input" autocomplete="off" class="bg-transparent border-none outline-none text-green-400 w-full" autofocus>
+                </form>
+            </div>
+            <div class="bg-slate-200 p-2 text-center text-[10px] mono uppercase text-slate-500 rounded-b-lg border-x-2 border-b-2 border-black">
+                Encrypted Signal Processing System
             </div>
         </section>
 
     </main>
 
     <script>
-        const form = document.getElementById("cotaForm");
-        const output = document.getElementById("terminal-output");
-        const input = form.querySelector('input[name="signal"]');
+        const form = document.getElementById('terminal-form');
+        const input = document.getElementById('terminal-input');
+        const output = document.getElementById('output');
 
-        form.addEventListener("submit", function (e) {
+        form.addEventListener('submit', (e) => {
             e.preventDefault();
-            const val = input.value.trim().toLowerCase();
+            const cmd = input.value.toLowerCase().trim();
+            output.innerHTML += `<br><span class="text-white">MMC_>> ${cmd}</span>`;
+            
+            // Log to Formspree
+            fetch('https://formspree.io/f/mdkzoqdp', {
+                method: 'POST',
+                body: JSON.stringify({ signal: cmd }),
+                headers: { 'Accept': 'application/json' }
+            });
 
-            // Your existing logic
-            if (val === "love") {
-                output.innerHTML = "> YOU ARE LOVED 💖";
-            } else if (val === "myspace") {
-                output.innerHTML = "> REDIRECTING TO MYSPACE...";
-                setTimeout(() => { window.location.href = "myspace.html"; }, 1000);
-            } else if (val === "cota") {
-                window.location.href = "geometry.html";
+            // Logic
+            if(cmd === 'spanish') {
+                output.innerHTML += `<br>> Locating tutoring module... Done.`;
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            } else if(cmd === 'help') {
+                output.innerHTML += `<br>> AVAILABLE: [spanish, love, geometry, myspace, cota, clear]`;
+            } else if(cmd === 'love') {
+                output.innerHTML += `<br>> SYSTEM RESPONSE: Gratitude received. Legend status confirmed.`;
+            } else if(cmd === 'geometry') {
+                output.innerHTML += `<br>> Redirecting...`;
+                setTimeout(() => window.location.href = 'geometry.html', 800);
+            } else if(cmd === 'clear') {
+                output.innerHTML = "Terminal Cleared.";
             } else {
-                output.innerHTML = "> SIGNAL RECEIVED: " + val;
+                output.innerHTML += `<br>> Signal "${cmd}" not found. Try "HELP".`;
             }
 
-            // Send to Formspree
-            const data = new FormData(form);
-            fetch(form.action, {
-                method: form.method,
-                body: data,
-                headers: { Accept: "application/json" },
-            });
-            
-            form.reset();
+            input.value = '';
+            output.scrollTop = output.scrollHeight;
         });
     </script>
-
 </body>
 </html>

@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AllenMMC // Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
     <script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
 
@@ -13,43 +12,23 @@
         @import url('https://fonts.googleapis.com/css2?family=Space+Mono&display=swap');
         .mono { font-family: 'Space+Mono', monospace; }
         
-        :root {
-            --bg: #f8fafc;
-            --text: #0f172a;
-            --card-bg: #ffffff;
-            --border: #000000;
-        }
+        :root { --bg: #f8fafc; --text: #0f172a; --card-bg: #ffffff; --border: #000000; }
 
-        body.dark-mode {
-            --bg: #0a0a0a;
-            --text: #ffffff;
-            --card-bg: #111111;
-            --border: #334155;
-        }
+        body.dark-mode { --bg: #0a0a0a; --text: #ffffff; --card-bg: #111111; --border: #334155; }
 
-        body { 
-            background-color: var(--bg); 
-            color: var(--text); 
-            transition: background-color 0.3s ease;
-            cursor: crosshair;
-        }
+        body { background-color: var(--bg); color: var(--text); transition: background-color 0.3s ease; cursor: crosshair; }
 
-        /* Restoration of Visual Grit */
-        .win95-shadow { box-shadow: 6px 6px 0px #000; }
-        .logic-line { border-left: 2px solid var(--text); padding-left: 1.5rem; margin-bottom: 2rem; }
+        /* THE FIX: Force Module Text to White in Dark Mode */
+        body.dark-mode .bg-white h2, 
+        body.dark-mode .bg-white p { color: #ffffff !important; }
+        
+        /* THE FIX: Stop Bracket Squishing */
         .nowrap { white-space: nowrap; }
 
-        /* Ensuring Dark Mode actually flips text colors */
-        body.dark-mode p, body.dark-mode h1, body.dark-mode h2 { color: #ffffff !important; }body.dark-mode .bg-white p, 
-body.dark-mode .bg-white h2 { 
-    color: #ffffff !important; 
-}
-        
-        /* Protection for COTA Module - It stays a dark monolith */
+        .win95-shadow { box-shadow: 6px 6px 0px #000; }
+        .logic-line { border-left: 2px solid var(--text); padding-left: 1.5rem; margin-bottom: 2rem; }
         .cota-card { background-color: #000 !important; color: #fff !important; }
-        body.dark-mode .cota-card { border-color: #f1f5f9 !important; }
-
-        /* Protection for Terminal */
+        body.dark-mode .cota-card { border-color: #ffffff !important; }
         .terminal-container { background-color: #000 !important; color: #4ade80 !important; }
     </style>
 </head>
@@ -60,22 +39,19 @@ body.dark-mode .bg-white h2 {
             <div class="font-black text-2xl tracking-tighter uppercase">AllenMMC<span class="text-blue-600">.</span></div>
             <div class="mono text-[10px] text-slate-400 tracking-widest uppercase font-bold">Project: Cota // v2.0</div>
         </div>
-        
         <div class="flex items-center gap-4">
             <button onclick="toggleDarkMode()" class="nowrap mono text-[10px] font-bold border-2 border-current px-2 py-1 hover:bg-black hover:text-white transition-all uppercase">
-                [ Mode: Toggle ]
+                [ MODE: TOGGLE ]
             </button>
             <a href="https://www.youtube.com/@Happycota" target="_blank" class="nowrap mono text-[10px] font-bold border-b-2 border-red-500 pb-1 hover:bg-red-500 hover:text-white transition-all uppercase">
-                [ Process Logs ]
+                [ PROCESS LOGS ]
             </a>
         </div>
     </nav>
 
     <main class="max-w-5xl mx-auto px-8 py-12">
-        
         <section class="mb-24 max-w-2xl">
             <h1 class="text-6xl md:text-7xl font-black mb-8 leading-none tracking-tighter uppercase">Building <br>in Public.</h1>
-            
             <div class="logic-line">
                 <p class="text-xl font-bold mb-4 italic">" Learn, Explore, Experience, Connect, Reflect, and PUBLISH! "</p>
                 <p class="mono text-sm leading-relaxed uppercase opacity-70">
@@ -84,146 +60,70 @@ body.dark-mode .bg-white h2 {
                     scale, and how clothing defines our identity. 
                 </p>
             </div>
-            
-            <p class="mono text-[11px] text-blue-600 font-bold uppercase tracking-widest">
-                // Current availability and active modules listed below.
-            </p>
         </section>
 
         <section class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-32">
-            
-            <div class="bg-white border-4 border-black p-8 win95-shadow hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all">
+            <div class="bg-white border-4 border-black p-8 win95-shadow transition-all">
                 <span class="bg-blue-600 text-white px-2 py-1 text-[10px] font-bold uppercase mb-4 inline-block">Module_01: Language</span>
                 <h2 class="text-2xl font-black mb-2 uppercase">Spanish</h2>
                 <p class="mb-8 mono text-[10px] uppercase leading-tight opacity-70">Unconventional approach to language. Focusing on conversational logic and cultural immersion. 1-on-1 sessions. First lesson is free! </p>
-                <button onclick="Calendly.initPopupWidget({url: 'https://calendly.com/mcvicker-allen'});return false;" class="block w-full text-center bg-blue-600 text-white font-bold py-3 border-2 border-black hover:invert transition-all uppercase">
-                    Book Session
-                </button>
+                <button onclick="Calendly.initPopupWidget({url: 'https://calendly.com/mcvicker-allen'});return false;" class="block w-full text-center bg-blue-600 text-white font-bold py-3 border-2 border-black hover:invert transition-all uppercase">Book Session</button>
             </div>
 
-            <div class="bg-white border-4 border-black p-8 win95-shadow hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all">
+            <div class="bg-white border-4 border-black p-8 win95-shadow transition-all">
                 <span class="bg-green-500 text-black px-2 py-1 text-[10px] font-bold uppercase mb-4 inline-block">Module_02: Growth</span>
                 <h2 class="text-2xl font-black mb-2 uppercase">Advertising</h2>
                 <p class="mb-8 mono text-[10px] uppercase leading-tight opacity-70">Applying direct-response principles to Meta and PPC campaigns. Scaling through data-driven creativity.</p>
-                <a href="mailto:your@email.com" class="block w-full text-center bg-black text-white font-bold py-3 border-2 border-black hover:bg-white hover:text-black transition-all uppercase">
-                    Inquire
-                </a>
+                <a href="mailto:your@email.com" class="block w-full text-center bg-black text-white font-bold py-3 border-2 border-black hover:bg-white hover:text-black transition-all uppercase">Inquire</a>
             </div>
 
-            <div class="cota-card border-4 border-black p-8 win95-shadow hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all">
+            <div class="cota-card border-4 border-black p-8 win95-shadow transition-all">
                 <span class="bg-white text-black px-2 py-1 text-[10px] font-bold uppercase mb-4 inline-block">Module_03: Design</span>
                 <h2 class="text-2xl font-black mb-2 uppercase tracking-widest">COTA</h2>
                 <p class="text-slate-400 mb-8 mono text-[10px] uppercase leading-tight italic">Geometric product design and structural clothing experiments.</p>
-                <a href="geometry.html" class="block w-full text-center bg-white text-black font-black py-3 border-2 border-white hover:bg-black hover:text-white transition-all uppercase">
-                    Enter Lab
-                </a>
-            </div>
-
-        </section>
-
-        <section class="border-t-2 border-slate-200 pt-20">
-            <div class="max-w-xl mx-auto">
-                <div class="terminal-container p-6 rounded-t-lg mono text-xs shadow-2xl border-x-2 border-t-2 border-black">
-                    <div id="output" class="mb-4 h-32 overflow-y-auto leading-relaxed opacity-80">
-                        >> ALLENMMC OS LOADED... <br>
-                        >> STATUS: BUILDING IN PUBLIC <br>
-                        >> READY FOR SIGNAL.
-                    </div>
-                    <form id="terminal-form" class="flex items-center">
-                        <span class="mr-2">MMC_>></span>
-                        <input type="text" id="terminal-input" autocomplete="off" class="bg-transparent border-none outline-none text-green-400 w-full" placeholder="...">
-                    </form>
-                </div>
-                <div class="bg-slate-100 p-2 text-center text-[9px] mono uppercase text-slate-400 rounded-b-lg border-2 border-black">
-                    If you're reading this, you're a legend. Thank you for being part of the experiment.
-                </div>
+                <a href="geometry.html" class="block w-full text-center bg-white text-black font-black py-3 border-2 border-white hover:bg-black hover:text-white transition-all uppercase">Enter Lab</a>
             </div>
         </section>
 
+        <section class="max-w-xl mx-auto">
+            <div class="terminal-container p-6 rounded-t-lg mono text-xs shadow-2xl border-x-2 border-t-2 border-black">
+                <div id="output" class="mb-4 h-32 overflow-y-auto leading-relaxed opacity-80">>> READY...</div>
+                <form id="terminal-form" class="flex items-center">
+                    <span class="mr-2">MMC_>></span>
+                    <input type="text" id="terminal-input" autocomplete="off" class="bg-transparent border-none outline-none text-green-400 w-full" placeholder="...">
+                </form>
+            </div>
+            <div class="bg-slate-100 p-2 text-center text-[9px] mono uppercase text-slate-400 rounded-b-lg border-2 border-black">
+                If you're reading this, you're a legend. Thank you for being part of the experiment.
+            </div>
+        </section>
     </main>
 
     <script>
-        const form = document.getElementById('terminal-form');
         const input = document.getElementById('terminal-input');
         const output = document.getElementById('output');
-        const yt = "https://www.youtube.com/@Happycota";
-        let idleTimer;
-
+        
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
             localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
         }
         if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
 
-        // Character-by-Character logic (Alive Terminal)
         const print = (text, type = 'system') => {
             const line = document.createElement('div');
-            line.className = 'mb-1 opacity-0 transition-opacity duration-300';
-            
-            if (type === 'user') line.innerHTML = `<span class="text-white">MMC_>> ${text}</span>`;
-            else if (type === 'error') line.innerHTML = `<span class="text-red-500">[!] ${text}</span>`;
-            else if (type === 'success') line.innerHTML = `<span class="text-blue-400">[*] ${text}</span>`;
-            else line.innerHTML = `<span class="text-green-500">>></span> ${text}`;
-            
+            line.innerHTML = `>> ${text}`;
             output.appendChild(line);
-            setTimeout(() => line.classList.remove('opacity-0'), 10);
             output.scrollTop = output.scrollHeight;
-            resetIdleTimer();
         };
 
-        const resetIdleTimer = () => {
-            clearTimeout(idleTimer);
-            idleTimer = setTimeout(() => {
-                if (input.value === "") print("System idle. Type 'HELP' for available modules.", "system");
-            }, 20000);
-        };
-
-        form.addEventListener('submit', (e) => {
+        document.getElementById('terminal-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const cmd = input.value.toLowerCase().trim();
-            if (!cmd) return;
-            print(cmd, 'user');
             input.value = '';
-
-            setTimeout(() => {
-                switch(cmd) {
-                    case 'help':
-                        print("ESTABLISHED SIGNALS:");
-                        print("SPANISH - Launch Scheduling Module", "success");
-                        print("ADS - Access Growth Module", "success");
-                        print("COTA - Access Lab Archives", "success");
-                        print("DARK - Toggle Night Vision", "success");
-                        print("CLEAR - Flush Terminal", "success");
-                        break;
-                    case 'dark':
-                    case 'mode':
-                        toggleDarkMode();
-                        print("Atmosphere recalibrated.", "success");
-                        break;
-                    case 'spanish':
-                    case 'book':
-                        print("Launching Scheduling Interface...");
-                        setTimeout(() => { Calendly.initPopupWidget({url: 'https://calendly.com/mcvicker-allen'}); }, 500);
-                        break;
-                    case 'clear':
-                        output.innerHTML = '';
-                        print("Buffer Flushed.");
-                        break;
-                    case 'ads':
-                        window.scrollTo({top: 500, behavior: 'smooth'});
-                        print("Navigating to Growth Module.");
-                        break;
-                    case 'cota':
-                        print("Uplink to Lab Archives established.");
-                        setTimeout(() => { window.location.href = 'geometry.html'; }, 800);
-                        break;
-                    default:
-                        print(`Signal "${cmd}" not recognized.`, "error");
-                }
-            }, 300);
+            if (cmd === 'dark' || cmd === 'mode') toggleDarkMode();
+            else if (cmd === 'spanish') Calendly.initPopupWidget({url: 'https://calendly.com/mcvicker-allen'});
+            else print(cmd);
         });
-
-        resetIdleTimer();
     </script>
 </body>
 </html>

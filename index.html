@@ -97,39 +97,89 @@
     </main>
 
     <script>
-        const form = document.getElementById('terminal-form');
-        const input = document.getElementById('terminal-input');
-        const output = document.getElementById('output');
-        const yt = "https://www.youtube.com/@Happycota";
+    const form = document.getElementById('terminal-form');
+    const input = document.getElementById('terminal-input');
+    const output = document.getElementById('output');
+    const yt = "https://www.youtube.com/@Happycota";
+    
+    let idleTimer;
 
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const cmd = input.value.toLowerCase().trim();
-            output.innerHTML += `<br><span class="text-white">MMC_>> ${cmd}</span>`;
-            
-            if(cmd === 'help') {
-                output.innerHTML += `<br>> SIGNALS: [spanish, ads, cota, youtube, clear]`;
-            } else if(cmd === 'clear') {
-                output.innerHTML = "Terminal Cleared.";
-            } else if(cmd === 'cota') {
-                output.innerHTML += `<br>> Opening Lab Archives...`;
-                setTimeout(() => { window.location.href = 'geometry.html'; }, 500);
-            } else if(cmd === 'youtube') {
-                output.innerHTML += `<br>> Connecting to @Happycota...`;
-                setTimeout(() => { window.open(yt, '_blank'); }, 500);
-            } else if(cmd === 'spanish') {
-                output.innerHTML += `<br>> Accessing Module_01...`;
-                window.scrollTo({top: 500, behavior: 'smooth'});
-            } else if(cmd === 'ads') {
-                output.innerHTML += `<br>> Accessing Module_02...`;
-                window.scrollTo({top: 500, behavior: 'smooth'});
-            } else {
-                output.innerHTML += `<br>> Signal processed.`;
+    // The core printing engine
+    const print = (text, type = 'system') => {
+        const line = document.createElement('div');
+        line.className = 'mb-1 opacity-0 transition-opacity duration-300';
+        
+        if (type === 'user') line.innerHTML = `<span class="text-white">MMC_>> ${text}</span>`;
+        else if (type === 'error') line.innerHTML = `<span class="text-red-500">[!] ${text}</span>`;
+        else if (type === 'success') line.innerHTML = `<span class="text-blue-400">[*] ${text}</span>`;
+        else line.innerHTML = `<span class="text-green-500">>></span> ${text}`;
+        
+        output.appendChild(line);
+        // Force reflow for animation
+        setTimeout(() => line.classList.remove('opacity-0'), 10);
+        output.scrollTop = output.scrollHeight;
+        resetIdleTimer();
+    };
+
+    // Auto-Help Logic
+    const resetIdleTimer = () => {
+        clearTimeout(idleTimer);
+        idleTimer = setTimeout(() => {
+            if (input.value === "") {
+                print("System waiting for signal... type 'HELP' to see modules.", "system");
             }
+        }, 12000); // 12 seconds of silence triggers a nudge
+    };
 
-            input.value = '';
-            output.scrollTop = output.scrollHeight;
-        });
-    </script>
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const cmd = input.value.toLowerCase().trim();
+        if (!cmd) return;
+
+        print(cmd, 'user');
+        input.value = '';
+
+        // Simulate "Thinking" delay
+        setTimeout(() => {
+            switch(cmd) {
+                case 'help':
+                    print("ESTABLISHED SIGNALS:");
+                    print("SPANISH - Access Language Module", "success");
+                    print("ADS - Access Growth Module", "success");
+                    print("COTA - Access Lab Archives", "success");
+                    print("YOUTUBE - Open Process Logs", "success");
+                    print("CLEAR - Flush Terminal", "success");
+                    break;
+                case 'clear':
+                    output.innerHTML = '';
+                    print("Terminal Buffer Flushed.");
+                    break;
+                case 'cota':
+                case 'geometry':
+                    print("Diverting power to Lab Archives...", "success");
+                    setTimeout(() => { window.location.href = 'geometry.html'; }, 1000);
+                    break;
+                case 'youtube':
+                    print("Establishing uplink to @Happycota...", "success");
+                    setTimeout(() => { window.open(yt, '_blank'); }, 1000);
+                    break;
+                case 'spanish':
+                case 'ads':
+                    print(`Navigating to ${cmd.toUpperCase()}...`, "success");
+                    window.scrollTo({top: 600, behavior: 'smooth'});
+                    break;
+                case 'love':
+                    print("Signal received. The feeling is mutual, legend.", "success");
+                    break;
+                default:
+                    print(`Signal "${cmd}" not recognized.`, "error");
+                    print("Type 'HELP' for valid signals.");
+            }
+        }, 300);
+    });
+
+    // Initial Start
+    resetIdleTimer();
+</script>
 </body>
 </html>

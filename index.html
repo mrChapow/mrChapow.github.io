@@ -1,199 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Cota</title>
-<style>
-  body {
-    margin: 0;
-    background: #f3f3f3;
-    font-family: 'Arial', sans-serif;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-  }
-
-  input {
-    padding: 1rem 2rem;
-    font-size: 1.2rem;
-    border: none;
-    border-bottom: 2px solid #000;
-    outline: none;
-    width: 300px;
-    background: transparent;
-    text-align: center;
-  }
-
-  .win95-box {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -60%);
-    width: 350px;
-    border: 2px solid black;
-    background: #c0c0c0;
-    box-shadow: 4px 4px 0px #808080;
-    z-index: 10;
-  }
-
-  .win95-header {
-    background: #000080;
-    color: white;
-    padding: 4px 8px;
-    font-size: 14px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-weight: bold;
-  }
-
-  .win95-header button {
-    background: #c0c0c0;
-    border: 2px outset white;
-    font-weight: bold;
-    cursor: pointer;
-    width: 20px;
-    height: 20px;
-    padding: 0;
-  }
-
-  .win95-content {
-    padding: 1rem;
-    font-size: 14px;
-    color: #000;
-  }
-
-  .cota-input {
-    padding: 0.8rem 1.2rem;
-    font-size: 1rem;
-    font-family: monospace;
-    background: transparent;
-    border: none;
-    border-bottom: 2px solid #000;
-    outline: none;
-    width: 280px;
-    text-align: center;
-    letter-spacing: 0.05em;
-  }
-
-  .submit-btn {
-    margin-left: 8px;
-    background: #000;
-    color: #fff;
-    font-family: monospace;
-    border: none;
-    padding: 0.6rem 1rem;
-    cursor: pointer;
-  }
-
-  #myspacePage {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    font-family: monospace;
-    font-size: 1.2rem;
-    animation: fadeIn 1s ease forwards;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spanish Tutoring | Cota</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono&display=swap');
+        .mono { font-family: 'Space+Mono', monospace; }
+        .win95-shadow { box-shadow: 4px 4px 0px #808080; }
+    </style>
 </head>
+<body class="bg-slate-50 text-slate-900">
 
-<body>
+    <main class="max-w-3xl mx-auto px-6 py-20">
+        
+        <header class="text-center mb-16">
+            <h1 class="text-5xl font-black tracking-tight mb-4">Habla Español.</h1>
+            <p class="text-xl text-slate-600">No more apps. Just real conversations with a human. <br>Private 1-on-1 tutoring via Google Meet.</p>
+        </header>
 
-<div class="win95-box" id="popup">
-  <div class="win95-header">
-    Alert
-    <button onclick="document.getElementById('popup').style.display='none'">X</button>
-  </div>
-  <div class="win95-content">
-    <img src="cota_cloud_pixelart.png" alt="Cota Symbol" style="width:100%; image-rendering: pixelated;" />
-  </div>
-</div>
+        <div class="bg-white border-2 border-black p-8 rounded-2xl shadow-[8px_8px_0px_rgba(0,0,0,1)] mb-20">
+            <div class="flex justify-between items-start mb-6">
+                <div>
+                    <h2 class="text-2xl font-bold italic underline">Private Session</h2>
+                    <p class="text-slate-500">60 Minutes • Personal Curriculum</p>
+                </div>
+                <div class="text-3xl font-black">$40</div>
+            </div>
 
-<form action="https://formspree.io/f/mdkzoqdp" method="POST" id="cotaForm">
-  <input
-    type="text"
-    name="signal"
-    placeholder="Say anything..."
-    class="cota-input"
-    required
-  />
-  <p id="response" style="display:none; font-family: monospace; margin-top: 1rem;">nothing happened...</p>
-</form>
+            <a href="YOUR_STRIPE_PAYMENT_LINK" class="block w-full bg-blue-600 text-white text-center py-5 rounded-xl text-xl font-bold hover:bg-blue-700 transition-all hover:translate-y-[-2px] active:translate-y-[0px]">
+                Book My Session
+            </a>
+            <p class="text-center mt-4 text-sm text-slate-400">Secure Checkout via Stripe</p>
+        </div>
 
-<div id="myspacePage"></div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-32">
+            <div class="text-center">
+                <span class="text-2xl">💳</span>
+                <h3 class="font-bold mt-2">1. Pay</h3>
+                <p class="text-sm text-slate-500">Quick checkout.</p>
+            </div>
+            <div class="text-center">
+                <span class="text-2xl">📅</span>
+                <h3 class="font-bold mt-2">2. Schedule</h3>
+                <p class="text-sm text-slate-500">Pick a time on my Google Calendar.</p>
+            </div>
+            <div class="text-center">
+                <span class="text-2xl">🗣️</span>
+                <h3 class="font-bold mt-2">3. Speak</h3>
+                <p class="text-sm text-slate-500">We meet and start learning.</p>
+            </div>
+        </div>
 
-<script>
-const form = document.getElementById("cotaForm");
-const responseText = document.getElementById("response");
-const input = document.querySelector(".cota-input");
-const popup = document.getElementById("popup");
-const myspacePage = document.getElementById("myspacePage");
+        <hr class="border-slate-200 mb-20">
 
-form.addEventListener("submit", function (e) {
-  e.preventDefault();
+        <section id="terminal-zone" class="max-w-md mx-auto">
+            <div class="bg-[#c0c0c0] border-2 border-black win95-shadow">
+                <div class="bg-[#000080] text-white px-2 py-1 flex justify-between items-center text-xs font-bold">
+                    <span>COTA_TERMINAL.EXE</span>
+                    <button onclick="document.getElementById('terminal-zone').style.opacity='0.5'" class="bg-[#c0c0c0] text-black border border-white px-1 leading-none">X</button>
+                </div>
+                
+                <div class="p-4">
+                    <p class="mono text-xs mb-4 text-slate-700 uppercase tracking-widest">// Easter Egg Box</p>
+                    
+                    <form action="https://formspree.io/f/mdkzoqdp" method="POST" id="cotaForm" class="flex flex-col gap-2">
+                        <input 
+                            type="text" 
+                            name="signal" 
+                            placeholder="Type a command..." 
+                            class="mono w-full bg-white border-2 border-inset p-2 outline-none text-sm focus:border-blue-500"
+                            autocomplete="off"
+                            required
+                        />
+                        <button type="submit" class="bg-[#c0c0c0] border-2 border-black text-xs p-1 hover:bg-slate-200">SUBMIT SIGNAL</button>
+                    </form>
+                    
+                    <div id="terminal-output" class="mono text-xs mt-4 text-blue-800"></div>
+                </div>
+            </div>
+        </section>
 
-  const value = input.value.trim().toLowerCase();
+    </main>
 
-  if (value === "love") {
-    const loveNote = document.createElement("p");
-    loveNote.textContent = "You are loved 💖";
-    loveNote.style.fontFamily = "monospace";
-    loveNote.style.marginTop = "0.5rem";
-    loveNote.style.color = "#d100b3";
-    form.appendChild(loveNote);
-    responseText.style.display = "none";
-    return;
-  } else if (value === "myspace") {
-    form.style.display = "none";
-    popup.style.display = "none";
-    myspacePage.innerHTML = '<p style="font-family: monospace; font-size: 1.1rem;">Loading MySpace...</p>';
-    myspacePage.style.display = "flex";
+    <script>
+        const form = document.getElementById("cotaForm");
+        const output = document.getElementById("terminal-output");
+        const input = form.querySelector('input[name="signal"]');
 
-    setTimeout(() => {
-      myspacePage.innerHTML = `
-        <div style="border: 2px solid #000; padding: 1rem 1.5rem; background: #fff; width: 100%; max-width: 700px; box-shadow: 4px 4px #aaa; text-align: left; font-family: monospace;">
-          <h1 style="font-size: 1.6rem; margin-bottom: 1rem; color: hotpink; text-shadow: 1px 1px black;">AllenMMC's MySpace</h1>
-          <p>Profile details here…</p>
-        </div>`;
-    }, 1500);
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+            const val = input.value.trim().toLowerCase();
 
-  } else if (value === "cota") {
-    window.location.href = "geometry.html";
-  } else if (value === "cota2") {
-    window.location.href = "replitlastwords.html";
-  } else if (value === "cota1") {
-    window.location.href = "cota.html";
-  } else {
-    responseText.style.display = "block";
-  }
+            // Your existing logic
+            if (val === "love") {
+                output.innerHTML = "> YOU ARE LOVED 💖";
+            } else if (val === "myspace") {
+                output.innerHTML = "> REDIRECTING TO MYSPACE...";
+                setTimeout(() => { window.location.href = "myspace.html"; }, 1000);
+            } else if (val === "cota") {
+                window.location.href = "geometry.html";
+            } else {
+                output.innerHTML = "> SIGNAL RECEIVED: " + val;
+            }
 
-  const data = new FormData(form);
-  fetch(form.action, {
-    method: form.method,
-    body: data,
-    headers: { Accept: "application/json" },
-  }).then((response) => {
-    if (response.ok) {
-      form.reset();
-    }
-  });
-});
-</script>
+            // Send to Formspree
+            const data = new FormData(form);
+            fetch(form.action, {
+                method: form.method,
+                body: data,
+                headers: { Accept: "application/json" },
+            });
+            
+            form.reset();
+        });
+    </script>
 
-<!-- Hidden Gratitude Message -->
-<div style="display: none;">
-  If you can see this, you're a legend. thank you. i love you!
-</div>
-
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "f321664fe17c4bf097ed51e782837677"}'></script>
 </body>
 </html>

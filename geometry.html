@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" style="background:#000!important;">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,129 +8,107 @@
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     
     <style>
-        :root {
-          --accent-green: #22C55E;
+        :root { --accent-green: #22C55E; }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            overflow: hidden; /* Prevents messy scrolling */
         }
 
-        html, body {
-          background: #000 !important;
-          margin: 0;
-          padding: 0;
-          overflow: hidden;
-          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        #root {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
         }
 
-        #root { 
-            width: 100vw; 
-            height: 100vh; 
-            position: relative; 
-            background: #000;
-        }
-
-        /* The Locked 3D Viewer */
+        /* The 3D Viewer */
         model-viewer {
-          width: 100%;
-          height: 100vh;
-          background-color: #000;
-          --poster-color: transparent;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
         }
 
-        /* The New Product Sidebar */
+        /* Glass Sidebar */
         .product-sidebar {
-          position: fixed;
-          z-index: 20;
-          background: rgba(255, 255, 255, 0.05);
-          backdrop-filter: blur(25px);
-          -webkit-backdrop-filter: blur(25px);
-          border: 1px solid rgba(255, 255, 255, 0.15);
-          border-radius: 32px;
-          padding: 32px;
-          color: white;
-          
-          /* Desktop Position */
-          top: 50%;
-          right: 5vw;
-          transform: translateY(-50%);
-          width: 380px;
-          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            position: fixed;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 2rem;
+            
+            /* Desktop placement */
+            top: 50%;
+            right: 5vw;
+            transform: translateY(-50%);
+            width: 350px;
         }
 
         .product-name {
-          font-size: 3rem;
-          font-weight: 900;
-          letter-spacing: -0.05em;
-          text-transform: uppercase;
-          margin: 0 0 8px 0;
-          line-height: 1;
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin: 0 0 0.5rem 0;
+            text-transform: uppercase;
+            letter-spacing: -1px;
         }
 
         .product-desc {
-          font-family: monospace;
-          font-size: 0.85rem;
-          line-height: 1.6;
-          opacity: 0.6;
-          margin-bottom: 32px;
-          text-transform: uppercase;
-        }
-
-        .price-tag {
-          font-size: 1.5rem;
-          font-weight: 700;
-          margin-bottom: 24px;
-          display: block;
+            font-family: monospace;
+            font-size: 0.8rem;
+            opacity: 0.6;
+            line-height: 1.5;
+            margin-bottom: 2rem;
         }
 
         .add-to-cart {
-          background: white;
-          color: black;
-          width: 100%;
-          padding: 20px;
-          border-radius: 100px;
-          font-weight: 900;
-          text-transform: uppercase;
-          letter-spacing: 0.1em;
-          border: none;
-          cursor: pointer;
-          transition: all 0.3s ease;
+            background: #fff;
+            color: #000;
+            width: 100%;
+            padding: 1rem;
+            border-radius: 50px;
+            border: none;
+            font-weight: 900;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.3s;
         }
 
         .add-to-cart:hover {
-          background: var(--accent-green);
-          transform: scale(1.02);
+            background: var(--accent-green);
         }
 
         .back-hub {
             position: fixed;
-            bottom: 2rem;
-            left: 2rem;
-            color: #4ade80;
+            bottom: 20px;
+            left: 20px;
+            color: var(--accent-green);
             text-decoration: none;
             font-family: monospace;
-            font-size: 11px;
-            z-index: 30;
-            opacity: 0.6;
-            transition: opacity 0.3s;
+            font-size: 10px;
+            z-index: 200;
         }
 
-        .back-hub:hover { opacity: 1; }
-
-        .mono { font-family: monospace; }
-
-        /* Mobile Responsive Fixes */
+        /* Mobile specific adjustments */
         @media (max-width: 768px) {
-          .product-sidebar {
-            top: auto;
-            bottom: 4vh;
-            right: 5vw;
-            left: 5vw;
-            width: 90vw;
-            transform: none;
-            padding: 24px;
-            border-radius: 24px;
-          }
-          .product-name { font-size: 2.2rem; }
-          .product-desc { margin-bottom: 16px; font-size: 0.75rem; }
-          model-viewer { height: 60vh; } /* Pushes the shirt up so it's not hidden by the UI */
+            .product-sidebar {
+                top: auto;
+                bottom: 5vh;
+                right: 5vw;
+                left: 5vw;
+                width: auto;
+                transform: none;
+            }
+            model-viewer {
+                height: 70%; /* Move shirt up on mobile */
+            }
         }
     </style>
 </head>
@@ -144,8 +122,24 @@
             camera-controls
             disable-zoom
             disable-pan
-            shadow-intensity="2" 
+            shadow-intensity="1" 
             camera-orbit="0deg 75deg 105%"
-            min-camera-orbit="auto 75deg auto"
-            max-camera-orbit="auto 75deg auto"
-            min-field
+            touch-action="none">
+        </model-viewer>
+
+        <div class="product-sidebar">
+            <h1 class="product-name">T-Shirt</h1>
+            <p class="product-desc">
+                GEOMETRIC PRODUCT DESIGN 001. <br>
+                HIGH-FIDELITY STRUCTURE EXPLORATION. <br>
+                COTA LAB ARCHIVE.
+            </p>
+            <div style="font-weight: bold; margin-bottom: 1rem;">$299.99</div>
+            <button class="add-to-cart">Add to Cart</button>
+        </div>
+
+        <a href="index.html" class="back-hub">>> RETURN_TO_HUB</a>
+    </div>
+
+</body>
+</html>

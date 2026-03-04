@@ -3,539 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Helm - 3D Interactive Product</title>
-    <meta name="theme-color" content="#000000" />
-    <meta name="msapplication-navbutton-color" content="#000000" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <title>Cota // Lab Archives</title>
+    
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+    
     <style>
-      html{background:#000!important;background-color:#000!important;color-scheme:dark}
-      body{background:#000!important;background-color:#000!important;margin:0;padding:0;min-height:100vh}
-      *{box-sizing:border-box}
-      html::before{content:'';position:fixed;top:0;left:0;width:100vw;height:100vh;background:#000!important;z-index:-1}
-    </style>
-    <style>
-        /* Custom CSS Variables for Easy Spacing Adjustments */
         :root {
           --desktop-price-top: 25vh;
           --desktop-desc-top: 45vh;
-          --desktop-panels-right: 25vw;
+          --desktop-panels-right: 10vw;
           --desktop-panel-width: 350px;
-          --mobile-price-bottom: 22vh;
-          --mobile-desc-bottom: 6vh;
-          --mobile-panel-width: 90vw;
-          --mobile-panel-max-width: 400px;
         }
 
-        * {
+        html, body {
+          background: #000 !important;
           margin: 0;
           padding: 0;
-          box-sizing: border-box;
-        }
-
-        body {
-          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-          background: #000000;
-          min-height: 100vh;
           overflow: hidden;
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
-        #root {
-          width: 100vw;
-          height: 100vh;
-          position: relative;
-        }
+        #root { width: 100vw; height: 100vh; position: relative; }
 
-        .canvas-container {
+        /* 2. The 3D Shirt Container */
+        model-viewer {
           width: 100%;
-          height: 100%;
-          position: relative;
-          background: #000000;
+          height: 100vh;
+          background-color: #000;
+          --poster-color: transparent;
         }
 
         .glass-panel {
-          background: linear-gradient(135deg, 
-            rgba(255, 255, 255, 0.18) 0%,
-            rgba(255, 255, 255, 0.12) 50%,
-            rgba(255, 255, 255, 0.15) 100%);
+          background: linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.12) 50%);
           backdrop-filter: blur(40px) saturate(180%);
           border: 1px solid rgba(255, 255, 255, 0.35);
-          border-top: 2px solid rgba(255, 255, 255, 0.5);
           border-radius: 24px;
           padding: 20px;
-          box-shadow: 
-            0 20px 40px rgba(0, 0, 0, 0.3),
-            0 8px 16px rgba(0, 0, 0, 0.2),
-            inset 0 1px 0 rgba(255, 255, 255, 0.4);
           position: fixed;
           z-index: 10;
           width: var(--desktop-panel-width);
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          color: white;
         }
 
-        .glass-panel:hover {
-          transform: translateY(-2px);
-          box-shadow: 
-            0 25px 50px rgba(0, 0, 0, 0.4),
-            0 12px 20px rgba(0, 0, 0, 0.25),
-            inset 0 1px 0 rgba(255, 255, 255, 0.5);
-        }
-
-        .price-panel {
-          top: var(--desktop-price-top);
-          right: var(--desktop-panels-right);
-        }
-
-        .description-panel {
-          top: var(--desktop-desc-top);
-          right: var(--desktop-panels-right);
-        }
-
-        .glass-panel h1 {
-          font-size: 2.5rem;
-          font-weight: 700;
-          color: #ffffff;
-          margin: 0 0 8px 0;
-          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .glass-panel h2 {
-          font-size: 1.5rem;
-          font-weight: 600;
-          color: #ffffff;
-          margin: 0 0 12px 0;
-          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .glass-panel p {
-          color: rgba(255, 255, 255, 0.9);
-          font-size: 1rem;
-          line-height: 1.5;
-          margin: 0 0 20px 0;
-        }
-
-        .glass-panel .text-sm {
-          font-size: 0.9rem;
-          line-height: 1.4;
-        }
+        .price-panel { top: var(--desktop-price-top); right: var(--desktop-panels-right); }
+        .description-panel { top: var(--desktop-desc-top); right: var(--desktop-panels-right); }
 
         .buy-button {
           background: linear-gradient(135deg, #22C55E 0%, #16A34A 100%);
           color: white;
           border: none;
           border-radius: 16px;
-          padding: 14px 28px;
-          font-size: 1.1rem;
-          font-weight: 600;
+          padding: 14px;
+          width: 100%;
+          font-weight: 700;
           cursor: pointer;
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-          box-shadow: 
-            0 8px 16px rgba(34, 197, 94, 0.3),
-            0 4px 8px rgba(34, 197, 94, 0.2);
-          width: 100%;
+          margin-top: 10px;
         }
 
-        .buy-button:hover {
-          transform: translateY(-2px);
-          box-shadow: 
-            0 12px 24px rgba(34, 197, 94, 0.4),
-            0 6px 12px rgba(34, 197, 94, 0.3);
-          background: linear-gradient(135deg, #16A34A 0%, #15803D 100%);
-        }
-
-        .buy-button:active {
-          transform: translateY(0);
-          box-shadow: 
-            0 4px 8px rgba(34, 197, 94, 0.3),
-            0 2px 4px rgba(34, 197, 94, 0.2);
-        }
-
-        /* Mobile Responsive */
-        @media (max-width: 768px) {
-          .glass-panel {
+        .back-hub {
             position: fixed;
-            width: var(--mobile-panel-width);
-            max-width: var(--mobile-panel-max-width);
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 18px;
-          }
-
-          .price-panel {
-            bottom: var(--mobile-price-bottom);
-            top: auto;
-            right: auto;
-          }
-
-          .description-panel {
-            bottom: var(--mobile-desc-bottom);
-            top: auto;
-            right: auto;
-          }
-          
-          /* Clean mobile canvas - no transforms */
-          #three-canvas {
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 100vw !important;
-            height: 100vh !important;
-            z-index: 1 !important;
-          }
-
-          .glass-panel h1 {
-            font-size: 2rem;
-          }
-
-          .glass-panel h2 {
-            font-size: 1.3rem;
-          }
-
-          .glass-panel p {
-            font-size: 0.95rem;
-          }
-
-          .buy-button {
-            padding: 12px 24px;
-            font-size: 1rem;
-          }
-        }
-
-        /* Hide scrollbars */
-        ::-webkit-scrollbar {
-          display: none;
-        }
-        
-        html {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-
-        /* Canvas styling */
-        #three-canvas {
-          display: block;
-          width: 100%;
-          height: 100%;
+            bottom: 2rem;
+            left: 2rem;
+            color: #4ade80;
+            text-decoration: none;
+            font-family: monospace;
+            font-size: 12px;
+            z-index: 20;
         }
     </style>
 </head>
 <body>
-    <div id="root">
-        <div class="canvas-container">
-            <canvas id="three-canvas"></canvas>
-            
-            <!-- Price Panel -->
-            <div class="glass-panel price-panel">
-                <div style="text-align: center;">
-                    <h1>$299.99</h1>
-                    <button class="buy-button" onclick="handlePurchase()">Buy</button>
-                </div>
-            </div>
 
-            <!-- Description Panel -->
-            <div class="glass-panel description-panel">
-                <div>
-                    <h2>Helm</h2>
-                    <div style="margin-top: 8px;">
-                        <p class="text-sm" style="opacity: 0.9;">Cota Pilot Project</p>
-                    </div>
-                </div>
+    <div id="root">
+        <model-viewer 
+            src="Tshirt.glb" 
+            alt="Cota 3D Shirt"
+            auto-rotate 
+            camera-controls 
+            shadow-intensity="1" 
+            touch-action="pan-y">
+        </model-viewer>
+
+        <div class="glass-panel price-panel">
+            <div style="text-align: center;">
+                <h1 style="font-size: 2.5rem; margin: 0;">$299.99</h1>
+                <button class="buy-button">Buy Now</button>
             </div>
         </div>
+
+        <div class="glass-panel description-panel">
+            <h2>Cota // 001</h2>
+            <p style="font-size: 0.9rem; opacity: 0.8;">Geometric product design and structural clothing experiments.</p>
+        </div>
+
+        <a href="index.html" class="back-hub">>> RETURN_TO_HUB</a>
     </div>
 
-    <!-- Three.js from CDN -->
-    <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
-
-    <script>
-        // 3D Scene Variables - Clean and minimal
-        let scene, camera, renderer, cube;
-        let raycaster, mouse;
-        
-        // Interaction state
-        let isRotating = false;
-        let isMoving = false;
-        let isDragging = false;
-        
-        // Input tracking
-        let lastPointer = { x: 0, y: 0 };
-        let tapCount = 0;
-        let tapTimer = null;
-        
-        // Position persistence - responsive positioning
-        let cubePosition = window.innerWidth <= 768 ? { x: 0, y: 0.8, z: 0 } : { x: -1.2, y: 0, z: 0 };
-        
-        // Animation timing
-        let time = 0;
-
-        function init() {
-            // Scene setup
-            scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
-            
-            // Renderer setup with soft, holy lighting
-            const canvas = document.getElementById('three-canvas');
-            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setClearColor(0x000000, 0);
-            renderer.shadowMap.enabled = true;
-            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
-            // Holy, soft lighting setup
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
-            scene.add(ambientLight);
-
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
-            directionalLight.position.set(10, 10, 5);
-            directionalLight.castShadow = true;
-            directionalLight.shadow.mapSize.width = 2048;
-            directionalLight.shadow.mapSize.height = 2048;
-            scene.add(directionalLight);
-
-            const pointLight = new THREE.PointLight(0xffffff, 0.3);
-            pointLight.position.set(-10, -10, -10);
-            scene.add(pointLight);
-
-            // Raycaster for picking
-            raycaster = new THREE.Raycaster();
-            mouse = new THREE.Vector2();
-
-            // Create holy cube
-            createCube();
-
-            // Camera position
-            camera.position.set(0, 0, 5);
-
-            // Event listeners for precise input
-            addEventListeners();
-
-            // Start holy animation
-            animate();
-        }
-
-        function createCube() {
-            // Main cube with holy green metallic material
-            const geometry = new THREE.BoxGeometry(
-                window.innerWidth <= 768 ? 1.0 : 1.5, 
-                window.innerWidth <= 768 ? 1.0 : 1.5, 
-                window.innerWidth <= 768 ? 1.0 : 1.5
-            );
-            const material = new THREE.MeshStandardMaterial({
-                color: 0x22C55E,
-                metalness: 0.9,
-                roughness: 0.1,
-                emissive: 0x16A34A,
-                emissiveIntensity: 0.1
-            });
-            
-            cube = new THREE.Mesh(geometry, material);
-            cube.position.set(cubePosition.x, cubePosition.y, cubePosition.z);
-            cube.castShadow = true;
-            cube.receiveShadow = true;
-            scene.add(cube);
-
-            // Add holy labels that stay properly aligned
-            addCubeLabels();
-        }
-
-        function addCubeLabels() {
-            // Create labels as children to maintain proper alignment
-            const isMobile = window.innerWidth <= 768;
-            const labelDistance = isMobile ? 0.51 : 0.76;
-            const labels = [
-                { text: 'HELM', position: [0, 0, labelDistance], rotation: [0, 0, 0] },
-                { text: 'PREMIUM', position: [labelDistance, 0, 0], rotation: [0, Math.PI/2, 0] },
-                { text: 'COTA', position: [0, labelDistance, 0], rotation: [-Math.PI/2, 0, 0] },
-                { text: 'DESIGN', position: [-labelDistance, 0, 0], rotation: [0, -Math.PI/2, 0] },
-                { text: 'PILOT', position: [0, 0, -labelDistance], rotation: [0, Math.PI, 0] },
-                { text: 'PROJECT', position: [0, -labelDistance, 0], rotation: [Math.PI/2, 0, 0] }
-            ];
-
-            labels.forEach(label => {
-                const canvas = document.createElement('canvas');
-                const context = canvas.getContext('2d');
-                canvas.width = 256;
-                canvas.height = 64;
-
-                // Holy white background
-                context.fillStyle = 'rgba(255, 255, 255, 0.9)';
-                context.fillRect(0, 0, canvas.width, canvas.height);
-
-                // Clean black text
-                context.fillStyle = 'black';
-                context.font = 'bold 24px Arial';
-                context.textAlign = 'center';
-                context.textBaseline = 'middle';
-                context.fillText(label.text, canvas.width / 2, canvas.height / 2);
-
-                // Create texture and material
-                const texture = new THREE.CanvasTexture(canvas);
-                const textMaterial = new THREE.MeshBasicMaterial({ 
-                    map: texture, 
-                    transparent: true 
-                });
-
-                // Create plane for text (properly scaled for cube size)
-                const isMobile = window.innerWidth <= 768;
-                const textGeometry = new THREE.PlaneGeometry(
-                    isMobile ? 0.8 : 1.2, 
-                    isMobile ? 0.2 : 0.3
-                );
-                const textMesh = new THREE.Mesh(textGeometry, textMaterial);
-                
-                textMesh.position.set(...label.position);
-                textMesh.rotation.set(...label.rotation);
-                
-                // Add as child to maintain proper alignment
-                cube.add(textMesh);
-            });
-        }
-
-        function addEventListeners() {
-            const canvas = document.getElementById('three-canvas');
-            
-            // Unified pointer events for precise control
-            canvas.addEventListener('pointerdown', onPointerDown);
-            canvas.addEventListener('pointermove', onPointerMove);
-            canvas.addEventListener('pointerup', onPointerUp);
-            canvas.addEventListener('pointerleave', onPointerUp);
-            
-            // Window resize
-            window.addEventListener('resize', onWindowResize);
-            
-            // Prevent context menu
-            canvas.addEventListener('contextmenu', e => e.preventDefault());
-        }
-
-        function onPointerDown(event) {
-            event.preventDefault();
-            
-            // Update mouse position for raycasting
-            updateMousePosition(event);
-            
-            // Check if clicking on cube
-            raycaster.setFromCamera(mouse, camera);
-            const intersects = raycaster.intersectObject(cube);
-            
-            if (intersects.length > 0) {
-                lastPointer.x = event.clientX;
-                lastPointer.y = event.clientY;
-                
-                // Handle tap counting for double-tap detection
-                tapCount++;
-                
-                if (tapCount === 1) {
-                    // Start rotation immediately on first tap
-                    isRotating = true;
-                    isDragging = true;
-                    console.log('🔄 Rotation mode activated');
-                    
-                    // Set timer to reset tap count
-                    tapTimer = setTimeout(() => {
-                        tapCount = 0;
-                    }, 300);
-                    
-                } else if (tapCount === 2) {
-                    // Switch to movement mode on double tap
-                    clearTimeout(tapTimer);
-                    isRotating = false;
-                    isMoving = true;
-                    isDragging = true;
-                    tapCount = 0;
-                    console.log('🎯 Movement mode activated');
-                }
-            }
-        }
-
-        function onPointerMove(event) {
-            if (!isDragging) return;
-            
-            event.preventDefault();
-            
-            const deltaX = event.clientX - lastPointer.x;
-            const deltaY = event.clientY - lastPointer.y;
-            
-            if (isRotating) {
-                // 1:1 rotation input - precise and responsive
-                const rotationSpeed = 0.01;
-                cube.rotation.y += deltaX * rotationSpeed;
-                cube.rotation.x += deltaY * rotationSpeed;
-                
-                // Clamp X rotation to prevent flipping
-                cube.rotation.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, cube.rotation.x));
-                
-            } else if (isMoving) {
-                // 1:1 movement input - no lag, no offset
-                const sensitivity = 4;
-                const newX = cubePosition.x + (deltaX / window.innerWidth) * sensitivity;
-                const newY = cubePosition.y - (deltaY / window.innerHeight) * sensitivity;
-                
-                // Keep within reasonable bounds
-                cubePosition.x = Math.max(-3, Math.min(3, newX));
-                cubePosition.y = Math.max(-2, Math.min(2, newY));
-                
-                // Apply immediately for 1:1 feel
-                cube.position.x = cubePosition.x;
-                cube.position.y = cubePosition.y;
-            }
-            
-            lastPointer.x = event.clientX;
-            lastPointer.y = event.clientY;
-        }
-
-        function onPointerUp(event) {
-            // Release all interaction modes
-            isRotating = false;
-            isMoving = false;
-            isDragging = false;
-            
-            if (tapTimer) {
-                clearTimeout(tapTimer);
-                tapTimer = null;
-            }
-            
-            console.log('✨ Released - returning to holy idle state');
-        }
-
-        function updateMousePosition(event) {
-            const rect = renderer.domElement.getBoundingClientRect();
-            mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-            mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-        }
-
-        function onWindowResize() {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            time += 0.016; // ~60fps
-            
-            if (!isDragging) {
-                // Holy idle behavior: soft spin and bounce
-                
-                // Very slow, soft Y-axis spin (holy rotation)
-                cube.rotation.y += 0.003;
-                
-                // Subtle, rhythmic bounce (organic breathing)
-                const bounceOffset = Math.sin(time * 1.5) * 0.02;
-                cube.position.y = cubePosition.y + bounceOffset;
-                
-                // Maintain proper position
-                cube.position.x = cubePosition.x;
-                cube.position.z = cubePosition.z;
-            }
-            
-            renderer.render(scene, camera);
-        }
-
-        function handlePurchase() {
-            alert('Purchase functionality would be integrated here!\n\nFeatures:\n• Holy Interactive 3D Product\n• Intuitive rotation & movement\n• Sacred, calming experience\n• Mobile optimized');
-        }
-
-        // Initialize when page loads
-        window.addEventListener('load', init);
-    </script>
 </body>
 </html>

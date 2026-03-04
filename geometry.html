@@ -18,23 +18,23 @@
             background-color: #000;
             color: #fff;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            overflow: hidden; /* Prevents messy scrolling */
+            overflow: hidden;
         }
 
         #root {
             position: relative;
             width: 100vw;
             height: 100vh;
+            background: #000;
         }
 
-        /* The 3D Viewer */
         model-viewer {
             width: 100%;
             height: 100%;
             background-color: #000;
+            --poster-color: transparent;
         }
 
-        /* Glass Sidebar */
         .product-sidebar {
             position: fixed;
             z-index: 100;
@@ -44,8 +44,6 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 24px;
             padding: 2rem;
-            
-            /* Desktop placement */
             top: 50%;
             right: 5vw;
             transform: translateY(-50%);
@@ -55,7 +53,7 @@
         .product-name {
             font-size: 2.5rem;
             font-weight: 900;
-            margin: 0 0 0.5rem 0;
+            margin: 0;
             text-transform: uppercase;
             letter-spacing: -1px;
         }
@@ -65,7 +63,7 @@
             font-size: 0.8rem;
             opacity: 0.6;
             line-height: 1.5;
-            margin-bottom: 2rem;
+            margin: 1rem 0 2rem 0;
         }
 
         .add-to-cart {
@@ -96,7 +94,6 @@
             z-index: 200;
         }
 
-        /* Mobile specific adjustments */
         @media (max-width: 768px) {
             .product-sidebar {
                 top: auto;
@@ -106,9 +103,7 @@
                 width: auto;
                 transform: none;
             }
-            model-viewer {
-                height: 70%; /* Move shirt up on mobile */
-            }
+            model-viewer { height: 70%; }
         }
     </style>
 </head>
@@ -122,8 +117,11 @@
             camera-controls
             disable-zoom
             disable-pan
-            shadow-intensity="1" 
+            shadow-intensity="2" 
             camera-orbit="0deg 75deg 105%"
+            min-camera-orbit="auto 75deg auto"
+            max-camera-orbit="auto 75deg auto"
+            interpolation-decay="200"
             touch-action="none">
         </model-viewer>
 
@@ -134,7 +132,7 @@
                 HIGH-FIDELITY STRUCTURE EXPLORATION. <br>
                 COTA LAB ARCHIVE.
             </p>
-            <div style="font-weight: bold; margin-bottom: 1rem;">$299.99</div>
+            <div style="font-weight: bold; margin-bottom: 1rem; font-size: 1.2rem;">$299.99</div>
             <button class="add-to-cart">Add to Cart</button>
         </div>
 

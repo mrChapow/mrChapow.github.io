@@ -77,11 +77,20 @@
     <div id="root">
         <model-viewer 
             src="Tshirt.glb" 
-            alt="Cota 3D Shirt"
-            auto-rotate 
-            camera-controls 
-            shadow-intensity="1" 
-            touch-action="pan-y">
+    alt="Cota 3D Shirt"
+    auto-rotate 
+    camera-controls
+    disable-zoom
+    disable-pan
+    shadow-intensity="2" 
+    shadow-softness="1"
+    camera-orbit="0deg 75deg 105%"
+    min-camera-orbit="auto 75deg auto"
+    max-camera-orbit="auto 75deg auto"
+    min-field-of-view="25deg"
+    interpolation-decay="200"
+    touch-action="none"
+    style="width: 100%; height: 100vh; background: #000;">
         </model-viewer>
 
         <div class="glass-panel price-panel">
@@ -100,4 +109,4 @@
     </div>
 
 </body>
-</html>
+</html>>

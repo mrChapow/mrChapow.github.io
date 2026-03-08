@@ -3,116 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cota // Lab Archives</title>
+    <title>Cota // Restricted Archive</title>
     
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     
     <style>
-        :root { --accent-green: #22C55E; }
+        :root { 
+            --terminal-green: #22C55E; 
+            --bg-color: #050505;
+        }
 
         body, html {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
-            background-color: #000;
+            background-color: var(--bg-color);
             color: #fff;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             overflow: hidden;
+            /* Subtle blueprint grid */
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
         }
 
         #root {
             position: relative;
             width: 100vw;
             height: 100vh;
-            background: #000;
         }
 
+        /* The Loading Sequence */
+        #loader {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: var(--bg-color);
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 3rem;
+            box-sizing: border-box;
+            animation: fadeOut 0.5s ease 1.5s forwards;
+            pointer-events: none;
+        }
+
+        .loader-text {
+            font-family: monospace;
+            color: var(--terminal-green);
+            font-size: 0.85rem;
+            line-height: 1.5;
+            text-transform: uppercase;
+        }
+
+        @keyframes fadeOut {
+            to { opacity: 0; visibility: hidden; }
+        }
+
+        /* 3D Viewer - Darker, moodier lighting */
         model-viewer {
             width: 100%;
             height: 100%;
-            background-color: #000;
             --poster-color: transparent;
+            /* Adds a slight dimming to make the UI pop */
+            exposure: 0.85; 
         }
 
+        /* The Data Panel - Brutalist & Sharp */
         .product-sidebar {
             position: fixed;
             z-index: 100;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
+            background: rgba(10, 10, 10, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-left: 2px solid var(--terminal-green);
             padding: 2rem;
             top: 50%;
             right: 5vw;
             transform: translateY(-50%);
-            width: 350px;
+            width: 340px;
+            box-sizing: border-box;
+        }
+
+        .mono-tag {
+            font-family: monospace;
+            font-size: 0.7rem;
+            color: var(--terminal-green);
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+            display: block;
         }
 
         .product-name {
-            font-size: 2.5rem;
-            font-weight: 900;
+            font-size: 2rem;
+            font-weight: 400;
             margin: 0;
             text-transform: uppercase;
-            letter-spacing: -1px;
+            letter-spacing: 0.05em;
         }
 
-        .product-desc {
+        .product-specs {
             font-family: monospace;
-            font-size: 0.8rem;
-            opacity: 0.6;
-            line-height: 1.5;
-            margin: 1rem 0 2rem 0;
+            font-size: 0.75rem;
+            color: #888;
+            line-height: 1.6;
+            margin: 1.5rem 0;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 1rem 0;
         }
 
-        .add-to-cart {
-            background: #fff;
-            color: #000;
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            font-family: monospace;
+        }
+
+        .price {
+            font-size: 1.2rem;
+            color: #fff;
+        }
+
+        /* Command-Line Button */
+        .action-btn {
+            background: transparent;
+            color: var(--terminal-green);
             width: 100%;
             padding: 1rem;
-            border-radius: 50px;
-            border: none;
-            font-weight: 900;
+            border: 1px solid var(--terminal-green);
+            font-family: monospace;
+            font-size: 0.85rem;
             text-transform: uppercase;
+            letter-spacing: 0.1em;
             cursor: pointer;
-            transition: 0.3s;
+            transition: all 0.2s ease;
+            text-align: left;
         }
 
-        .add-to-cart:hover {
-            background: var(--accent-green);
+        .action-btn::before {
+            content: "> ";
+        }
+
+        .action-btn:hover {
+            background: var(--terminal-green);
+            color: #000;
         }
 
         .back-hub {
             position: fixed;
             bottom: 20px;
             left: 20px;
-            color: var(--accent-green);
+            color: #666;
             text-decoration: none;
             font-family: monospace;
             font-size: 10px;
             z-index: 200;
+            transition: color 0.2s;
         }
+
+        .back-hub:hover { color: var(--terminal-green); }
 
         @media (max-width: 768px) {
             .product-sidebar {
                 top: auto;
-                bottom: 5vh;
+                bottom: 4vh;
                 right: 5vw;
                 left: 5vw;
-                width: auto;
+                width: 90vw;
                 transform: none;
+                padding: 1.5rem;
             }
-            model-viewer { height: 70%; }
+            model-viewer { height: 65%; }
+            #loader { padding: 2rem; }
         }
     </style>
 </head>
 <body>
 
+    <div id="loader">
+        <div class="loader-text">
+            > ESTABLISHING SECURE CONNECTION...<br>
+            > BYPASSING MAINFRAME...<br>
+            > DECRYPTING ASSET: TSHIRT.GLB [1.15MB]<br>
+            > RENDER ENGINE ONLINE.
+        </div>
+    </div>
+
     <div id="root">
         <model-viewer 
             src="Tshirt.glb" 
-            alt="Cota 3D Shirt"
+            alt="Cota 3D Model"
             auto-rotate 
             camera-controls
             disable-zoom
@@ -126,17 +211,25 @@
         </model-viewer>
 
         <div class="product-sidebar">
-            <h1 class="product-name">T-Shirt</h1>
-            <p class="product-desc">
-                GEOMETRIC PRODUCT DESIGN 001. <br>
-                HIGH-FIDELITY STRUCTURE EXPLORATION. <br>
-                COTA LAB ARCHIVE.
-            </p>
-            <div style="font-weight: bold; margin-bottom: 1rem; font-size: 1.2rem;">$299.99</div>
-            <button class="add-to-cart">Add to Cart</button>
+            <span class="mono-tag">SYS.FILE // 001</span>
+            <h1 class="product-name">Cota_Tee</h1>
+            
+            <div class="product-specs">
+                CLASS: STRUCTURAL GARMENT<br>
+                MAT: HEAVYWEIGHT COTTON<br>
+                STATUS: UNAUTHORIZED DISTRIBUTION<br>
+                ORIGIN: COTA LAB ARCHIVE
+            </div>
+
+            <div class="price-row">
+                <span>VALUE_EXCHANGE:</span>
+                <span class="price">$299.99</span>
+            </div>
+            
+            <button class="action-btn">Initialize Acquisition</button>
         </div>
 
-        <a href="index.html" class="back-hub">>> RETURN_TO_HUB</a>
+        <a href="index.html" class="back-hub">TERMINATE_SESSION</a>
     </div>
 
 </body>

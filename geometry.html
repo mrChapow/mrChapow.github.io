@@ -79,7 +79,7 @@
 
         .top-bar {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-start;
             align-items: flex-start;
         }
 
@@ -88,14 +88,6 @@
             font-size: 14px;
             text-transform: uppercase;
             letter-spacing: 0.2em;
-        }
-
-        .product-meta {
-            text-align: right;
-            font-family: monospace;
-            font-size: 10px;
-            color: var(--secondary);
-            text-transform: uppercase;
         }
 
         .bottom-ui {
@@ -168,7 +160,8 @@
     <div id="root">
         <nav class="top-nav">
             <a href="index.html" class="nav-link">Home</a>
-            <a href="geometry.html" class="nav-link active">Blackmarket</a>
+            <a href="shadowmarket.html" class="nav-link active">Blackmarket</a>
+            <a href="about.html" class="nav-link">About</a>
             <a href="legal.html" class="nav-link">Legal</a>
         </nav>
 
@@ -190,23 +183,18 @@
         <div class="interface">
             <div class="top-bar">
                 <div class="brand-id">COTA // LAB</div>
-                <div class="product-meta">
-                    Object: 001-A<br>
-                    State: Experimental<br>
-                    Format: 1.15MB_Mesh
-                </div>
             </div>
 
             <div class="bottom-ui">
                 <div class="product-info">
                     <h1 class="product-title">T-Shirt</h1>
                     <p class="product-description">
-                         Acquiring this piece directly funds the acquisition of in-house screen printing hardware—intentionally bypassing third-party drop shipping. Edition limited to archive availability.
+                        A structural geometry study for the maker community. Acquiring this piece directly funds the acquisition of in-house screen printing hardware—intentionally bypassing third-party drop shipping. Edition limited to archive availability.
                     </p>
                 </div>
 
                 <div class="purchase-zone">
-                    <span class="price">$2.99</span>
+                    <span class="price">$299.99</span>
                     <button class="cta-button">Acquire</button>
                 </div>
             </div>

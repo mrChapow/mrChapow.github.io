@@ -26,23 +26,17 @@
             letter-spacing: -0.02em;
         }
 
-        #root {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
-            background: radial-gradient(circle at center, #111 0%, #000 70%);
-        }
-
-        /* Top Navigation - Ultra Minimal */
+        /* NAVIGATION: Fixed to the very top, highest priority */
         .top-nav {
             position: fixed;
             top: 40px;
-            left: 50%;
-            transform: translateX(-50%);
+            left: 0;
+            width: 100%;
             display: flex;
+            justify-content: center;
             gap: 40px;
-            z-index: 20;
-            pointer-events: auto;
+            z-index: 9999; /* Higher than everything else */
+            pointer-events: auto; /* Ensure clicks work */
         }
 
         .nav-link {
@@ -53,19 +47,41 @@
             text-transform: uppercase;
             letter-spacing: 0.2em;
             transition: color 0.3s ease;
+            cursor: pointer;
         }
 
         .nav-link:hover, .nav-link.active {
             color: var(--accent);
         }
 
+        /* BACKGROUND & TEXTURE */
+        #root {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle at center, #111 0%, #000 70%);
+            z-index: 1;
+        }
+
+        .grain-overlay {
+            position: fixed;
+            inset: 0;
+            opacity: 0.04;
+            pointer-events: none; /* Crucial: clicks must pass through this */
+            z-index: 2;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* 3D VIEWER */
         model-viewer {
             width: 100%;
             height: 100%;
             --poster-color: transparent;
             exposure: 1.2;
+            z-index: 3;
         }
 
+        /* UI OVERLAY */
         .interface {
             position: fixed;
             inset: 0;
@@ -77,17 +93,12 @@
             z-index: 10;
         }
 
-        .top-bar {
-            display: flex;
-            justify-content: flex-start;
-            align-items: flex-start;
-        }
-
         .brand-id {
             font-weight: 800;
             font-size: 14px;
             text-transform: uppercase;
             letter-spacing: 0.2em;
+            pointer-events: auto;
         }
 
         .bottom-ui {
@@ -97,9 +108,7 @@
             pointer-events: auto;
         }
 
-        .product-info {
-            max-width: 340px;
-        }
+        .product-info { max-width: 380px; }
 
         .product-title {
             font-size: 32px;
@@ -113,10 +122,6 @@
             line-height: 1.6;
             color: var(--secondary);
             margin: 0;
-        }
-
-        .purchase-zone {
-            text-align: right;
         }
 
         .price {
@@ -136,38 +141,32 @@
             text-transform: uppercase;
             letter-spacing: 0.1em;
             cursor: pointer;
-            transition: opacity 0.2s;
         }
 
-        .cta-button:hover {
-            opacity: 0.8;
-        }
-
-        /* Mobile Layout Adjustments */
         @media (max-width: 768px) {
-            .interface { padding: 25px; }
-            .top-nav { top: 25px; gap: 20px; }
-            .nav-link { font-size: 9px; }
+            .top-nav { top: 25px; gap: 15px; }
+            .nav-link { font-size: 8px; letter-spacing: 0.1em; }
             .bottom-ui { flex-direction: column; align-items: flex-start; }
             .purchase-zone { width: 100%; text-align: left; margin-top: 30px; }
             .cta-button { width: 100%; }
-            .product-title { font-size: 24px; }
         }
     </style>
 </head>
 <body>
 
-    <div id="root">
-        <nav class="top-nav">
-            <a href="index.html" class="nav-link">Home</a>
-            <a href="shadowmarket.html" class="nav-link active">Blackmarket</a>
-            <a href="about.html" class="nav-link">About</a>
-            <a href="legal.html" class="nav-link">Legal</a>
-        </nav>
+    <div class="grain-overlay"></div>
 
+    <nav class="top-nav">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="shadowmarket.html" class="nav-link active">Blackmarket</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="legal.html" class="nav-link">Legal</a>
+    </nav>
+
+    <div id="root">
         <model-viewer 
             src="Tshirt.glb" 
-            alt="Cota Lab Archive 001"
+            alt="Cota Lab Product"
             auto-rotate 
             camera-controls
             disable-zoom
@@ -189,12 +188,12 @@
                 <div class="product-info">
                     <h1 class="product-title">T-Shirt</h1>
                     <p class="product-description">
-                        A structural geometry study for the maker community. Acquiring this piece directly funds the acquisition of in-house screen printing hardware—intentionally bypassing third-party drop shipping. Edition limited to archive availability.
+                        Acquiring this piece directly funds the acquisition of in-house screen printing hardware—intentionally bypassing third-party drop shipping. Edition limited to archive availability.
                     </p>
                 </div>
 
                 <div class="purchase-zone">
-                    <span class="price">$299.99</span>
+                    <span class="price">$1.91</span>
                     <button class="cta-button">Acquire</button>
                 </div>
             </div>

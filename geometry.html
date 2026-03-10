@@ -26,7 +26,7 @@
             letter-spacing: -0.02em;
         }
 
-        /* 1. THE BASEMENT (Background + Grain) */
+        /* 1. BACKGROUND LAYERS */
         #root {
             position: relative;
             width: 100vw;
@@ -40,11 +40,11 @@
             inset: 0;
             opacity: 0.05;
             pointer-events: none;
-            z-index: 2; /* Sit behind the model */
+            z-index: 2;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
 
-        /* 2. THE STAGE (3D Model) */
+        /* 2. THE 3D MODEL (In front of grain) */
         model-viewer {
             position: absolute;
             inset: 0;
@@ -52,19 +52,35 @@
             height: 100%;
             --poster-color: transparent;
             exposure: 1.2;
-            z-index: 3; /* Sit in front of grain */
+            z-index: 3;
         }
 
-        /* 3. THE GLASS (UI / Navigation) */
-        .top-nav {
+        /* 3. THE HEADER STACK (ID on top of Nav) */
+        .header-container {
             position: fixed;
             top: 40px;
             left: 0;
             width: 100%;
             display: flex;
-            justify-content: center;
-            gap: 40px;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
             z-index: 9999;
+            pointer-events: none;
+        }
+
+        .brand-id {
+            font-weight: 800;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            pointer-events: auto;
+        }
+
+        .top-nav {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
             pointer-events: auto;
         }
 
@@ -80,6 +96,7 @@
 
         .nav-link.active, .nav-link:hover { color: var(--accent); }
 
+        /* 4. THE INTERFACE (Bottom Info) */
         .interface {
             position: fixed;
             inset: 0;
@@ -87,15 +104,8 @@
             pointer-events: none;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            z-index: 100; /* UI layer */
-        }
-
-        .brand-id {
-            font-weight: 800;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
+            justify-content: flex-end;
+            z-index: 100;
         }
 
         .bottom-ui {
@@ -140,13 +150,25 @@
             cursor: pointer;
         }
 
+        /* MOBILE ADJUSTMENTS */
         @media (max-width: 768px) {
-            .top-nav { top: 25px; gap: 20px; }
-            .nav-link { font-size: 8px; }
-            .bottom-ui { flex-direction: column; align-items: flex-start; }
-            .purchase-zone { width: 100%; text-align: left; margin-top: 30px; }
-            .cta-button { width: 100%; }
+            .header-container { top: 30px; gap: 12px; }
+            .brand-id { font-size: 11px; }
+            .top-nav { gap: 15px; }
+            .nav-link { font-size: 8px; letter-spacing: 0.1em; }
+            
             .interface { padding: 25px; }
+            .bottom-ui { flex-direction: column; align-items: flex-start; }
+            .product-info { margin-bottom: 25px; }
+            .product-title { font-size: 24px; }
+            .purchase-zone { width: 100%; text-align: left; }
+            .cta-button { width: 100%; padding: 16px; }
+
+            /* Push shirt down slightly so it doesn't overlap the new header stack */
+            model-viewer {
+                height: 80%;
+                top: 10%;
+            }
         }
     </style>
 </head>
@@ -154,6 +176,16 @@
 
     <div id="root">
         <div class="grain-overlay"></div>
+
+        <header class="header-container">
+            <div class="brand-id">COTA // LAB</div>
+            <nav class="top-nav">
+                <a href="#" class="nav-link" onclick="return false;">Home</a>
+                <a href="shadowmarket.html" class="nav-link active">Blackmarket</a>
+                <a href="about.html" class="nav-link">About</a>
+                <a href="legal.html" class="nav-link">Legal</a>
+            </nav>
+        </header>
 
         <model-viewer 
             src="Tshirt.glb" 
@@ -170,18 +202,7 @@
             touch-action="none">
         </model-viewer>
 
-        <nav class="top-nav">
-            <a href="#" class="nav-link" onclick="return false;">Home</a>
-            <a href="shadowmarket.html" class="nav-link active">Blackmarket</a>
-            <a href="about.html" class="nav-link">About</a>
-            <a href="legal.html" class="nav-link">Legal</a>
-        </nav>
-
         <div class="interface">
-            <div class="top-bar">
-                <div class="brand-id">COTA // LAB</div>
-            </div>
-
             <div class="bottom-ui">
                 <div class="product-info">
                     <h1 class="product-title">T-Shirt</h1>
@@ -191,7 +212,7 @@
                 </div>
 
                 <div class="purchase-zone">
-                    <span class="price">$1.81</span>
+                    <span class="price">$1.75</span>
                     <button class="cta-button">Acquire</button>
                 </div>
             </div>

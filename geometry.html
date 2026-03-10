@@ -26,35 +26,7 @@
             letter-spacing: -0.02em;
         }
 
-        /* NAVIGATION: Fixed to the very top, highest priority */
-        .top-nav {
-            position: fixed;
-            top: 40px;
-            left: 0;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            z-index: 9999; /* Higher than everything else */
-            pointer-events: auto; /* Ensure clicks work */
-        }
-
-        .nav-link {
-            color: var(--secondary);
-            text-decoration: none;
-            font-size: 10px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
-            transition: color 0.3s ease;
-            cursor: pointer;
-        }
-
-        .nav-link:hover, .nav-link.active {
-            color: var(--accent);
-        }
-
-        /* BACKGROUND & TEXTURE */
+        /* 1. THE BASEMENT (Background + Grain) */
         #root {
             position: relative;
             width: 100vw;
@@ -66,22 +38,48 @@
         .grain-overlay {
             position: fixed;
             inset: 0;
-            opacity: 0.04;
-            pointer-events: none; /* Crucial: clicks must pass through this */
-            z-index: 2;
+            opacity: 0.05;
+            pointer-events: none;
+            z-index: 2; /* Sit behind the model */
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
 
-        /* 3D VIEWER */
+        /* 2. THE STAGE (3D Model) */
         model-viewer {
+            position: absolute;
+            inset: 0;
             width: 100%;
             height: 100%;
             --poster-color: transparent;
             exposure: 1.2;
-            z-index: 3;
+            z-index: 3; /* Sit in front of grain */
         }
 
-        /* UI OVERLAY */
+        /* 3. THE GLASS (UI / Navigation) */
+        .top-nav {
+            position: fixed;
+            top: 40px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            z-index: 9999;
+            pointer-events: auto;
+        }
+
+        .nav-link {
+            color: var(--secondary);
+            text-decoration: none;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link.active, .nav-link:hover { color: var(--accent); }
+
         .interface {
             position: fixed;
             inset: 0;
@@ -90,7 +88,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            z-index: 10;
+            z-index: 100; /* UI layer */
         }
 
         .brand-id {
@@ -98,7 +96,6 @@
             font-size: 14px;
             text-transform: uppercase;
             letter-spacing: 0.2em;
-            pointer-events: auto;
         }
 
         .bottom-ui {
@@ -144,26 +141,20 @@
         }
 
         @media (max-width: 768px) {
-            .top-nav { top: 25px; gap: 15px; }
-            .nav-link { font-size: 8px; letter-spacing: 0.1em; }
+            .top-nav { top: 25px; gap: 20px; }
+            .nav-link { font-size: 8px; }
             .bottom-ui { flex-direction: column; align-items: flex-start; }
             .purchase-zone { width: 100%; text-align: left; margin-top: 30px; }
             .cta-button { width: 100%; }
+            .interface { padding: 25px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="grain-overlay"></div>
-
-    <nav class="top-nav">
-        <a href="index.html" class="nav-link">Home</a>
-        <a href="shadowmarket.html" class="nav-link active">Blackmarket</a>
-        <a href="about.html" class="nav-link">About</a>
-        <a href="legal.html" class="nav-link">Legal</a>
-    </nav>
-
     <div id="root">
+        <div class="grain-overlay"></div>
+
         <model-viewer 
             src="Tshirt.glb" 
             alt="Cota Lab Product"
@@ -171,13 +162,20 @@
             camera-controls
             disable-zoom
             disable-pan
-            shadow-intensity="1" 
+            shadow-intensity="1.5" 
             shadow-softness="1"
             camera-orbit="0deg 75deg 105%"
             min-camera-orbit="auto 75deg auto"
             max-camera-orbit="auto 75deg auto"
             touch-action="none">
         </model-viewer>
+
+        <nav class="top-nav">
+            <a href="#" class="nav-link" onclick="return false;">Home</a>
+            <a href="shadowmarket.html" class="nav-link active">Blackmarket</a>
+            <a href="about.html" class="nav-link">About</a>
+            <a href="legal.html" class="nav-link">Legal</a>
+        </nav>
 
         <div class="interface">
             <div class="top-bar">
@@ -193,7 +191,7 @@
                 </div>
 
                 <div class="purchase-zone">
-                    <span class="price">$1.91</span>
+                    <span class="price">$1.81</span>
                     <button class="cta-button">Acquire</button>
                 </div>
             </div>

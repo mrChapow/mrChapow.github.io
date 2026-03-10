@@ -30,19 +30,42 @@
             position: relative;
             width: 100vw;
             height: 100vh;
-            /* Subtle radial vignette to create depth behind the shirt */
             background: radial-gradient(circle at center, #111 0%, #000 70%);
+        }
+
+        /* Top Navigation - Ultra Minimal */
+        .top-nav {
+            position: fixed;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 40px;
+            z-index: 20;
+            pointer-events: auto;
+        }
+
+        .nav-link {
+            color: var(--secondary);
+            text-decoration: none;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--accent);
         }
 
         model-viewer {
             width: 100%;
             height: 100%;
             --poster-color: transparent;
-            /* Boosted exposure for a "studio lighting" look */
             exposure: 1.2;
         }
 
-        /* The Minimalist Information Overlay */
         .interface {
             position: fixed;
             inset: 0;
@@ -83,7 +106,7 @@
         }
 
         .product-info {
-            max-width: 300px;
+            max-width: 340px;
         }
 
         .product-title {
@@ -128,27 +151,14 @@
             opacity: 0.8;
         }
 
-        .back-nav {
-            position: fixed;
-            top: 50%;
-            left: 40px;
-            transform: translateY(-50%) rotate(-90deg);
-            transform-origin: left;
-            font-size: 10px;
-            text-decoration: none;
-            color: var(--secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.3em;
-            pointer-events: auto;
-        }
-
-        /* Mobile Layout */
+        /* Mobile Layout Adjustments */
         @media (max-width: 768px) {
             .interface { padding: 25px; }
+            .top-nav { top: 25px; gap: 20px; }
+            .nav-link { font-size: 9px; }
             .bottom-ui { flex-direction: column; align-items: flex-start; }
             .purchase-zone { width: 100%; text-align: left; margin-top: 30px; }
             .cta-button { width: 100%; }
-            .back-nav { display: none; }
             .product-title { font-size: 24px; }
         }
     </style>
@@ -156,6 +166,12 @@
 <body>
 
     <div id="root">
+        <nav class="top-nav">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="geometry.html" class="nav-link active">Blackmarket</a>
+            <a href="legal.html" class="nav-link">Legal</a>
+        </nav>
+
         <model-viewer 
             src="Tshirt.glb" 
             alt="Cota Lab Archive 001"
@@ -171,8 +187,6 @@
             touch-action="none">
         </model-viewer>
 
-        <a href="index.html" class="back-nav">Back to Lab</a>
-
         <div class="interface">
             <div class="top-bar">
                 <div class="brand-id">COTA // LAB</div>
@@ -187,12 +201,12 @@
                 <div class="product-info">
                     <h1 class="product-title">T-Shirt</h1>
                     <p class="product-description">
-                        A study in structural geometry and fabric tension. Designed for the maker community. Edition limited to archive availability.
+                        A structural geometry study for the maker community. Acquiring this piece directly funds the acquisition of in-house screen printing hardware—intentionally bypassing third-party drop shipping. Edition limited to archive availability.
                     </p>
                 </div>
 
                 <div class="purchase-zone">
-                    <span class="price">$1.99</span>
+                    <span class="price">$2.99</span>
                     <button class="cta-button">Acquire</button>
                 </div>
             </div>

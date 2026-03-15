@@ -26,7 +26,6 @@
             letter-spacing: -0.02em;
         }
 
-        /* 1. BACKGROUND LAYERS */
         #root {
             position: relative;
             width: 100vw;
@@ -44,7 +43,6 @@
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
 
-        /* 2. THE 3D MODEL */
         model-viewer {
             position: absolute;
             inset: 0;
@@ -55,7 +53,6 @@
             z-index: 3;
         }
 
-        /* 3. THE HEADER STACK */
         .header-container {
             position: fixed;
             top: 40px;
@@ -96,7 +93,6 @@
 
         .nav-link.active, .nav-link:hover { color: var(--accent); }
 
-        /* 4. THE INTERFACE */
         .interface {
             position: fixed;
             inset: 0;
@@ -217,18 +213,23 @@
         const modelViewer = document.querySelector('#shirt-viewer');
 
         modelViewer.addEventListener('load', async () => {
-            // Path to your PNG in the repo
-            const textureUrl = 'id cota_cloud_pixelart.png';
-            
-            // Create the texture
-            const texture = await modelViewer.createTexture(textureUrl);
+            try {
+                // Ensure this filename matches EXACTLY what is in your GitHub folder
+                const textureUrl = 'cota_cloud_pixelart.png';
+                
+                // Create the texture
+                const texture = await modelViewer.createTexture(textureUrl);
 
-            // Apply to the first material found (the shirt)
-            // If your GLB has multiple parts, you can specify by name
-            const material = modelViewer.model.materials[0];
-            
-            if (material) {
-                material.pbrMetallicRoughness.baseColorTexture.setTexture(texture);
+                // Find the specific shirt material (named "1" in your Tshirt.glb file)
+                const material = modelViewer.model.materials.find(m => m.name === '1') 
+                                 || modelViewer.model.materials[0];
+                
+                if (material && material.pbrMetallicRoughness.baseColorTexture) {
+                    material.pbrMetallicRoughness.baseColorTexture.setTexture(texture);
+                    console.log("Texture applied successfully.");
+                }
+            } catch (error) {
+                console.error("Failed to map PNG:", error);
             }
         });
     </script>

@@ -3,242 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cota Lab // Archive 001</title>
-    
+    <title>Cota Lab // CLT Mission</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
-    
     <style>
-        :root { 
-            --accent: #ffffff;
-            --bg: #000000;
-            --glass: rgba(255, 255, 255, 0.15);
-            --slider-thickness: 4px; /* Increased from 2px */
+        body, html { margin: 0; padding: 0; background: #000; overflow-x: hidden; }
+
+        /* The background that stays still while images swap */
+        #bg-container {
+            position: fixed; inset: 0; z-index: 1;
+            background-size: cover; background-position: center;
         }
 
-        * { box-sizing: border-box; }
-
-        body, html {
-            margin: 0; padding: 0;
-            width: 100%; height: 100%;
-            background-color: var(--bg);
-            font-family: "Inter", -apple-system, sans-serif;
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        /* 1. SCROLL ENGINE (The physical height) */
-        #scroll-engine {
-            height: 700vh; /* Extra runway for 6 frames */
-            width: 100%;
-            position: absolute;
-            top: 0; left: 0;
-            z-index: 0; /* Sits at the bottom */
-        }
-
-        /* 2. BACKGROUND SEQUENCER */
-        #parallax-bg {
-            position: fixed;
-            inset: 0;
-            z-index: 1;
-            overflow: hidden;
-            pointer-events: none; /* Allows scroll to pass through to Layer 0 */
-        }
-
-        #street-img {
-            position: absolute;
-            width: 100%; height: 100%;
-            object-fit: cover;
-            background-position: center;
-            background-size: cover;
-            will-change: transform, background-image;
-            transition: transform 0.1s ease-out;
-        }
-
-        /* 3. THE LOOT DROP (3D Model) */
+        /* The 3D Loot Item - NO Interaction */
         .model-container {
-            position: fixed;
-            inset: 0;
-            z-index: 2;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            pointer-events: none; /* EXTREMELY IMPORTANT: NO MOUSE INTERACTION */
-            animation: floatingBob 4s ease-in-out infinite;
+            position: fixed; inset: 0; z-index: 2;
+            display: flex; align-items: center; justify-content: center;
+            pointer-events: none; 
+            animation: bob 4s ease-in-out infinite;
+        }
+        @keyframes bob { 
+            0%, 100% { transform: translateY(0); } 
+            50% { transform: translateY(-20px); } 
         }
 
-        @keyframes floatingBob {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-            100% { transform: translateY(0px); }
-        }
+        /* The Scroll Runway - This MUST be long to trigger the swap */
+        #scroll-engine { height: 600vh; position: relative; z-index: 0; }
 
-        model-viewer {
-            width: 45vw;
-            height: 45vh;
-            outline: none;
-            --poster-color: transparent;
-        }
-
-        /* 4. LIQUID UI LAYER */
-        .interface {
-            position: fixed;
-            inset: 0;
-            padding: 50px;
-            pointer-events: none; /* Container is passthrough */
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            z-index: 10;
-        }
-
-        .ui-wrap { 
-            pointer-events: auto; /* Re-enable for buttons/slider */
-            width: 100%; 
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        /* 5. REFINED SLIDER */
-        .slider-container {
-            width: 100%;
-            margin-bottom: 40px;
-            display: flex;
-            justify-content: center;
-        }
-
-        #rotation-slider {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 100%;
-            max-width: 500px;
-            height: var(--slider-thickness);
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            outline: none;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        #rotation-slider:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        /* The Grabber/Thumb */
-        #rotation-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 60px;
-            height: 6px; /* Slightly thicker than the track */
-            background: var(--accent);
-            border-radius: 10px;
-            cursor: pointer;
-            box-shadow: 0 0 15px rgba(255,255,255,0.3);
-        }
-
-        .bottom-ui {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            color: white;
-        }
-
-        .product-info h1 {
-            font-size: 42px;
-            text-transform: uppercase;
-            margin: 0;
-            font-weight: 900;
-            letter-spacing: -0.05em;
-        }
-
-        .product-info p {
-            color: rgba(255,255,255,0.5);
-            font-size: 13px;
-            letter-spacing: 0.2em;
-            margin-top: 5px;
-            text-transform: uppercase;
-        }
-
-        .cta-button {
-            background: var(--glass);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 18px 50px;
-            border-radius: 100px;
-            font-size: 12px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .cta-button:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
-        }
-
-        .header-container {
-            position: fixed;
-            top: 40px;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            z-index: 100;
+        /* UI Layer */
+        .ui {
+            position: fixed; bottom: 40px; left: 0; width: 100%;
+            z-index: 10; display: flex; flex-direction: column; align-items: center;
             pointer-events: none;
-            color: white;
+        }
+        .slider-wrap { width: 80%; max-width: 500px; pointer-events: auto; }
+        
+        input[type=range] {
+            width: 100%; height: 4px; /* The requested 4px thickness */
+            appearance: none; background: rgba(255,255,255,0.3); outline: none;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            appearance: none; width: 50px; height: 10px; background: #fff; cursor: pointer;
         }
     </style>
 </head>
 <body>
 
     <div id="scroll-engine"></div>
-
-    <div id="parallax-bg">
-        <div id="street-img"></div>
-    </div>
-
-    <header class="header-container">
-        <div class="brand-id" style="font-weight:900; font-size: 11px; letter-spacing: 0.8em; opacity: 0.8;">COTA // LAB</div>
-    </header>
+    <div id="bg-container"></div>
 
     <div class="model-container">
-        <model-viewer 
-            id="main-viewer"
-            src="Tshirt.glb" 
-            auto-rotate 
-            shadow-intensity="0.5" 
-            exposure="1.2"
-            camera-orbit="0deg 75deg 105%"
-            style="pointer-events: none;">
-        </model-viewer>
+        <model-viewer id="viewer" src="Tshirt.glb" shadow-intensity="1" exposure="1.2" style="width:50vw; height:50vh; pointer-events:none;"></model-viewer>
     </div>
 
-    <div class="interface">
-        <div class="ui-wrap">
-            <div class="slider-container">
-                <input type="range" id="rotation-slider" min="0" max="360" value="0">
-            </div>
-
-            <div class="bottom-ui">
-                <div class="product-info">
-                    <h1>Archive 001</h1>
-                    <p>Sector: CLT // Approach Phase</p>
-                </div>
-                <div class="purchase-zone">
-                    <button class="cta-button">Pre-Order</button>
-                </div>
-            </div>
+    <div class="ui">
+        <div class="slider-wrap">
+            <input type="range" id="rotate" min="0" max="360" value="0">
         </div>
+        <p style="color: white; font-family: sans-serif; letter-spacing: 2px; font-size: 10px;">SCROLL TO WALK // SLIDE TO INSPECT</p>
     </div>
 
     <script>
-        const modelViewer = document.querySelector('#main-viewer');
-        const streetImg = document.querySelector('#street-img');
-        const slider = document.querySelector('#rotation-slider');
+        const bg = document.getElementById('bg-container');
+        const viewer = document.getElementById('viewer');
+        const slider = document.getElementById('rotate');
 
-        // 1. CONFIGURATION
         const images = [
             'street-view.jpg',
             'street-view1.jpg',
@@ -248,46 +76,26 @@
             'street-view5.jpg'
         ];
 
-        // 2. PRELOADER
-        const preloadImages = () => {
-            images.forEach(src => {
-                const img = new Image();
-                img.src = src;
-            });
+        // 1. Rotation Logic
+        slider.oninput = (e) => {
+            viewer.cameraOrbit = `${e.target.value}deg 75deg 105%`;
+            viewer.autoRotate = false;
         };
-        preloadImages();
 
-        // 3. ROTATION SLIDER
-        slider.addEventListener('input', (e) => {
-            // Theta (val), Phi (75), Radius (105)
-            modelViewer.cameraOrbit = `${e.target.value}deg 75deg 105%`;
-            modelViewer.autoRotate = false; // Kill auto-rotate on user touch
-        });
-
-        // 4. THE DOLLY-WALK ENGINE
-        const handleScroll = () => {
-            const scrollTotal = document.documentElement.scrollHeight - window.innerHeight;
-            const scrollPercent = window.scrollY / scrollTotal;
+        // 2. The Flipbook Logic
+        window.onscroll = () => {
+            const scrollPercent = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
             
-            // Frame Calculation
-            const frameIndex = Math.min(
-                images.length - 1,
-                Math.floor(scrollPercent * images.length)
-            );
+            // Calculate frame (0-5)
+            const frame = Math.floor(scrollPercent * images.length);
+            const activeFrame = Math.min(frame, images.length - 1);
 
-            // Update Frame
-            streetImg.style.backgroundImage = `url('${images[frameIndex]}')`;
-
-            // Internal Zoom Logic (1.0 to 1.1 per frame)
-            const frameProgress = (scrollPercent * images.length) % 1;
-            const zoomLevel = 1 + (frameProgress * 0.1); 
-            streetImg.style.transform = `scale(${zoomLevel})`;
+            // Force update background
+            bg.style.backgroundImage = `url('${images[activeFrame]}')`;
         };
 
-        window.addEventListener('scroll', handleScroll, { passive: true });
-
-        // Init first frame
-        streetImg.style.backgroundImage = `url('${images[0]}')`;
+        // Set initial frame
+        bg.style.backgroundImage = `url('${images[0]}')`;
     </script>
 </body>
 </html>

@@ -21,44 +21,53 @@
             background-color: var(--bg);
             color: var(--accent);
             font-family: "Inter", -apple-system, sans-serif;
-            overflow-x: hidden; /* Allow vertical scroll for parallax */
+            overflow-x: hidden;
             letter-spacing: -0.02em;
         }
 
-        /* 1. THE BACKGROUND (Street View Container) */
+        /* 1. THE STAGE (Background) */
         #parallax-bg {
             position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
+            inset: 0;
             z-index: 1;
             overflow: hidden;
-            background: #e2e8f0; /* Fallback */
+            background: #e2e8f0;
         }
 
         .street-view-img {
             position: absolute;
-            width: 110%; height: 110%; /* Extra room for zoom */
-            top: -5%; left: -5%;
+            width: 120%; height: 120%;
+            top: -10%; left: -10%;
             object-fit: cover;
-            transition: transform 0.1s ease-out;
-            /* Placeholder gradient until you drop the first image */
             background: radial-gradient(circle at center, #cbd5e1 0%, #ffffff 100%);
+            transition: transform 0.1s linear;
         }
 
-        .grain-overlay {
-            position: fixed;
-            inset: 0; opacity: 0.07;
-            pointer-events: none; z-index: 2;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-        }
-
-        /* 2. THE SHIRT (Scaled down and centered) */
-        model-viewer {
+        /* 2. THE FLOATING CONTAINER 
+           We animate this so we don't break the model-viewer's camera logic
+        */
+        .model-container {
             position: fixed;
             inset: 0;
-            width: 100%; height: 100%;
             z-index: 3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none; /* Pass through to model-viewer */
+            animation: floatingBob 4s ease-in-out infinite;
+        }
+
+        @keyframes floatingBob {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+
+        model-viewer {
+            width: 100%;
+            height: 100%;
             outline: none;
+            pointer-events: auto; /* Re-enable for the model */
             --poster-color: transparent;
         }
 
@@ -81,27 +90,27 @@
             pointer-events: auto;
         }
 
-        /* Apple-style Liquid Glass Button */
         .cta-button {
             background: var(--glass);
             backdrop-filter: blur(15px) saturate(180%);
             -webkit-backdrop-filter: blur(15px) saturate(180%);
             color: black;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 14px 40px;
-            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 16px 45px;
+            border-radius: 50px; /* More rounded Apple style */
             font-size: 13px;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             cursor: pointer;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
         .cta-button:hover {
-            background: rgba(255, 255, 255, 0.6);
-            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.8);
+            transform: scale(1.02);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
         }
 
         .header-container {
@@ -110,17 +119,7 @@
             z-index: 9999; pointer-events: none;
         }
 
-        /* SCROLL SPACER (Creates the scroll depth) */
-        #scroll-engine {
-            height: 300vh; /* Three "stages" of zoom/movement */
-            width: 10px;
-        }
-
-        @media (max-width: 768px) {
-            .interface { padding: 25px; }
-            .bottom-ui { flex-direction: column; align-items: flex-start; }
-            .cta-button { width: 100%; margin-top: 20px; }
-        }
+        #scroll-engine { height: 400vh; }
     </style>
 </head>
 <body>
@@ -129,31 +128,31 @@
         <div id="street-img" class="street-view-img"></div>
     </div>
 
-    <div class="grain-overlay"></div>
-
     <header class="header-container">
-        <div class="brand-id" style="font-weight:800; pointer-events:auto;">COTA // LAB</div>
+        <div class="brand-id" style="font-weight:800; pointer-events:auto; font-size: 12px; letter-spacing: 0.5em;">COTA // LAB</div>
     </header>
 
-    <model-viewer 
-        id="main-viewer"
-        src="Tshirt.glb" 
-        scale="0.65 0.65 0.65"
-        auto-rotate 
-        camera-controls
-        disable-zoom
-        disable-pan
-        shadow-intensity="1" 
-        exposure="1.2"
-        camera-orbit="0deg 75deg 105%"
-        touch-action="pan-y">
-    </model-viewer>
+    <div class="model-container">
+        <model-viewer 
+            id="main-viewer"
+            src="Tshirt.glb" 
+            scale="0.8 0.8 0.8"
+            auto-rotate 
+            camera-controls
+            disable-zoom
+            disable-pan
+            shadow-intensity="0.5" 
+            exposure="1"
+            camera-orbit="0deg 75deg 105%"
+            touch-action="pan-y">
+        </model-viewer>
+    </div>
 
     <div class="interface">
         <div class="bottom-ui">
             <div class="product-info">
-                <h1 id="title" class="product-title">Archive 001</h1>
-                <p id="desc" class="product-description">Tokyo Sector // Moving forward into the grid.</p>
+                <h1 style="font-size: 38px; text-transform:uppercase; margin:0; font-weight: 900;">Archive 001</h1>
+                <p style="color:var(--secondary); font-weight: 500;">Sector 01: Tokyo Drift</p>
             </div>
             <div class="purchase-zone">
                 <button class="cta-button">Pre-Order</button>
@@ -164,37 +163,14 @@
     <div id="scroll-engine"></div>
 
     <script>
-        const modelViewer = document.querySelector('#main-viewer');
         const streetImg = document.querySelector('#street-img');
 
-        // 1. THE FLOATING BOB ANIMATION
-        let lastTime = 0;
-        function animate(time) {
-            const delta = time * 0.002; // Speed
-            const bob = Math.sin(delta) * 0.05; // Amplitude (height)
-            
-            // Apply a slight Y-offset to the model
-            // model-viewer doesn't let us move the mesh directly easily, 
-            // so we'll adjust the camera-target slightly for a similar feel
-            modelViewer.cameraTarget = `0m ${0.1 + bob}m 0m`;
-            
-            requestAnimationFrame(animate);
-        }
-        requestAnimationFrame(animate);
-
-        // 2. THE PARALLAX ZOOM LOGIC
+        // Clean Parallax Zoom
         window.addEventListener('scroll', () => {
             const scrollPercent = window.scrollY / (document.body.scrollHeight - window.innerHeight);
-            
-            // Zoom the background (Parallax)
-            // Starts at 1.0, ends at 1.4
-            const zoom = 1 + (scrollPercent * 0.4);
+            // Zoom background from 1.0 to 1.5
+            const zoom = 1 + (scrollPercent * 0.5);
             streetImg.style.transform = `scale(${zoom})`;
-
-            // Logic for texture/environment swap goes here next
-            if (scrollPercent > 0.5) {
-                // Future: Swap to Archive 002
-            }
         });
     </script>
 </body>

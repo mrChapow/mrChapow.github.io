@@ -42,7 +42,9 @@
             transition: transform 0.1s linear;
         }
 
-        /* 2. THE FLOATING CONTAINER (Scaled down) */
+        /* 2. THE FLOATING CONTAINER
+           pointer-events: none here ensures the mouse ignores the model entirely.
+        */
         .model-container {
             position: fixed;
             inset: 0;
@@ -51,25 +53,24 @@
             align-items: center;
             justify-content: center;
             pointer-events: none; 
-            /* THE BOB: Slightly faster, much smaller movement */
-            animation: floatingBob 3s ease-in-out infinite;
+            animation: floatingBob 4s ease-in-out infinite;
         }
 
         @keyframes floatingBob {
             0% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
+            50% { transform: translateY(-12px); }
             100% { transform: translateY(0px); }
         }
 
+        /* Controlling the size by the element dimensions instead of the scale attribute */
         model-viewer {
-            width: 100%;
-            height: 100%;
+            width: 50vw; 
+            height: 50vh;
             outline: none;
-            pointer-events: auto;
             --poster-color: transparent;
         }
 
-        /* 3. LIQUID GLASS UI */
+        /* 3. LIQUID UI */
         .interface {
             position: fixed;
             inset: 0;
@@ -101,8 +102,6 @@
             text-transform: uppercase;
             letter-spacing: 0.15em;
             cursor: pointer;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-            transition: all 0.4s ease;
         }
 
         .header-container {
@@ -128,15 +127,11 @@
         <model-viewer 
             id="main-viewer"
             src="Tshirt.glb" 
-            scale="0.2 0.2 0.2" 
             auto-rotate 
-            camera-controls
-            disable-zoom
-            disable-pan
             shadow-intensity="0.3" 
             exposure="1.1"
             camera-orbit="0deg 75deg 105%"
-            touch-action="pan-y">
+            style="pointer-events: none;">
         </model-viewer>
     </div>
 

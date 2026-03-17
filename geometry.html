@@ -3,111 +3,226 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cota Lab // Archive</title>
+    <title>Cota Lab // Archive 001-002</title>
+    
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+    
     <style>
-        body, html { margin: 0; padding: 0; background: #000; color: #fff; font-family: sans-serif; overflow-x: hidden; }
-        
-        #root { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 1; }
-
-        /* THE MODEL - Must be accessible to touch */
-        model-viewer {
-            width: 100%;
-            height: 100%;
-            z-index: 2;
+        :root { 
+            --accent: #ffffff;
+            --bg: #000000;
+            --secondary: #666666;
         }
 
-        /* THE SCROLL ENGINE - Now a transparent overlay that doesn't block rotation */
-        #scroll-container {
-            position: absolute;
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg);
+            color: var(--accent);
+            font-family: "Inter", -apple-system, sans-serif;
+            overflow-x: hidden; /* Prevent horizontal shake */
+            letter-spacing: -0.02em;
+        }
+
+        /* 1. BACKGROUND LAYERS */
+        #root {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle at center, #111 0%, #000 70%);
+            z-index: 1;
+        }
+
+        .grain-overlay {
+            position: fixed;
+            inset: 0;
+            opacity: 0.05;
+            pointer-events: none;
+            z-index: 2;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* 2. THE 3D MODEL - FIXED BUT INTERACTIVE */
+        model-viewer {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 200vh; /* Height for 2 shirts */
+            height: 100%;
             z-index: 3;
-            pointer-events: none; /* KEY: Clicks go THROUGH to the shirt */
+            --poster-color: transparent;
+            exposure: 1.2;
         }
 
-        .scroll-trigger {
-            height: 100vh;
+        /* 3. THE UI - FIXED OVERLAY */
+        .header-container {
+            position: fixed;
+            top: 40px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            z-index: 100;
             pointer-events: none;
         }
 
-        /* SIMPLE UI */
+        .brand-id { font-weight: 800; font-size: 14px; text-transform: uppercase; letter-spacing: 0.3em; pointer-events: auto; }
+        .top-nav { display: flex; justify-content: center; gap: 30px; pointer-events: auto; }
+        .nav-link { color: var(--secondary); text-decoration: none; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.2em; }
+        .nav-link.active { color: var(--accent); }
+
         .interface {
             position: fixed;
-            bottom: 40px;
-            left: 40px;
-            z-index: 4;
+            inset: 0;
+            padding: 40px;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            z-index: 100;
+        }
+
+        .bottom-ui {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            pointer-events: auto;
+        }
+
+        .product-info { max-width: 380px; }
+        .product-title { font-size: 32px; font-weight: 300; margin: 0 0 10px 0; text-transform: uppercase; }
+        .product-description { font-size: 12px; line-height: 1.6; color: var(--secondary); margin: 0; }
+        .price { display: block; font-size: 18px; margin-bottom: 20px; font-weight: 500; }
+        .cta-button { background: var(--accent); color: var(--bg); border: none; padding: 18px 48px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; }
+
+        /* 4. SCROLL ZONE - THE ENGINE */
+        #scroll-engine {
+            position: relative;
+            height: 200vh; /* One 100vh page for each shirt */
+            z-index: 4; /* Sits above model but pointer-events: none lets us touch the shirt */
             pointer-events: none;
         }
-        .brand { position: fixed; top: 40px; width: 100%; text-align: center; letter-spacing: 0.3em; z-index: 4; }
+
+        @media (max-width: 768px) {
+            .interface { padding: 25px; }
+            .bottom-ui { flex-direction: column; align-items: flex-start; }
+            .product-title { font-size: 24px; }
+            .cta-button { width: 100%; padding: 16px; }
+        }
     </style>
 </head>
 <body>
 
     <div id="root">
-        <div class="brand">COTA // LAB</div>
+        <div class="grain-overlay"></div>
+
+        <header class="header-container">
+            <div class="brand-id">COTA // LAB</div>
+            <nav class="top-nav">
+                <a href="#" class="nav-link">Home</a>
+                <a href="#" class="nav-link active">Blackmarket</a>
+                <a href="#" class="nav-link">About</a>
+            </nav>
+        </header>
 
         <model-viewer 
             id="shirt-viewer"
             src="Tshirt.glb" 
+            alt="Cota Lab Product"
             auto-rotate 
             camera-controls
-            shadow-intensity="1"
-            touch-action="pan-y"> </model-viewer>
+            shadow-intensity="1.5" 
+            camera-orbit="0deg 75deg 105%"
+            touch-action="pan-y">
+        </model-viewer>
 
         <div class="interface">
-            <h1 id="shirt-title">Archive 001</h1>
-            <p id="shirt-price">$1.15</p>
+            <div class="bottom-ui">
+                <div class="product-info">
+                    <h1 id="shirt-title" class="product-title">Archive 001</h1>
+                    <p id="shirt-desc" class="product-description">
+                        Cloud Pixel Art Edition. Direct fund for lab research.
+                    </p>
+                </div>
+                <div class="purchase-zone">
+                    <span id="shirt-price" class="price">$1.15</span>
+                    <button class="cta-button">Acquire</button>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div id="scroll-container">
-        <div class="scroll-trigger" data-id="1"></div>
-        <div class="scroll-trigger" data-id="2"></div>
-    </div>
+    <div id="scroll-engine"></div>
 
     <script>
         const modelViewer = document.querySelector('#shirt-viewer');
         
         const archive = {
-            "1": { title: "Archive 001", price: "$1.15", texture: "cota_cloud_pixelart.png" },
-            "2": { title: "Archive 002", price: "$1.75", texture: "lovefont.png" }
+            "1": {
+                title: "Archive 001",
+                desc: "Cloud Pixel Art Edition. Direct fund for lab research.",
+                price: "$1.15",
+                texture: "cota_cloud_pixelart.png"
+            },
+            "2": {
+                title: "Archive 002",
+                desc: "Lovefont Edition. High-density pixel typography.",
+                price: "$1.75",
+                texture: "lovefont.png"
+            }
         };
 
         let textureCache = {};
+        let currentActive = "1";
 
-        // 1. Load the model and prep textures
         modelViewer.addEventListener('load', async () => {
+            // Pre-load textures
             for (const key in archive) {
                 textureCache[key] = await modelViewer.createTexture(archive[key].texture);
             }
 
             const material = modelViewer.model.materials.find(m => m.name === '1') || modelViewer.model.materials[0];
 
-            // 2. Watch for scroll to swap texture
+            // PURE SCROLL LISTENER (Does not block interaction)
             window.addEventListener('scroll', () => {
                 const scrollPos = window.scrollY;
                 const windowHeight = window.innerHeight;
                 
-                // Determine which "slide" we are on
-                const currentId = scrollPos < windowHeight / 2 ? "1" : "2";
-                
-                // Update UI
-                document.getElementById('shirt-title').innerText = archive[currentId].title;
-                document.getElementById('shirt-price').innerText = archive[currentId].price;
+                // Switch point is halfway down the second page
+                const newId = scrollPos < (windowHeight * 0.5) ? "1" : "2";
 
-                // Swap Texture
-                if (material && textureCache[currentId]) {
-                    material.pbrMetallicRoughness.baseColorTexture.setTexture(textureCache[currentId]);
-                    // Sharp pixels
-                    const sampler = material.pbrMetallicRoughness.baseColorTexture.texture.sampler;
-                    sampler.setMinFilter(9728);
-                    sampler.setMagFilter(9728);
+                if (newId !== currentActive) {
+                    currentActive = newId;
+                    updateProject(currentActive, material);
                 }
             });
         });
+
+        function updateProject(id, material) {
+            const data = archive[id];
+            
+            // 1. Update text content
+            document.getElementById('shirt-title').innerText = data.title;
+            document.getElementById('shirt-desc').innerText = data.desc;
+            document.getElementById('shirt-price').innerText = data.price;
+
+            // 2. Swap Texture
+            if (material && textureCache[id]) {
+                material.pbrMetallicRoughness.baseColorTexture.setTexture(textureCache[id]);
+                
+                // 3. Apply Pixel Sharpness
+                const sampler = material.pbrMetallicRoughness.baseColorTexture.texture.sampler;
+                sampler.setMinFilter(9728);
+                sampler.setMagFilter(9728);
+            }
+        }
     </script>
+
 </body>
 </html>

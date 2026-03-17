@@ -11,7 +11,7 @@
         :root { 
             --accent: #ffffff;
             --bg: #000000;
-            --glass: rgba(255, 255, 255, 0.12);
+            --glass: rgba(255, 255, 255, 0.1);
         }
 
         body, html {
@@ -23,16 +23,16 @@
             color: white;
         }
 
-        /* 1. SHORTENED RUNWAY (Fewer scrolls to finish the sequence) */
+        /* 1. ULTRA-FAST RUNWAY */
         #scroll-engine {
-            height: 250vh; /* Reduced height for faster transitions */
+            height: 125vh; /* Very short for fast snapping */
             width: 100%;
             position: absolute;
             top: 0; left: 0;
             z-index: 0;
         }
 
-        /* 2. BACKGROUND (Single layer for speed) */
+        /* 2. BACKGROUND (Single layer) */
         #parallax-bg {
             position: fixed;
             inset: 0;
@@ -91,11 +91,12 @@
 
         .cta-button {
             background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            color: white; border: 1px solid rgba(255,255,255,0.2);
+            color: white; border: 1px solid rgba(255,255,255,0.15);
             padding: 14px 40px; border-radius: 100px;
             font-size: 10px; font-weight: 800; text-transform: uppercase;
-            letter-spacing: 0.15em; cursor: pointer;
+            letter-spacing: 0.15em; cursor: pointer; transition: 0.3s ease;
         }
+        .cta-button:hover { background: rgba(255, 255, 255, 0.2); }
     </style>
 </head>
 <body>
@@ -151,13 +152,13 @@
             viewer.autoRotate = false;
         };
 
-        // Fast Sync Engine
+        // Ultra-Fast Sync Engine
         window.addEventListener('scroll', () => {
             const scrollTotal = document.documentElement.scrollHeight - window.innerHeight;
             const scrollPercent = window.scrollY / scrollTotal;
             
-            // Frame swap
-            const frameIndex = Math.min(Math.floor(scrollPercent * images.length), images.length - 1);
+            // Frame swap logic
+            const frameIndex = Math.min(Math.floor(scrollPercent * (images.length - 0.1)), images.length - 1);
             bg.style.backgroundImage = `url('${images[frameIndex]}')`;
         }, { passive: true });
 

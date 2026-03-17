@@ -3,149 +3,198 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cota Lab // Archive</title>
+    <title>Cota Lab // Archive 001</title>
+    
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+    
     <style>
-        :root { --accent: #ffffff; --bg: #000000; --secondary: #666666; }
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--bg); color: var(--accent); font-family: "Inter", sans-serif; overflow: hidden; }
+        :root { 
+            --accent: #000000;
+            --bg: #ffffff;
+            --secondary: #666666;
+            --glass: rgba(255, 255, 255, 0.4);
+        }
 
-        #root { position: fixed; inset: 0; background: radial-gradient(circle at center, #111 0%, #000 70%); z-index: 1; }
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            background-color: var(--bg);
+            color: var(--accent);
+            font-family: "Inter", -apple-system, sans-serif;
+            overflow-x: hidden; /* Allow vertical scroll for parallax */
+            letter-spacing: -0.02em;
+        }
 
-        /* THE MODEL - Scaled down to 0.7 */
+        /* 1. THE BACKGROUND (Street View Container) */
+        #parallax-bg {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: 1;
+            overflow: hidden;
+            background: #e2e8f0; /* Fallback */
+        }
+
+        .street-view-img {
+            position: absolute;
+            width: 110%; height: 110%; /* Extra room for zoom */
+            top: -5%; left: -5%;
+            object-fit: cover;
+            transition: transform 0.1s ease-out;
+            /* Placeholder gradient until you drop the first image */
+            background: radial-gradient(circle at center, #cbd5e1 0%, #ffffff 100%);
+        }
+
+        .grain-overlay {
+            position: fixed;
+            inset: 0; opacity: 0.07;
+            pointer-events: none; z-index: 2;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* 2. THE SHIRT (Scaled down and centered) */
         model-viewer {
             position: fixed;
             inset: 0;
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             z-index: 3;
+            outline: none;
+            --poster-color: transparent;
         }
 
-        /* THE SCROLL LAYER */
-        #scroll-container {
-            height: 100vh;
-            overflow-y: scroll;
-            scroll-snap-type: y mandatory;
-            position: relative;
-            z-index: 10; /* The scroll layer sits high */
-        }
-        .product-section { height: 100vh; scroll-snap-align: start; }
-
-        /* THE TOGGLE BUTTON - Set to z-index 100 to be above the scroll layer */
-        .mode-toggle {
+        /* 3. LIQUID GLASS UI */
+        .interface {
             position: fixed;
-            top: 40px;
-            right: 40px;
-            z-index: 100; 
-            background: black;
-            border: 1px solid var(--accent);
-            color: var(--accent);
-            padding: 12px 20px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            cursor: pointer;
+            inset: 0;
+            padding: 40px;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            z-index: 100;
+        }
+
+        .bottom-ui {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
             pointer-events: auto;
         }
-        .mode-toggle.active {
-            background: white;
+
+        /* Apple-style Liquid Glass Button */
+        .cta-button {
+            background: var(--glass);
+            backdrop-filter: blur(15px) saturate(180%);
+            -webkit-backdrop-filter: blur(15px) saturate(180%);
             color: black;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 14px 40px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
         }
 
-        /* UI ELEMENTS */
-        .interface { position: fixed; inset: 0; padding: 40px; pointer-events: none; display: flex; flex-direction: column; justify-content: flex-end; z-index: 50; }
-        .bottom-ui { display: flex; justify-content: space-between; align-items: flex-end; pointer-events: auto; }
-        .brand-id { position: fixed; top: 40px; left: 40px; font-weight: 800; letter-spacing: 0.3em; z-index: 50; }
+        .cta-button:hover {
+            background: rgba(255, 255, 255, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .header-container {
+            position: fixed; top: 40px; width: 100%;
+            display: flex; flex-direction: column; align-items: center;
+            z-index: 9999; pointer-events: none;
+        }
+
+        /* SCROLL SPACER (Creates the scroll depth) */
+        #scroll-engine {
+            height: 300vh; /* Three "stages" of zoom/movement */
+            width: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .interface { padding: 25px; }
+            .bottom-ui { flex-direction: column; align-items: flex-start; }
+            .cta-button { width: 100%; margin-top: 20px; }
+        }
     </style>
 </head>
 <body>
 
-    <div id="root">
-        <div class="brand-id">COTA // LAB</div>
-        
-        <button id="toggle-btn" class="mode-toggle">INTERACT</button>
+    <div id="parallax-bg">
+        <div id="street-img" class="street-view-img"></div>
+    </div>
 
-        <model-viewer 
-            id="shirt-viewer"
-            src="Tshirt.glb" 
-            scale="0.7 0.7 0.7"
-            auto-rotate 
-            camera-controls
-            shadow-intensity="1.5" 
-            camera-orbit="0deg 75deg 105%"
-            touch-action="pan-y">
-        </model-viewer>
+    <div class="grain-overlay"></div>
 
-        <div class="interface">
-            <div class="bottom-ui">
-                <div class="product-info">
-                    <h1 id="shirt-title" style="text-transform:uppercase; margin:0;">Archive 001</h1>
-                    <p id="shirt-price" style="color:var(--secondary); font-size: 18px; margin-top: 5px;">$1.15</p>
-                </div>
-                <button style="background:white; color:black; border:none; padding:15px 30px; font-weight:700; cursor: pointer;">ACQUIRE</button>
+    <header class="header-container">
+        <div class="brand-id" style="font-weight:800; pointer-events:auto;">COTA // LAB</div>
+    </header>
+
+    <model-viewer 
+        id="main-viewer"
+        src="Tshirt.glb" 
+        scale="0.65 0.65 0.65"
+        auto-rotate 
+        camera-controls
+        disable-zoom
+        disable-pan
+        shadow-intensity="1" 
+        exposure="1.2"
+        camera-orbit="0deg 75deg 105%"
+        touch-action="pan-y">
+    </model-viewer>
+
+    <div class="interface">
+        <div class="bottom-ui">
+            <div class="product-info">
+                <h1 id="title" class="product-title">Archive 001</h1>
+                <p id="desc" class="product-description">Tokyo Sector // Moving forward into the grid.</p>
+            </div>
+            <div class="purchase-zone">
+                <button class="cta-button">Pre-Order</button>
             </div>
         </div>
     </div>
 
-    <div id="scroll-container">
-        <section class="product-section" data-id="1"></section>
-        <section class="product-section" data-id="2"></section>
-    </div>
+    <div id="scroll-engine"></div>
 
     <script>
-        const modelViewer = document.querySelector('#shirt-viewer');
-        const scrollContainer = document.querySelector('#scroll-container');
-        const toggleBtn = document.querySelector('#toggle-btn');
-        let isRotateMode = false;
+        const modelViewer = document.querySelector('#main-viewer');
+        const streetImg = document.querySelector('#street-img');
 
-        // Toggle logic with direct Event Listener
-        toggleBtn.addEventListener('click', () => {
-            isRotateMode = !isRotateMode;
-            if (isRotateMode) {
-                scrollContainer.style.pointerEvents = 'none'; // Clicks pass through
-                toggleBtn.innerText = "EXIT INTERACT";
-                toggleBtn.classList.add('active');
-            } else {
-                scrollContainer.style.pointerEvents = 'auto'; // Scroll catches clicks
-                toggleBtn.innerText = "INTERACT";
-                toggleBtn.classList.remove('active');
-            }
-        });
-
-        const archive = {
-            "1": { title: "Archive 001", price: "$1.15", texture: "cota_cloud_pixelart.png" },
-            "2": { title: "Archive 002", price: "$1.75", texture: "lovefont.png" }
-        };
-
-        let textureCache = {};
-
-        modelViewer.addEventListener('load', async () => {
-            for (const key in archive) {
-                textureCache[key] = await modelViewer.createTexture(archive[key].texture);
-            }
+        // 1. THE FLOATING BOB ANIMATION
+        let lastTime = 0;
+        function animate(time) {
+            const delta = time * 0.002; // Speed
+            const bob = Math.sin(delta) * 0.05; // Amplitude (height)
             
-            // Texture mapping logic
-            const material = modelViewer.model.materials.find(m => m.name === '1') || modelViewer.model.materials[0];
+            // Apply a slight Y-offset to the model
+            // model-viewer doesn't let us move the mesh directly easily, 
+            // so we'll adjust the camera-target slightly for a similar feel
+            modelViewer.cameraTarget = `0m ${0.1 + bob}m 0m`;
+            
+            requestAnimationFrame(animate);
+        }
+        requestAnimationFrame(animate);
 
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const id = entry.target.getAttribute('data-id');
-                        const data = archive[id];
-                        document.getElementById('shirt-title').innerText = data.title;
-                        document.getElementById('shirt-price').innerText = data.price;
-                        
-                        if (material && textureCache[id]) {
-                            material.pbrMetallicRoughness.baseColorTexture.setTexture(textureCache[id]);
-                            const sampler = material.pbrMetallicRoughness.baseColorTexture.texture.sampler;
-                            sampler.setMinFilter(9728); 
-                            sampler.setMagFilter(9728);
-                        }
-                    }
-                });
-            }, { threshold: 0.5 });
+        // 2. THE PARALLAX ZOOM LOGIC
+        window.addEventListener('scroll', () => {
+            const scrollPercent = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+            
+            // Zoom the background (Parallax)
+            // Starts at 1.0, ends at 1.4
+            const zoom = 1 + (scrollPercent * 0.4);
+            streetImg.style.transform = `scale(${zoom})`;
 
-            document.querySelectorAll('.product-section').forEach(s => observer.observe(s));
+            // Logic for texture/environment swap goes here next
+            if (scrollPercent > 0.5) {
+                // Future: Swap to Archive 002
+            }
         });
     </script>
 </body>

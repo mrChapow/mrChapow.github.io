@@ -9,25 +9,39 @@
     
     <style>
         :root { 
-            --accent: #000000;
-            --bg: #ffffff;
-            --glass: rgba(255, 255, 255, 0.4);
+            --accent: #ffffff;
+            --bg: #000000;
+            --glass: rgba(255, 255, 255, 0.15);
+            --slider-thickness: 4px; /* Increased from 2px */
         }
+
+        * { box-sizing: border-box; }
 
         body, html {
             margin: 0; padding: 0;
             width: 100%; height: 100%;
-            background-color: #000;
-            font-family: "Inter", sans-serif;
+            background-color: var(--bg);
+            font-family: "Inter", -apple-system, sans-serif;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* 1. THE DYNAMIC BACKGROUND */
+        /* 1. SCROLL ENGINE (The physical height) */
+        #scroll-engine {
+            height: 700vh; /* Extra runway for 6 frames */
+            width: 100%;
+            position: absolute;
+            top: 0; left: 0;
+            z-index: 0; /* Sits at the bottom */
+        }
+
+        /* 2. BACKGROUND SEQUENCER */
         #parallax-bg {
             position: fixed;
             inset: 0;
             z-index: 1;
             overflow: hidden;
+            pointer-events: none; /* Allows scroll to pass through to Layer 0 */
         }
 
         #street-img {
@@ -37,83 +51,156 @@
             background-position: center;
             background-size: cover;
             will-change: transform, background-image;
+            transition: transform 0.1s ease-out;
         }
 
-        /* 2. THE FLOATING LOOT (NO CHANGES TO SHIRT) */
+        /* 3. THE LOOT DROP (3D Model) */
         .model-container {
             position: fixed;
             inset: 0;
-            z-index: 3;
+            z-index: 2;
             display: flex;
             align-items: center;
             justify-content: center;
-            pointer-events: none; 
+            pointer-events: none; /* EXTREMELY IMPORTANT: NO MOUSE INTERACTION */
             animation: floatingBob 4s ease-in-out infinite;
         }
 
         @keyframes floatingBob {
             0% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
+            50% { transform: translateY(-20px); }
             100% { transform: translateY(0px); }
         }
 
         model-viewer {
-            width: 45vw; height: 45vh;
+            width: 45vw;
+            height: 45vh;
             outline: none;
             --poster-color: transparent;
         }
 
-        /* 3. UI LAYERS */
+        /* 4. LIQUID UI LAYER */
         .interface {
-            position: fixed; inset: 0; padding: 40px;
-            pointer-events: none; display: flex; flex-direction: column;
-            justify-content: flex-end; z-index: 100;
+            position: fixed;
+            inset: 0;
+            padding: 50px;
+            pointer-events: none; /* Container is passthrough */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            z-index: 10;
         }
 
-        .ui-wrap { pointer-events: auto; width: 100%; }
+        .ui-wrap { 
+            pointer-events: auto; /* Re-enable for buttons/slider */
+            width: 100%; 
+            max-width: 1200px;
+            margin: 0 auto;
+        }
 
+        /* 5. REFINED SLIDER */
         .slider-container {
-            width: 100%; margin-bottom: 30px;
-            display: flex; justify-content: center;
+            width: 100%;
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: center;
         }
 
         #rotation-slider {
             -webkit-appearance: none;
-            width: 100%; max-width: 400px; height: 2px;
-            background: rgba(255,255,255,0.2); outline: none;
+            appearance: none;
+            width: 100%;
+            max-width: 500px;
+            height: var(--slider-thickness);
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            outline: none;
+            cursor: pointer;
+            transition: background 0.3s ease;
         }
 
+        #rotation-slider:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* The Grabber/Thumb */
         #rotation-slider::-webkit-slider-thumb {
-            -webkit-appearance: none; appearance: none;
-            width: 40px; height: 2px;
-            background: #fff; cursor: pointer;
+            -webkit-appearance: none;
+            appearance: none;
+            width: 60px;
+            height: 6px; /* Slightly thicker than the track */
+            background: var(--accent);
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(255,255,255,0.3);
         }
 
-        .bottom-ui { display: flex; justify-content: space-between; align-items: flex-end; color: white; }
+        .bottom-ui {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            color: white;
+        }
+
+        .product-info h1 {
+            font-size: 42px;
+            text-transform: uppercase;
+            margin: 0;
+            font-weight: 900;
+            letter-spacing: -0.05em;
+        }
+
+        .product-info p {
+            color: rgba(255,255,255,0.5);
+            font-size: 13px;
+            letter-spacing: 0.2em;
+            margin-top: 5px;
+            text-transform: uppercase;
+        }
 
         .cta-button {
             background: var(--glass);
-            backdrop-filter: blur(25px) saturate(200%);
-            -webkit-backdrop-filter: blur(25px) saturate(200%);
-            color: black; border: 1px solid rgba(255, 255, 255, 0.6);
-            padding: 16px 40px; border-radius: 50px;
-            font-size: 11px; font-weight: 700; text-transform: uppercase;
-            letter-spacing: 0.15em; cursor: pointer;
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 18px 50px;
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
-        .header-container { position: fixed; top: 40px; width: 100%; display: flex; justify-content: center; z-index: 9999; pointer-events: none; color: white;}
+        .cta-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
 
-        #scroll-engine { height: 600vh; } /* 100vh per image roughly */
+        .header-container {
+            position: fixed;
+            top: 40px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            z-index: 100;
+            pointer-events: none;
+            color: white;
+        }
     </style>
 </head>
 <body>
+
+    <div id="scroll-engine"></div>
 
     <div id="parallax-bg">
         <div id="street-img"></div>
     </div>
 
     <header class="header-container">
-        <div class="brand-id" style="font-weight:800; pointer-events:auto; font-size: 10px; letter-spacing: 0.6em;">COTA // LAB</div>
+        <div class="brand-id" style="font-weight:900; font-size: 11px; letter-spacing: 0.8em; opacity: 0.8;">COTA // LAB</div>
     </header>
 
     <div class="model-container">
@@ -121,8 +208,8 @@
             id="main-viewer"
             src="Tshirt.glb" 
             auto-rotate 
-            shadow-intensity="0.3" 
-            exposure="1.1"
+            shadow-intensity="0.5" 
+            exposure="1.2"
             camera-orbit="0deg 75deg 105%"
             style="pointer-events: none;">
         </model-viewer>
@@ -136,8 +223,8 @@
 
             <div class="bottom-ui">
                 <div class="product-info">
-                    <h1 style="font-size: 32px; text-transform:uppercase; margin:0; font-weight: 900; letter-spacing: -0.04em;">Archive 001</h1>
-                    <p style="color:rgba(255,255,255,0.6); font-size: 12px; letter-spacing: 0.1em; margin-top: 4px;">SECTOR: CLT // APPROACHING</p>
+                    <h1>Archive 001</h1>
+                    <p>Sector: CLT // Approach Phase</p>
                 </div>
                 <div class="purchase-zone">
                     <button class="cta-button">Pre-Order</button>
@@ -146,14 +233,12 @@
         </div>
     </div>
 
-    <div id="scroll-engine"></div>
-
     <script>
         const modelViewer = document.querySelector('#main-viewer');
         const streetImg = document.querySelector('#street-img');
         const slider = document.querySelector('#rotation-slider');
 
-        // 1. Image sequence configuration
+        // 1. CONFIGURATION
         const images = [
             'street-view.jpg',
             'street-view1.jpg',
@@ -163,37 +248,45 @@
             'street-view5.jpg'
         ];
 
-        // Preload images to prevent flickering
-        images.forEach(src => {
-            const img = new Image();
-            img.src = src;
-        });
+        // 2. PRELOADER
+        const preloadImages = () => {
+            images.forEach(src => {
+                const img = new Image();
+                img.src = src;
+            });
+        };
+        preloadImages();
 
-        // 2. Slider Logic
+        // 3. ROTATION SLIDER
         slider.addEventListener('input', (e) => {
+            // Theta (val), Phi (75), Radius (105)
             modelViewer.cameraOrbit = `${e.target.value}deg 75deg 105%`;
-            modelViewer.autoRotate = false;
+            modelViewer.autoRotate = false; // Kill auto-rotate on user touch
         });
 
-        // 3. The Walk-Through Engine
-        window.addEventListener('scroll', () => {
-            const scrollPercent = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+        // 4. THE DOLLY-WALK ENGINE
+        const handleScroll = () => {
+            const scrollTotal = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = window.scrollY / scrollTotal;
             
-            // Calculate which image to show (0 to 5)
+            // Frame Calculation
             const frameIndex = Math.min(
                 images.length - 1,
                 Math.floor(scrollPercent * images.length)
             );
 
-            // Update the background image
+            // Update Frame
             streetImg.style.backgroundImage = `url('${images[frameIndex]}')`;
 
-            // Optional: Internal zoom per frame to smooth the jump
-            const internalZoom = 1 + ((scrollPercent * images.length % 1) * 0.05);
-            streetImg.style.transform = `scale(${internalZoom})`;
-        });
+            // Internal Zoom Logic (1.0 to 1.1 per frame)
+            const frameProgress = (scrollPercent * images.length) % 1;
+            const zoomLevel = 1 + (frameProgress * 0.1); 
+            streetImg.style.transform = `scale(${zoomLevel})`;
+        };
 
-        // Initialize first frame
+        window.addEventListener('scroll', handleScroll, { passive: true });
+
+        // Init first frame
         streetImg.style.backgroundImage = `url('${images[0]}')`;
     </script>
 </body>

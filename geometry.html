@@ -3,87 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cota Lab // CLT Mission</title>
+    <title>Cota Lab // Archive 001</title>
+    
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+    
     <style>
-        body, html { margin: 0; padding: 0; background: #000; overflow-x: hidden; }
-
-        /* The Deck of Cards Container */
-        #bg-wrapper {
-            position: fixed; inset: 0; z-index: 1;
-            background: #000;
+        :root { 
+            --accent: #ffffff;
+            --bg: #000000;
+            --glass: rgba(255, 255, 255, 0.12);
+            --border: rgba(255, 255, 255, 0.2);
         }
 
-        /* Each image is its own layer */
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            background-color: var(--bg);
+            font-family: "Inter", -apple-system, sans-serif;
+            overflow-x: hidden;
+            color: white;
+        }
+
+        /* 1. LOADING OVERLAY */
+        #loader {
+            position: fixed; inset: 0; z-index: 9999;
+            background: #000; display: flex; align-items: center; justify-content: center;
+            transition: opacity 1s ease;
+        }
+        .loading-text { letter-spacing: 0.8em; font-size: 10px; font-weight: 900; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        /* 2. THE FLIPBOOK STACK */
+        #bg-wrapper { position: fixed; inset: 0; z-index: 1; }
         .bg-layer {
             position: absolute; inset: 0;
             background-size: cover; background-position: center;
-            opacity: 0; /* Hidden by default */
-            transition: opacity 0.8s ease-in-out; /* This creates the smooth fade */
+            opacity: 0; transition: opacity 0.8s ease-in-out;
             will-change: opacity, transform;
         }
+        .bg-layer.active { opacity: 1; }
 
-        /* The layer you are currently looking at */
-        .bg-layer.active {
-            opacity: 1;
-        }
-
-        /* The 3D Loot Item - Locked and Protected */
+        /* 3. THE PROTECTED LOOT */
         .model-container {
             position: fixed; inset: 0; z-index: 3;
             display: flex; align-items: center; justify-content: center;
             pointer-events: none; 
-            animation: bob 4s ease-in-out infinite;
+            animation: floatingBob 4s ease-in-out infinite;
         }
-        @keyframes bob { 
-            0%, 100% { transform: translateY(0); } 
-            50% { transform: translateY(-20px); } 
+        @keyframes floatingBob {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        model-viewer { width: 45vw; height: 45vh; outline: none; --poster-color: transparent; }
+
+        /* 4. RE-WRAPPING BRANDING & NAV */
+        .header {
+            position: fixed; top: 40px; width: 100%;
+            display: flex; justify-content: center;
+            z-index: 100; pointer-events: none;
+        }
+        .brand-id { font-weight: 900; font-size: 11px; letter-spacing: 0.8em; pointer-events: auto; cursor: pointer; }
+
+        .interface {
+            position: fixed; inset: 0; padding: 50px;
+            pointer-events: none; display: flex; flex-direction: column;
+            justify-content: flex-end; z-index: 100;
+        }
+        .ui-wrap { pointer-events: auto; width: 100%; max-width: 1200px; margin: 0 auto; }
+
+        /* 5. POLISHED SLIDER (4px) */
+        .slider-container { width: 100%; margin-bottom: 40px; display: flex; justify-content: center; }
+        #rotate {
+            -webkit-appearance: none; width: 100%; max-width: 400px;
+            height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; outline: none;
+        }
+        #rotate::-webkit-slider-thumb {
+            -webkit-appearance: none; width: 50px; height: 8px;
+            background: #fff; border-radius: 4px; cursor: pointer;
         }
 
-        /* The Scroll Runway */
-        #scroll-engine { height: 600vh; position: relative; z-index: 0; }
+        .bottom-ui { display: flex; justify-content: space-between; align-items: flex-end; }
+        .product-info h1 { font-size: 38px; text-transform: uppercase; margin: 0; font-weight: 900; letter-spacing: -0.04em; }
+        .product-info p { color: rgba(255,255,255,0.5); font-size: 12px; letter-spacing: 0.2em; margin-top: 5px; text-transform: uppercase; }
 
-        /* Minimalist UI */
-        .ui {
-            position: fixed; bottom: 40px; left: 0; width: 100%;
-            z-index: 10; display: flex; flex-direction: column; align-items: center;
-            pointer-events: none;
+        .cta-button {
+            background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            color: white; border: 1px solid var(--border);
+            padding: 16px 45px; border-radius: 100px;
+            font-size: 11px; font-weight: 800; text-transform: uppercase;
+            letter-spacing: 0.2em; cursor: pointer; transition: 0.3s;
         }
-        .slider-wrap { width: 80%; max-width: 500px; pointer-events: auto; }
-        
-        input[type=range] {
-            width: 100%; height: 4px;
-            appearance: none; background: rgba(255,255,255,0.3); outline: none; border-radius: 2px;
-        }
-        input[type=range]::-webkit-slider-thumb {
-            appearance: none; width: 50px; height: 6px; background: #fff; cursor: pointer; border-radius: 3px;
-        }
+        .cta-button:hover { background: rgba(255,255,255,0.25); transform: translateY(-2px); }
+
+        #scroll-engine { height: 700vh; position: relative; z-index: 0; }
     </style>
 </head>
 <body>
 
+    <div id="loader"><div class="loading-text">COTA LAB // INITIALIZING</div></div>
+
     <div id="scroll-engine"></div>
-    
-    <div id="bg-wrapper">
-        </div>
+    <div id="bg-wrapper"></div>
+
+    <header class="header">
+        <div class="brand-id">COTA // LAB</div>
+    </header>
 
     <div class="model-container">
-        <model-viewer id="viewer" src="Tshirt.glb" shadow-intensity="1" exposure="1.2" style="width:45vw; height:45vh; pointer-events:none;"></model-viewer>
+        <model-viewer id="viewer" src="Tshirt.glb" shadow-intensity="1" exposure="1.2" style="pointer-events:none;"></model-viewer>
     </div>
 
-    <div class="ui">
-        <div class="slider-wrap">
-            <input type="range" id="rotate" min="0" max="360" value="0">
+    <div class="interface">
+        <div class="ui-wrap">
+            <div class="slider-container">
+                <input type="range" id="rotate" min="0" max="360" value="0">
+            </div>
+            <div class="bottom-ui">
+                <div class="product-info">
+                    <h1>Archive 001</h1>
+                    <p>Sector: CLT // Approach Phase</p>
+                </div>
+                <div class="purchase-zone">
+                    <button class="cta-button">Pre-Order</button>
+                </div>
+            </div>
         </div>
-        <p style="color: white; font-family: sans-serif; letter-spacing: 2px; font-size: 10px;">SCROLL TO WALK // SLIDE TO INSPECT</p>
     </div>
 
     <script>
         const wrapper = document.getElementById('bg-wrapper');
+        const loader = document.getElementById('loader');
         const viewer = document.getElementById('viewer');
         const slider = document.getElementById('rotate');
 
-        // EXACT file names matching your screenshot (note the spaces)
         const images = [
             'street-view.jpg',
             'street-view 1.jpg',
@@ -93,39 +145,43 @@
             'street-view 5.jpg'
         ];
 
-        // 1. Build the "Deck of Cards"
+        // 1. ASSET ENGINE (PRELOAD & INJECT)
+        let loadedCount = 0;
         const layers = [];
+
         images.forEach((src, index) => {
+            const img = new Image();
+            img.onload = () => {
+                loadedCount++;
+                if(loadedCount === images.length) loader.style.opacity = '0', setTimeout(()=>loader.remove(), 1000);
+            };
+            img.src = src;
+
             const div = document.createElement('div');
             div.className = 'bg-layer';
-            if (index === 0) div.classList.add('active'); // Show first image
+            if (index === 0) div.classList.add('active');
             div.style.backgroundImage = `url('${src}')`;
             wrapper.appendChild(div);
             layers.push(div);
         });
 
-        // 2. Rotation Logic
+        // 2. INTERACTION
         slider.oninput = (e) => {
             viewer.cameraOrbit = `${e.target.value}deg 75deg 105%`;
             viewer.autoRotate = false;
         };
 
-        // 3. The Crossfade Engine
+        // 3. DOLLY-WALK ENGINE
         let currentFrame = 0;
-
         window.onscroll = () => {
             const scrollPercent = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
-            
-            // Calculate which frame we should be on (0 to 5)
             const targetFrame = Math.min(Math.floor(scrollPercent * images.length), images.length - 1);
 
-            // Add subtle dolly zoom to the active layer based on scroll progress within that frame
+            // Per-frame zoom logic
             const frameProgress = (scrollPercent * images.length) % 1;
-            const zoomLevel = 1 + (frameProgress * 0.08); // Zooms from 1.0 to 1.08
-            
-            layers[targetFrame].style.transform = `scale(${zoomLevel})`;
+            const zoom = 1 + (frameProgress * 0.1); 
+            layers[targetFrame].style.transform = `scale(${zoom})`;
 
-            // If the frame changes, crossfade them
             if (targetFrame !== currentFrame) {
                 layers[currentFrame].classList.remove('active');
                 layers[targetFrame].classList.add('active');

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Cota Lab // Archive 001</title>
     
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
@@ -21,18 +21,18 @@
             font-family: "Inter", sans-serif;
             overflow-x: hidden;
             color: white;
+            /* Prevents overscroll "rubber-banding" on iOS */
+            overscroll-behavior-y: none;
         }
 
-        /* 1. ULTRA-FAST RUNWAY */
         #scroll-engine {
-            height: 125vh; /* Very short for fast snapping */
+            height: 150vh; /* Slightly more runway for mobile thumbs */
             width: 100%;
             position: absolute;
             top: 0; left: 0;
             z-index: 0;
         }
 
-        /* 2. BACKGROUND (Single layer) */
         #parallax-bg {
             position: fixed;
             inset: 0;
@@ -41,9 +41,11 @@
             background-position: center;
             will-change: background-image;
             pointer-events: none;
+            /* Ensures background covers the whole screen including under UI bars */
+            height: 100vh;
+            height: -webkit-fill-available;
         }
 
-        /* 3. THE PROTECTED LOOT */
         .model-container {
             position: fixed;
             inset: 0;
@@ -56,47 +58,55 @@
         }
         @keyframes floatingBob {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-12px); }
+            50% { transform: translateY(-10px); }
         }
-        model-viewer { width: 45vw; height: 45vh; outline: none; }
+        
+        model-viewer { 
+            width: 80vw; /* Larger for mobile */
+            height: 50vh; 
+            outline: none; 
+        }
 
-        /* 4. BRANDING & UI */
         .header {
-            position: fixed; top: 40px; width: 100%;
+            position: fixed; top: 20px; width: 100%;
             display: flex; justify-content: center; z-index: 100;
         }
-        .brand-id { font-weight: 900; font-size: 11px; letter-spacing: 0.8em; text-transform: uppercase; }
+        .brand-id { font-weight: 900; font-size: 10px; letter-spacing: 0.6em; text-transform: uppercase; }
 
         .interface {
-            position: fixed; inset: 0; padding: 50px;
-            pointer-events: none; display: flex; flex-direction: column;
-            justify-content: flex-end; z-index: 100;
+            position: fixed; 
+            bottom: 0; left: 0; right: 0;
+            padding: 30px 20px;
+            pointer-events: none; 
+            z-index: 100;
         }
-        .ui-wrap { pointer-events: auto; width: 100%; max-width: 1200px; margin: 0 auto; }
+        .ui-wrap { pointer-events: auto; width: 100%; max-width: 600px; margin: 0 auto; }
 
-        /* SLIDER (4px) */
-        .slider-container { width: 100%; margin-bottom: 40px; display: flex; justify-content: center; }
+        .slider-container { width: 100%; margin-bottom: 30px; }
+        
         #rotate {
-            -webkit-appearance: none; width: 100%; max-width: 400px;
+            -webkit-appearance: none; width: 100%;
             height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; outline: none;
+            /* Increases the touch target for mobile thumbs */
+            padding: 10px 0;
+            background-clip: content-box;
         }
         #rotate::-webkit-slider-thumb {
-            -webkit-appearance: none; width: 40px; height: 10px;
-            background: #fff; border-radius: 2px; cursor: pointer;
+            -webkit-appearance: none; width: 44px; height: 12px;
+            background: #fff; border-radius: 4px; cursor: pointer;
         }
 
-        .bottom-ui { display: flex; justify-content: space-between; align-items: flex-end; }
-        .product-info h1 { font-size: 32px; text-transform: uppercase; margin: 0; font-weight: 900; letter-spacing: -0.02em;}
-        .product-info p { color: rgba(255,255,255,0.5); font-size: 11px; letter-spacing: 0.2em; margin-top: 4px; text-transform: uppercase; }
+        .bottom-ui { display: flex; justify-content: space-between; align-items: center; }
+        .product-info h1 { font-size: 24px; text-transform: uppercase; margin: 0; font-weight: 900; }
+        .product-info p { color: rgba(255,255,255,0.5); font-size: 10px; letter-spacing: 0.1em; margin: 0; }
 
         .cta-button {
-            background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            background: var(--glass); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
             color: white; border: 1px solid rgba(255,255,255,0.15);
-            padding: 14px 40px; border-radius: 100px;
-            font-size: 10px; font-weight: 800; text-transform: uppercase;
-            letter-spacing: 0.15em; cursor: pointer; transition: 0.3s ease;
+            padding: 12px 25px; border-radius: 100px;
+            font-size: 9px; font-weight: 800; text-transform: uppercase;
+            letter-spacing: 0.1em;
         }
-        .cta-button:hover { background: rgba(255, 255, 255, 0.2); }
     </style>
 </head>
 <body>
@@ -120,11 +130,9 @@
             <div class="bottom-ui">
                 <div class="product-info">
                     <h1>Archive 001</h1>
-                    <p>Sector: CLT // Fast Transit</p>
+                    <p>CLT // TRANSIT</p>
                 </div>
-                <div class="purchase-zone">
-                    <button class="cta-button">Pre-Order</button>
-                </div>
+                <button class="cta-button">Pre-Order</button>
             </div>
         </div>
     </div>
@@ -143,27 +151,35 @@
             'street-view 5.jpg'
         ];
 
-        // Silent Preload
-        images.forEach(src => { const img = new Image(); img.src = src; });
-
-        // Inspection Logic
+        // Rotation
         slider.oninput = (e) => {
             viewer.cameraOrbit = `${e.target.value}deg 75deg 105%`;
             viewer.autoRotate = false;
         };
 
-        // Ultra-Fast Sync Engine
+        // Smooth Scroll Engine
+        let tick = false;
         window.addEventListener('scroll', () => {
-            const scrollTotal = document.documentElement.scrollHeight - window.innerHeight;
-            const scrollPercent = window.scrollY / scrollTotal;
-            
-            // Frame swap logic
-            const frameIndex = Math.min(Math.floor(scrollPercent * (images.length - 0.1)), images.length - 1);
-            bg.style.backgroundImage = `url('${images[frameIndex]}')`;
+            if (!tick) {
+                window.requestAnimationFrame(() => {
+                    const scrollTotal = document.documentElement.scrollHeight - window.innerHeight;
+                    const scrollPercent = window.scrollY / scrollTotal;
+                    const frameIndex = Math.min(Math.floor(scrollPercent * images.length), images.length - 1);
+                    
+                    bg.style.backgroundImage = `url('${images[frameIndex]}')`;
+                    tick = false;
+                });
+                tick = true;
+            }
         }, { passive: true });
 
-        // Initial set
+        // Force first frame
         bg.style.backgroundImage = `url('${images[0]}')`;
+        
+        // Mobile Height Fix (prevents jumpiness)
+        window.addEventListener('resize', () => {
+            document.getElementById('parallax-bg').style.height = window.innerHeight + 'px';
+        });
     </script>
 </body>
 </html>

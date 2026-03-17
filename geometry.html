@@ -24,34 +24,20 @@
             overflow-x: hidden;
         }
 
-        /* 1. STREET VIEW LAYER */
         #parallax-bg {
-            position: fixed;
-            inset: 0;
-            z-index: 1;
-            overflow: hidden;
-            background: #e2e8f0;
+            position: fixed; inset: 0; z-index: 1; overflow: hidden; background: #e2e8f0;
         }
 
         .street-view-img {
-            position: absolute;
-            width: 120%; height: 120%;
-            top: -10%; left: -10%;
+            position: absolute; width: 120%; height: 120%; top: -10%; left: -10%;
             object-fit: cover;
             background: radial-gradient(circle at center, #cbd5e1 0%, #ffffff 100%);
             transition: transform 0.1s linear;
         }
 
-        /* 2. THE FLOATING CONTAINER
-           pointer-events: none here ensures the mouse ignores the model entirely.
-        */
         .model-container {
-            position: fixed;
-            inset: 0;
-            z-index: 3;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: fixed; inset: 0; z-index: 3;
+            display: flex; align-items: center; justify-content: center;
             pointer-events: none; 
             animation: floatingBob 4s ease-in-out infinite;
         }
@@ -62,53 +48,61 @@
             100% { transform: translateY(0px); }
         }
 
-        /* Controlling the size by the element dimensions instead of the scale attribute */
         model-viewer {
-            width: 50vw; 
-            height: 50vh;
+            width: 45vw; height: 45vh; /* Controlled size */
             outline: none;
             --poster-color: transparent;
         }
 
-        /* 3. LIQUID UI */
         .interface {
-            position: fixed;
-            inset: 0;
-            padding: 40px;
-            pointer-events: none;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            z-index: 100;
+            position: fixed; inset: 0; padding: 40px;
+            pointer-events: none; display: flex; flex-direction: column;
+            justify-content: flex-end; z-index: 100;
         }
 
-        .bottom-ui {
+        .ui-wrap { pointer-events: auto; width: 100%; }
+
+        /* THE SLIDER STYLE */
+        .slider-container {
+            width: 100%;
+            margin-bottom: 30px;
             display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            pointer-events: auto;
+            justify-content: center;
         }
+
+        #rotation-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            max-width: 400px;
+            height: 2px;
+            background: rgba(0,0,0,0.1);
+            outline: none;
+            cursor: pointer;
+        }
+
+        #rotation-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 40px;
+            height: 2px;
+            background: var(--accent);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .bottom-ui { display: flex; justify-content: space-between; align-items: flex-end; }
 
         .cta-button {
             background: var(--glass);
             backdrop-filter: blur(25px) saturate(200%);
             -webkit-backdrop-filter: blur(25px) saturate(200%);
-            color: black;
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            padding: 16px 40px;
-            border-radius: 50px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            cursor: pointer;
+            color: black; border: 1px solid rgba(255, 255, 255, 0.6);
+            padding: 16px 40px; border-radius: 50px;
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.15em; cursor: pointer;
         }
 
-        .header-container {
-            position: fixed; top: 40px; width: 100%;
-            display: flex; justify-content: center;
-            z-index: 9999; pointer-events: none;
-        }
+        .header-container { position: fixed; top: 40px; width: 100%; display: flex; justify-content: center; z-index: 9999; pointer-events: none; }
 
         #scroll-engine { height: 500vh; }
     </style>
@@ -136,13 +130,19 @@
     </div>
 
     <div class="interface">
-        <div class="bottom-ui">
-            <div class="product-info">
-                <h1 style="font-size: 32px; text-transform:uppercase; margin:0; font-weight: 900; letter-spacing: -0.04em;">Archive 001</h1>
-                <p style="color:var(--secondary); font-size: 12px; letter-spacing: 0.1em; margin-top: 4px;">TOKYO // CHUO CITY</p>
+        <div class="ui-wrap">
+            <div class="slider-container">
+                <input type="range" id="rotation-slider" min="0" max="360" value="0">
             </div>
-            <div class="purchase-zone">
-                <button class="cta-button">Pre-Order</button>
+
+            <div class="bottom-ui">
+                <div class="product-info">
+                    <h1 style="font-size: 32px; text-transform:uppercase; margin:0; font-weight: 900; letter-spacing: -0.04em;">Archive 001</h1>
+                    <p style="color:var(--secondary); font-size: 12px; letter-spacing: 0.1em; margin-top: 4px;">TOKYO // CHUO CITY</p>
+                </div>
+                <div class="purchase-zone">
+                    <button class="cta-button">Pre-Order</button>
+                </div>
             </div>
         </div>
     </div>
@@ -150,7 +150,19 @@
     <div id="scroll-engine"></div>
 
     <script>
+        const modelViewer = document.querySelector('#main-viewer');
         const streetImg = document.querySelector('#street-img');
+        const slider = document.querySelector('#rotation-slider');
+
+        // 1. Slider Logic
+        slider.addEventListener('input', (e) => {
+            const val = e.target.value;
+            // Updates horizontal orbit (theta), keeps vertical at 75deg
+            modelViewer.cameraOrbit = `${val}deg 75deg 105%`;
+            modelViewer.autoRotate = false; // Stop auto-rotating when user interacts
+        });
+
+        // 2. Parallax Zoom
         window.addEventListener('scroll', () => {
             const scrollPercent = window.scrollY / (document.body.scrollHeight - window.innerHeight);
             const zoom = 1 + (scrollPercent * 0.7);

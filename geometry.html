@@ -12,41 +12,45 @@
             --accent: #ffffff;
             --bg: #000000;
             --glass: rgba(255, 255, 255, 0.12);
-            --border: rgba(255, 255, 255, 0.2);
         }
 
         body, html {
             margin: 0; padding: 0;
             width: 100%; height: 100%;
             background-color: var(--bg);
-            font-family: "Inter", -apple-system, sans-serif;
+            font-family: "Inter", sans-serif;
             overflow-x: hidden;
             color: white;
         }
 
-        /* 1. LOADING OVERLAY */
-        #loader {
-            position: fixed; inset: 0; z-index: 9999;
-            background: #000; display: flex; align-items: center; justify-content: center;
-            transition: opacity 1s ease;
+        /* 1. THE SCROLL RUNWAY (Forces the scrollbar to work) */
+        #scroll-engine {
+            height: 500vh; /* Length of the "walk" */
+            width: 100%;
+            position: absolute;
+            top: 0; left: 0;
+            z-index: 0;
         }
-        .loading-text { letter-spacing: 0.8em; font-size: 10px; font-weight: 900; animation: pulse 2s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-        /* 2. THE FLIPBOOK STACK */
-        #bg-wrapper { position: fixed; inset: 0; z-index: 1; }
-        .bg-layer {
-            position: absolute; inset: 0;
-            background-size: cover; background-position: center;
-            opacity: 0; transition: opacity 0.8s ease-in-out;
-            will-change: opacity, transform;
+        /* 2. THE BACKGROUND (Fixed so it doesn't move) */
+        #parallax-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            background-size: cover;
+            background-position: center;
+            will-change: background-image, transform;
+            pointer-events: none;
         }
-        .bg-layer.active { opacity: 1; }
 
         /* 3. THE PROTECTED LOOT */
         .model-container {
-            position: fixed; inset: 0; z-index: 3;
-            display: flex; align-items: center; justify-content: center;
+            position: fixed;
+            inset: 0;
+            z-index: 3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             pointer-events: none; 
             animation: floatingBob 4s ease-in-out infinite;
         }
@@ -54,15 +58,14 @@
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-15px); }
         }
-        model-viewer { width: 45vw; height: 45vh; outline: none; --poster-color: transparent; }
+        model-viewer { width: 45vw; height: 45vh; outline: none; }
 
-        /* 4. RE-WRAPPING BRANDING & NAV */
+        /* 4. BRANDING & UI */
         .header {
             position: fixed; top: 40px; width: 100%;
-            display: flex; justify-content: center;
-            z-index: 100; pointer-events: none;
+            display: flex; justify-content: center; z-index: 100;
         }
-        .brand-id { font-weight: 900; font-size: 11px; letter-spacing: 0.8em; pointer-events: auto; cursor: pointer; }
+        .brand-id { font-weight: 900; font-size: 11px; letter-spacing: 0.8em; }
 
         .interface {
             position: fixed; inset: 0; padding: 50px;
@@ -71,7 +74,7 @@
         }
         .ui-wrap { pointer-events: auto; width: 100%; max-width: 1200px; margin: 0 auto; }
 
-        /* 5. POLISHED SLIDER (4px) */
+        /* SLIDER (4px) */
         .slider-container { width: 100%; margin-bottom: 40px; display: flex; justify-content: center; }
         #rotate {
             -webkit-appearance: none; width: 100%; max-width: 400px;
@@ -83,27 +86,22 @@
         }
 
         .bottom-ui { display: flex; justify-content: space-between; align-items: flex-end; }
-        .product-info h1 { font-size: 38px; text-transform: uppercase; margin: 0; font-weight: 900; letter-spacing: -0.04em; }
-        .product-info p { color: rgba(255,255,255,0.5); font-size: 12px; letter-spacing: 0.2em; margin-top: 5px; text-transform: uppercase; }
+        .product-info h1 { font-size: 38px; text-transform: uppercase; margin: 0; font-weight: 900; }
+        .product-info p { color: rgba(255,255,255,0.5); font-size: 12px; letter-spacing: 0.2em; margin-top: 5px; }
 
         .cta-button {
             background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            color: white; border: 1px solid var(--border);
+            color: white; border: 1px solid rgba(255,255,255,0.2);
             padding: 16px 45px; border-radius: 100px;
             font-size: 11px; font-weight: 800; text-transform: uppercase;
-            letter-spacing: 0.2em; cursor: pointer; transition: 0.3s;
+            letter-spacing: 0.2em; cursor: pointer;
         }
-        .cta-button:hover { background: rgba(255,255,255,0.25); transform: translateY(-2px); }
-
-        #scroll-engine { height: 700vh; position: relative; z-index: 0; }
     </style>
 </head>
 <body>
 
-    <div id="loader"><div class="loading-text">COTA LAB // INITIALIZING</div></div>
-
     <div id="scroll-engine"></div>
-    <div id="bg-wrapper"></div>
+    <div id="parallax-bg"></div>
 
     <header class="header">
         <div class="brand-id">COTA // LAB</div>
@@ -131,11 +129,11 @@
     </div>
 
     <script>
-        const wrapper = document.getElementById('bg-wrapper');
-        const loader = document.getElementById('loader');
+        const bg = document.getElementById('parallax-bg');
         const viewer = document.getElementById('viewer');
         const slider = document.getElementById('rotate');
 
+        // File names with exact spaces from your screenshot
         const images = [
             'street-view.jpg',
             'street-view 1.jpg',
@@ -145,49 +143,36 @@
             'street-view 5.jpg'
         ];
 
-        // 1. ASSET ENGINE (PRELOAD & INJECT)
-        let loadedCount = 0;
-        const layers = [];
-
-        images.forEach((src, index) => {
+        // Preload for zero flickering
+        images.forEach(src => {
             const img = new Image();
-            img.onload = () => {
-                loadedCount++;
-                if(loadedCount === images.length) loader.style.opacity = '0', setTimeout(()=>loader.remove(), 1000);
-            };
             img.src = src;
-
-            const div = document.createElement('div');
-            div.className = 'bg-layer';
-            if (index === 0) div.classList.add('active');
-            div.style.backgroundImage = `url('${src}')`;
-            wrapper.appendChild(div);
-            layers.push(div);
         });
 
-        // 2. INTERACTION
+        // 1. Rotation Interaction
         slider.oninput = (e) => {
             viewer.cameraOrbit = `${e.target.value}deg 75deg 105%`;
             viewer.autoRotate = false;
         };
 
-        // 3. DOLLY-WALK ENGINE
-        let currentFrame = 0;
-        window.onscroll = () => {
+        // 2. The Fixed Scroll Sync
+        window.addEventListener('scroll', () => {
             const scrollPercent = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
-            const targetFrame = Math.min(Math.floor(scrollPercent * images.length), images.length - 1);
+            
+            // Calculate Frame
+            const frameIndex = Math.min(Math.floor(scrollPercent * images.length), images.length - 1);
+            
+            // Update Image
+            bg.style.backgroundImage = `url('${images[frameIndex]}')`;
 
-            // Per-frame zoom logic
+            // Micro-Dolly Zoom (Subtle 1.0 to 1.05 per frame)
             const frameProgress = (scrollPercent * images.length) % 1;
-            const zoom = 1 + (frameProgress * 0.1); 
-            layers[targetFrame].style.transform = `scale(${zoom})`;
+            const zoom = 1 + (frameProgress * 0.05);
+            bg.style.transform = `scale(${zoom})`;
+        }, { passive: true });
 
-            if (targetFrame !== currentFrame) {
-                layers[currentFrame].classList.remove('active');
-                layers[targetFrame].classList.add('active');
-                currentFrame = targetFrame;
-            }
-        };
+        // Initialize first frame
+        bg.style.backgroundImage = `url('${images[0]}')`;
     </script>
 </body>
 </html>

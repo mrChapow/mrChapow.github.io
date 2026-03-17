@@ -20,12 +20,11 @@
             width: 100%; height: 100%;
             background-color: var(--bg);
             color: var(--accent);
-            font-family: "Inter", -apple-system, sans-serif;
+            font-family: "Inter", sans-serif;
             overflow-x: hidden;
-            letter-spacing: -0.02em;
         }
 
-        /* 1. STREET VIEW LAYER (Behind everything) */
+        /* 1. STREET VIEW LAYER */
         #parallax-bg {
             position: fixed;
             inset: 0;
@@ -39,13 +38,11 @@
             width: 120%; height: 120%;
             top: -10%; left: -10%;
             object-fit: cover;
-            /* Placeholder gradient until you link your images */
             background: radial-gradient(circle at center, #cbd5e1 0%, #ffffff 100%);
             transition: transform 0.1s linear;
         }
 
-        /* 2. THE FLOATING T-SHIRT CONTAINER
-           We animate the DIV, not the model, so rotation stays perfect. */
+        /* 2. THE FLOATING CONTAINER (Scaled down) */
         .model-container {
             position: fixed;
             inset: 0;
@@ -53,13 +50,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            pointer-events: none; /* Mouse passes through to the model-viewer */
-            animation: floatingBob 5s ease-in-out infinite;
+            pointer-events: none; 
+            /* THE BOB: Slightly faster, much smaller movement */
+            animation: floatingBob 3s ease-in-out infinite;
         }
 
         @keyframes floatingBob {
             0% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
+            50% { transform: translateY(-8px); }
             100% { transform: translateY(0px); }
         }
 
@@ -67,11 +65,11 @@
             width: 100%;
             height: 100%;
             outline: none;
-            pointer-events: auto; /* Enable touch/click for the shirt only */
+            pointer-events: auto;
             --poster-color: transparent;
         }
 
-        /* 3. APPLE LIQUID GLASS UI */
+        /* 3. LIQUID GLASS UI */
         .interface {
             position: fixed;
             inset: 0;
@@ -92,24 +90,19 @@
 
         .cta-button {
             background: var(--glass);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            backdrop-filter: blur(25px) saturate(200%);
+            -webkit-backdrop-filter: blur(25px) saturate(200%);
             color: black;
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            padding: 18px 45px;
-            border-radius: 40px;
-            font-size: 13px;
-            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            padding: 16px 40px;
+            border-radius: 50px;
+            font-size: 11px;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.15em;
             cursor: pointer;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-        }
-
-        .cta-button:hover {
-            background: rgba(255, 255, 255, 0.7);
-            transform: scale(1.05);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s ease;
         }
 
         .header-container {
@@ -118,10 +111,7 @@
             z-index: 9999; pointer-events: none;
         }
 
-        /* 4. SCROLL DEPTH ENGINE */
-        #scroll-engine {
-            height: 500vh; /* Plenty of room to zoom into Tokyo */
-        }
+        #scroll-engine { height: 500vh; }
     </style>
 </head>
 <body>
@@ -131,20 +121,20 @@
     </div>
 
     <header class="header-container">
-        <div class="brand-id" style="font-weight:800; pointer-events:auto; font-size: 12px; letter-spacing: 0.5em;">COTA // LAB</div>
+        <div class="brand-id" style="font-weight:800; pointer-events:auto; font-size: 10px; letter-spacing: 0.6em;">COTA // LAB</div>
     </header>
 
     <div class="model-container">
         <model-viewer 
             id="main-viewer"
             src="Tshirt.glb" 
-            scale="0.8 0.8 0.8"
+            scale="0.5 0.5 0.5" 
             auto-rotate 
             camera-controls
             disable-zoom
             disable-pan
-            shadow-intensity="0.5" 
-            exposure="1"
+            shadow-intensity="0.3" 
+            exposure="1.1"
             camera-orbit="0deg 75deg 105%"
             touch-action="pan-y">
         </model-viewer>
@@ -153,8 +143,8 @@
     <div class="interface">
         <div class="bottom-ui">
             <div class="product-info">
-                <h1 style="font-size: 38px; text-transform:uppercase; margin:0; font-weight: 900;">Archive 001</h1>
-                <p style="color:var(--secondary); font-weight: 500; font-size: 14px;">SECTOR 01: TOKYO STREETS</p>
+                <h1 style="font-size: 32px; text-transform:uppercase; margin:0; font-weight: 900; letter-spacing: -0.04em;">Archive 001</h1>
+                <p style="color:var(--secondary); font-size: 12px; letter-spacing: 0.1em; margin-top: 4px;">TOKYO // CHUO CITY</p>
             </div>
             <div class="purchase-zone">
                 <button class="cta-button">Pre-Order</button>
@@ -166,14 +156,9 @@
 
     <script>
         const streetImg = document.querySelector('#street-img');
-
-        // Simple Parallax Zoom
         window.addEventListener('scroll', () => {
-            const scrollHeight = document.body.scrollHeight - window.innerHeight;
-            const scrollPercent = window.scrollY / scrollHeight;
-            
-            // Zoom background from 1.0 to 1.8 for that "walking forward" depth
-            const zoom = 1 + (scrollPercent * 0.8);
+            const scrollPercent = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+            const zoom = 1 + (scrollPercent * 0.7);
             streetImg.style.transform = `scale(${zoom})`;
         });
     </script>

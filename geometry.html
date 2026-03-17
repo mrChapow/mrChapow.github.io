@@ -21,12 +21,12 @@
             font-family: "Inter", sans-serif;
             overflow-x: hidden;
             color: white;
-            /* Prevents overscroll "rubber-banding" on iOS */
             overscroll-behavior-y: none;
         }
 
+        /* 1. FAST RUNWAY */
         #scroll-engine {
-            height: 150vh; /* Slightly more runway for mobile thumbs */
+            height: 150vh; 
             width: 100%;
             position: absolute;
             top: 0; left: 0;
@@ -41,11 +41,10 @@
             background-position: center;
             will-change: background-image;
             pointer-events: none;
-            /* Ensures background covers the whole screen including under UI bars */
             height: 100vh;
-            height: -webkit-fill-available;
         }
 
+        /* 2. CENTERED LOOT */
         .model-container {
             position: fixed;
             inset: 0;
@@ -61,50 +60,81 @@
             50% { transform: translateY(-10px); }
         }
         
-        model-viewer { 
-            width: 80vw; /* Larger for mobile */
-            height: 50vh; 
-            outline: none; 
-        }
+        model-viewer { width: 80vw; height: 50vh; outline: none; }
 
+        /* 3. BRANDING & UI */
         .header {
-            position: fixed; top: 20px; width: 100%;
+            position: fixed; top: 30px; width: 100%;
             display: flex; justify-content: center; z-index: 100;
         }
-        .brand-id { font-weight: 900; font-size: 10px; letter-spacing: 0.6em; text-transform: uppercase; }
+        .brand-id { font-weight: 900; font-size: 11px; letter-spacing: 0.8em; text-transform: uppercase; }
 
         .interface {
             position: fixed; 
             bottom: 0; left: 0; right: 0;
-            padding: 30px 20px;
+            padding: 40px 30px;
             pointer-events: none; 
             z-index: 100;
         }
         .ui-wrap { pointer-events: auto; width: 100%; max-width: 600px; margin: 0 auto; }
 
-        .slider-container { width: 100%; margin-bottom: 30px; }
+        /* 4. BALANCED TOUCH SLIDER */
+        .slider-container { 
+            width: 100%; 
+            margin-bottom: 35px; 
+            display: flex;
+            align-items: center;
+        }
         
         #rotate {
-            -webkit-appearance: none; width: 100%;
-            height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; outline: none;
-            /* Increases the touch target for mobile thumbs */
-            padding: 10px 0;
-            background-clip: content-box;
-        }
-        #rotate::-webkit-slider-thumb {
-            -webkit-appearance: none; width: 44px; height: 12px;
-            background: #fff; border-radius: 4px; cursor: pointer;
+            -webkit-appearance: none; 
+            width: 100%;
+            height: 44px; /* The total invisible touch height */
+            background: transparent; /* Hide the default track */
+            outline: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
         }
 
-        .bottom-ui { display: flex; justify-content: space-between; align-items: center; }
-        .product-info h1 { font-size: 24px; text-transform: uppercase; margin: 0; font-weight: 900; }
-        .product-info p { color: rgba(255,255,255,0.5); font-size: 10px; letter-spacing: 0.1em; margin: 0; }
+        /* Visible Track - Centered inside the 44px touch area */
+        #rotate::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 4px; /* The visible 4px line */
+            background: rgba(255,255,255,0.2);
+            border-radius: 2px;
+            pointer-events: none;
+        }
+
+        /* The Thumb */
+        #rotate::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 44px; 
+            height: 10px; 
+            background: #fff; 
+            border-radius: 5px;
+            cursor: pointer;
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        /* Firefox Support */
+        #rotate::-moz-range-thumb {
+            width: 44px; height: 10px; background: #fff; border: none; border-radius: 5px;
+        }
+
+        .bottom-ui { display: flex; justify-content: space-between; align-items: flex-end; }
+        .product-info h1 { font-size: 28px; text-transform: uppercase; margin: 0; font-weight: 900; letter-spacing: -0.02em;}
+        .product-info p { color: rgba(255,255,255,0.5); font-size: 11px; letter-spacing: 0.2em; margin-top: 4px; }
 
         .cta-button {
-            background: var(--glass); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             color: white; border: 1px solid rgba(255,255,255,0.15);
-            padding: 12px 25px; border-radius: 100px;
-            font-size: 9px; font-weight: 800; text-transform: uppercase;
+            padding: 14px 35px; border-radius: 100px;
+            font-size: 10px; font-weight: 800; text-transform: uppercase;
             letter-spacing: 0.1em;
         }
     </style>
@@ -157,29 +187,23 @@
             viewer.autoRotate = false;
         };
 
-        // Smooth Scroll Engine
-        let tick = false;
+        // Optimized Frame Sync
+        let ticking = false;
         window.addEventListener('scroll', () => {
-            if (!tick) {
+            if (!ticking) {
                 window.requestAnimationFrame(() => {
                     const scrollTotal = document.documentElement.scrollHeight - window.innerHeight;
                     const scrollPercent = window.scrollY / scrollTotal;
                     const frameIndex = Math.min(Math.floor(scrollPercent * images.length), images.length - 1);
                     
                     bg.style.backgroundImage = `url('${images[frameIndex]}')`;
-                    tick = false;
+                    ticking = false;
                 });
-                tick = true;
+                ticking = true;
             }
         }, { passive: true });
 
-        // Force first frame
         bg.style.backgroundImage = `url('${images[0]}')`;
-        
-        // Mobile Height Fix (prevents jumpiness)
-        window.addEventListener('resize', () => {
-            document.getElementById('parallax-bg').style.height = window.innerHeight + 'px';
-        });
     </script>
 </body>
 </html>

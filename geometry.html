@@ -8,15 +8,29 @@
     <style>
         body, html { margin: 0; padding: 0; background: #000; overflow-x: hidden; }
 
-        /* The background that stays still while images swap */
-        #bg-container {
+        /* The Deck of Cards Container */
+        #bg-wrapper {
             position: fixed; inset: 0; z-index: 1;
-            background-size: cover; background-position: center;
+            background: #000;
         }
 
-        /* The 3D Loot Item - NO Interaction */
+        /* Each image is its own layer */
+        .bg-layer {
+            position: absolute; inset: 0;
+            background-size: cover; background-position: center;
+            opacity: 0; /* Hidden by default */
+            transition: opacity 0.8s ease-in-out; /* This creates the smooth fade */
+            will-change: opacity, transform;
+        }
+
+        /* The layer you are currently looking at */
+        .bg-layer.active {
+            opacity: 1;
+        }
+
+        /* The 3D Loot Item - Locked and Protected */
         .model-container {
-            position: fixed; inset: 0; z-index: 2;
+            position: fixed; inset: 0; z-index: 3;
             display: flex; align-items: center; justify-content: center;
             pointer-events: none; 
             animation: bob 4s ease-in-out infinite;
@@ -26,10 +40,10 @@
             50% { transform: translateY(-20px); } 
         }
 
-        /* The Scroll Runway - This MUST be long to trigger the swap */
+        /* The Scroll Runway */
         #scroll-engine { height: 600vh; position: relative; z-index: 0; }
 
-        /* UI Layer */
+        /* Minimalist UI */
         .ui {
             position: fixed; bottom: 40px; left: 0; width: 100%;
             z-index: 10; display: flex; flex-direction: column; align-items: center;
@@ -38,21 +52,23 @@
         .slider-wrap { width: 80%; max-width: 500px; pointer-events: auto; }
         
         input[type=range] {
-            width: 100%; height: 4px; /* The requested 4px thickness */
-            appearance: none; background: rgba(255,255,255,0.3); outline: none;
+            width: 100%; height: 4px;
+            appearance: none; background: rgba(255,255,255,0.3); outline: none; border-radius: 2px;
         }
         input[type=range]::-webkit-slider-thumb {
-            appearance: none; width: 50px; height: 10px; background: #fff; cursor: pointer;
+            appearance: none; width: 50px; height: 6px; background: #fff; cursor: pointer; border-radius: 3px;
         }
     </style>
 </head>
 <body>
 
     <div id="scroll-engine"></div>
-    <div id="bg-container"></div>
+    
+    <div id="bg-wrapper">
+        </div>
 
     <div class="model-container">
-        <model-viewer id="viewer" src="Tshirt.glb" shadow-intensity="1" exposure="1.2" style="width:50vw; height:50vh; pointer-events:none;"></model-viewer>
+        <model-viewer id="viewer" src="Tshirt.glb" shadow-intensity="1" exposure="1.2" style="width:45vw; height:45vh; pointer-events:none;"></model-viewer>
     </div>
 
     <div class="ui">
@@ -63,39 +79,59 @@
     </div>
 
     <script>
-        const bg = document.getElementById('bg-container');
+        const wrapper = document.getElementById('bg-wrapper');
         const viewer = document.getElementById('viewer');
         const slider = document.getElementById('rotate');
 
+        // EXACT file names matching your screenshot (note the spaces)
         const images = [
             'street-view.jpg',
-            'street-view1.jpg',
-            'street-view2.jpg',
-            'street-view3.jpg',
-            'street-view4.jpg',
-            'street-view5.jpg'
+            'street-view 1.jpg',
+            'street-view 2.jpg',
+            'street-view 3.jpg',
+            'street-view 4.jpg',
+            'street-view 5.jpg'
         ];
 
-        // 1. Rotation Logic
+        // 1. Build the "Deck of Cards"
+        const layers = [];
+        images.forEach((src, index) => {
+            const div = document.createElement('div');
+            div.className = 'bg-layer';
+            if (index === 0) div.classList.add('active'); // Show first image
+            div.style.backgroundImage = `url('${src}')`;
+            wrapper.appendChild(div);
+            layers.push(div);
+        });
+
+        // 2. Rotation Logic
         slider.oninput = (e) => {
             viewer.cameraOrbit = `${e.target.value}deg 75deg 105%`;
             viewer.autoRotate = false;
         };
 
-        // 2. The Flipbook Logic
+        // 3. The Crossfade Engine
+        let currentFrame = 0;
+
         window.onscroll = () => {
             const scrollPercent = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
             
-            // Calculate frame (0-5)
-            const frame = Math.floor(scrollPercent * images.length);
-            const activeFrame = Math.min(frame, images.length - 1);
+            // Calculate which frame we should be on (0 to 5)
+            const targetFrame = Math.min(Math.floor(scrollPercent * images.length), images.length - 1);
 
-            // Force update background
-            bg.style.backgroundImage = `url('${images[activeFrame]}')`;
+            // Add subtle dolly zoom to the active layer based on scroll progress within that frame
+            const frameProgress = (scrollPercent * images.length) % 1;
+            const zoomLevel = 1 + (frameProgress * 0.08); // Zooms from 1.0 to 1.08
+            
+            layers[targetFrame].style.transform = `scale(${zoomLevel})`;
+
+            // If the frame changes, crossfade them
+            if (targetFrame !== currentFrame) {
+                layers[currentFrame].classList.remove('active');
+                layers[targetFrame].classList.add('active');
+                currentFrame = targetFrame;
+            }
         };
-
-        // Set initial frame
-        bg.style.backgroundImage = `url('${images[0]}')`;
     </script>
 </body>
 </html>

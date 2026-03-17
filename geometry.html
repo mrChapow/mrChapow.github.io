@@ -3,228 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cota Lab // Archive 001-002</title>
-    
+    <title>Cota Lab // Archive</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
-    
     <style>
-        :root { 
-            --accent: #ffffff;
-            --bg: #000000;
-            --secondary: #666666;
-            --transition-speed: 0.4s;
-        }
+        body, html { margin: 0; padding: 0; background: #000; color: #fff; font-family: sans-serif; overflow-x: hidden; }
+        
+        #root { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 1; }
 
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            background-color: var(--bg);
-            color: var(--accent);
-            font-family: "Inter", -apple-system, sans-serif;
-            overflow: hidden;
-            letter-spacing: -0.02em;
-        }
-
-        /* 1. LAYOUT SCROLL ENGINE (Interaction Fix) */
-        #scroll-container {
-            height: 100vh;
-            overflow-y: scroll;
-            scroll-snap-type: y mandatory;
-            position: relative;
-            z-index: 10;
-            pointer-events: none; /* Allows clicks to pass through to model-viewer */
-        }
-
-        .product-section {
-            height: 100vh;
-            scroll-snap-align: start;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            pointer-events: all; /* Captures scroll swipes */
-        }
-
-        /* 2. FIXED VISUAL ELEMENTS */
-        #root {
-            position: fixed;
-            inset: 0;
-            width: 100vw;
-            height: 100vh;
-            background: radial-gradient(circle at center, #111 0%, #000 70%);
-            z-index: 1;
-        }
-
-        .grain-overlay {
-            position: fixed;
-            inset: 0;
-            opacity: 0.05;
-            pointer-events: none;
-            z-index: 2;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-        }
-
+        /* THE MODEL - Must be accessible to touch */
         model-viewer {
-            position: fixed;
-            inset: 0;
             width: 100%;
             height: 100%;
-            --poster-color: transparent;
-            exposure: 1.2;
-            z-index: 3; /* Behind scroll sections but visible through them */
+            z-index: 2;
         }
 
-        /* 3. INTERFACE & TRANSITIONS */
-        .header-container {
-            position: fixed;
-            top: 40px;
+        /* THE SCROLL ENGINE - Now a transparent overlay that doesn't block rotation */
+        #scroll-container {
+            position: absolute;
+            top: 0;
             left: 0;
             width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            z-index: 9999;
+            height: 200vh; /* Height for 2 shirts */
+            z-index: 3;
+            pointer-events: none; /* KEY: Clicks go THROUGH to the shirt */
+        }
+
+        .scroll-trigger {
+            height: 100vh;
             pointer-events: none;
         }
 
-        .brand-id { font-weight: 800; font-size: 14px; text-transform: uppercase; letter-spacing: 0.3em; pointer-events: auto; }
-        .top-nav { display: flex; justify-content: center; gap: 30px; pointer-events: auto; }
-        .nav-link { color: var(--secondary); text-decoration: none; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.2em; transition: color 0.3s ease; }
-        .nav-link.active, .nav-link:hover { color: var(--accent); }
-
+        /* SIMPLE UI */
         .interface {
             position: fixed;
-            inset: 0;
-            padding: 40px;
+            bottom: 40px;
+            left: 40px;
+            z-index: 4;
             pointer-events: none;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            z-index: 100;
         }
-
-        .bottom-ui {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            pointer-events: auto;
-        }
-
-        .product-info { max-width: 380px; }
-        
-        /* Smooth Fade Classes */
-        .product-title, .product-description, .price {
-            transition: opacity var(--transition-speed) ease, transform var(--transition-speed) ease;
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .ui-fade {
-            opacity: 0;
-            transform: translateY(10px);
-        }
-
-        .product-title { font-size: 32px; font-weight: 300; margin: 0 0 10px 0; text-transform: uppercase; }
-        .product-description { font-size: 12px; line-height: 1.6; color: var(--secondary); margin: 0; }
-        .price { display: block; font-size: 18px; margin-bottom: 20px; font-weight: 500; }
-        
-        .cta-button { 
-            background: var(--accent); 
-            color: var(--bg); 
-            border: none; 
-            padding: 18px 48px; 
-            font-size: 12px; 
-            font-weight: 700; 
-            text-transform: uppercase; 
-            letter-spacing: 0.1em; 
-            cursor: pointer; 
-            transition: transform 0.2s ease;
-        }
-        .cta-button:active { transform: scale(0.95); }
-
-        @media (max-width: 768px) {
-            .interface { padding: 25px; }
-            .bottom-ui { flex-direction: column; align-items: flex-start; }
-            .product-title { font-size: 24px; }
-            .cta-button { width: 100%; padding: 16px; }
-        }
+        .brand { position: fixed; top: 40px; width: 100%; text-align: center; letter-spacing: 0.3em; z-index: 4; }
     </style>
 </head>
 <body>
 
     <div id="root">
-        <div class="grain-overlay"></div>
-
-        <header class="header-container">
-            <div class="brand-id">COTA // LAB</div>
-            <nav class="top-nav">
-                <a href="#" class="nav-link">Home</a>
-                <a href="#" class="nav-link active">Blackmarket</a>
-                <a href="#" class="nav-link">About</a>
-            </nav>
-        </header>
+        <div class="brand">COTA // LAB</div>
 
         <model-viewer 
             id="shirt-viewer"
             src="Tshirt.glb" 
-            alt="Cota Lab Product"
             auto-rotate 
             camera-controls
-            disable-zoom
-            disable-pan
-            shadow-intensity="1.5" 
-            camera-orbit="0deg 75deg 105%"
-            touch-action="none">
-        </model-viewer>
+            shadow-intensity="1"
+            touch-action="pan-y"> </model-viewer>
 
         <div class="interface">
-            <div class="bottom-ui">
-                <div class="product-info" id="ui-text-container">
-                    <h1 id="shirt-title" class="product-title">Archive 001</h1>
-                    <p id="shirt-desc" class="product-description">
-                        Cloud Pixel Art Edition. Direct fund for lab research.
-                    </p>
-                </div>
-                <div class="purchase-zone">
-                    <span id="shirt-price" class="price">$1.15</span>
-                    <button class="cta-button">Acquire</button>
-                </div>
-            </div>
+            <h1 id="shirt-title">Archive 001</h1>
+            <p id="shirt-price">$1.15</p>
         </div>
     </div>
 
     <div id="scroll-container">
-        <section class="product-section" data-id="1"></section>
-        <section class="product-section" data-id="2"></section>
+        <div class="scroll-trigger" data-id="1"></div>
+        <div class="scroll-trigger" data-id="2"></div>
     </div>
 
     <script>
         const modelViewer = document.querySelector('#shirt-viewer');
-        const uiElements = [
-            document.getElementById('shirt-title'),
-            document.getElementById('shirt-desc'),
-            document.getElementById('shirt-price')
-        ];
         
         const archive = {
-            "1": {
-                title: "Archive 001",
-                desc: "Cloud Pixel Art Edition. Direct fund for lab research.",
-                price: "$1.15",
-                texture: "cota_cloud_pixelart.png"
-            },
-            "2": {
-                title: "Archive 002",
-                desc: "Lovefont Edition. High-density pixel typography.",
-                price: "$1.75",
-                texture: "lovefont.png"
-            }
+            "1": { title: "Archive 001", price: "$1.15", texture: "cota_cloud_pixelart.png" },
+            "2": { title: "Archive 002", price: "$1.75", texture: "lovefont.png" }
         };
 
         let textureCache = {};
 
+        // 1. Load the model and prep textures
         modelViewer.addEventListener('load', async () => {
             for (const key in archive) {
                 textureCache[key] = await modelViewer.createTexture(archive[key].texture);
@@ -232,43 +86,28 @@
 
             const material = modelViewer.model.materials.find(m => m.name === '1') || modelViewer.model.materials[0];
 
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const id = entry.target.getAttribute('data-id');
-                        updateArchiveDisplay(id, material);
-                    }
-                });
-            }, { threshold: 0.5 });
+            // 2. Watch for scroll to swap texture
+            window.addEventListener('scroll', () => {
+                const scrollPos = window.scrollY;
+                const windowHeight = window.innerHeight;
+                
+                // Determine which "slide" we are on
+                const currentId = scrollPos < windowHeight / 2 ? "1" : "2";
+                
+                // Update UI
+                document.getElementById('shirt-title').innerText = archive[currentId].title;
+                document.getElementById('shirt-price').innerText = archive[currentId].price;
 
-            document.querySelectorAll('.product-section').forEach(s => observer.observe(s));
-        });
-
-        function updateArchiveDisplay(id, material) {
-            const data = archive[id];
-            
-            // Apply fade-out
-            uiElements.forEach(el => el.classList.add('ui-fade'));
-
-            setTimeout(() => {
-                // Change content
-                document.getElementById('shirt-title').innerText = data.title;
-                document.getElementById('shirt-desc').innerText = data.desc;
-                document.getElementById('shirt-price').innerText = data.price;
-
-                // Texture Swap
-                if (material && textureCache[id]) {
-                    material.pbrMetallicRoughness.baseColorTexture.setTexture(textureCache[id]);
+                // Swap Texture
+                if (material && textureCache[currentId]) {
+                    material.pbrMetallicRoughness.baseColorTexture.setTexture(textureCache[currentId]);
+                    // Sharp pixels
                     const sampler = material.pbrMetallicRoughness.baseColorTexture.texture.sampler;
                     sampler.setMinFilter(9728);
                     sampler.setMagFilter(9728);
                 }
-
-                // Apply fade-in
-                uiElements.forEach(el => el.classList.remove('ui-fade'));
-            }, 300);
-        }
+            });
+        });
     </script>
-
 </body>
 </html>

@@ -24,20 +24,35 @@
             overflow-x: hidden;
         }
 
+        /* 1. NEW CLT BACKGROUND LAYER */
         #parallax-bg {
-            position: fixed; inset: 0; z-index: 1; overflow: hidden; background: #e2e8f0;
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            overflow: hidden;
+            background: #000; /* Black base for better contrast */
         }
 
         .street-view-img {
-            position: absolute; width: 120%; height: 120%; top: -10%; left: -10%;
+            position: absolute;
+            width: 100%; height: 100%;
             object-fit: cover;
-            background: radial-gradient(circle at center, #cbd5e1 0%, #ffffff 100%);
+            /* Pointing to your new file */
+            background-image: url('streetviewCLT.png');
+            background-position: center;
+            background-size: cover;
             transition: transform 0.1s linear;
+            will-change: transform;
         }
 
+        /* 2. THE FLOATING CONTAINER (No Interaction) */
         .model-container {
-            position: fixed; inset: 0; z-index: 3;
-            display: flex; align-items: center; justify-content: center;
+            position: fixed;
+            inset: 0;
+            z-index: 3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             pointer-events: none; 
             animation: floatingBob 4s ease-in-out infinite;
         }
@@ -49,11 +64,12 @@
         }
 
         model-viewer {
-            width: 45vw; height: 45vh; /* Controlled size */
+            width: 45vw; height: 45vh;
             outline: none;
             --poster-color: transparent;
         }
 
+        /* 3. INTERFACE & UI */
         .interface {
             position: fixed; inset: 0; padding: 40px;
             pointer-events: none; display: flex; flex-direction: column;
@@ -62,32 +78,21 @@
 
         .ui-wrap { pointer-events: auto; width: 100%; }
 
-        /* THE SLIDER STYLE */
         .slider-container {
-            width: 100%;
-            margin-bottom: 30px;
-            display: flex;
-            justify-content: center;
+            width: 100%; margin-bottom: 30px;
+            display: flex; justify-content: center;
         }
 
         #rotation-slider {
             -webkit-appearance: none;
-            width: 100%;
-            max-width: 400px;
-            height: 2px;
-            background: rgba(0,0,0,0.1);
-            outline: none;
-            cursor: pointer;
+            width: 100%; max-width: 400px; height: 2px;
+            background: rgba(0,0,0,0.1); outline: none;
         }
 
         #rotation-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 40px;
-            height: 2px;
-            background: var(--accent);
-            cursor: pointer;
-            transition: transform 0.2s ease;
+            -webkit-appearance: none; appearance: none;
+            width: 40px; height: 2px;
+            background: var(--accent); cursor: pointer;
         }
 
         .bottom-ui { display: flex; justify-content: space-between; align-items: flex-end; }
@@ -104,6 +109,7 @@
 
         .header-container { position: fixed; top: 40px; width: 100%; display: flex; justify-content: center; z-index: 9999; pointer-events: none; }
 
+        /* 4. SCROLL ENGINE (Depth) */
         #scroll-engine { height: 500vh; }
     </style>
 </head>
@@ -138,7 +144,7 @@
             <div class="bottom-ui">
                 <div class="product-info">
                     <h1 style="font-size: 32px; text-transform:uppercase; margin:0; font-weight: 900; letter-spacing: -0.04em;">Archive 001</h1>
-                    <p style="color:var(--secondary); font-size: 12px; letter-spacing: 0.1em; margin-top: 4px;">TOKYO // CHUO CITY</p>
+                    <p id="location-text" style="color:var(--secondary); font-size: 12px; letter-spacing: 0.1em; margin-top: 4px;">SECTOR: CLT // ARCHIVE</p>
                 </div>
                 <div class="purchase-zone">
                     <button class="cta-button">Pre-Order</button>
@@ -154,18 +160,17 @@
         const streetImg = document.querySelector('#street-img');
         const slider = document.querySelector('#rotation-slider');
 
-        // 1. Slider Logic
+        // Rotation Slider Logic
         slider.addEventListener('input', (e) => {
-            const val = e.target.value;
-            // Updates horizontal orbit (theta), keeps vertical at 75deg
-            modelViewer.cameraOrbit = `${val}deg 75deg 105%`;
-            modelViewer.autoRotate = false; // Stop auto-rotating when user interacts
+            modelViewer.cameraOrbit = `${e.target.value}deg 75deg 105%`;
+            modelViewer.autoRotate = false;
         });
 
-        // 2. Parallax Zoom
+        // Parallax Zoom Logic for CLT Background
         window.addEventListener('scroll', () => {
             const scrollPercent = window.scrollY / (document.body.scrollHeight - window.innerHeight);
-            const zoom = 1 + (scrollPercent * 0.7);
+            // Zoom from 1.0 to 1.6
+            const zoom = 1 + (scrollPercent * 0.6);
             streetImg.style.transform = `scale(${zoom})`;
         });
     </script>

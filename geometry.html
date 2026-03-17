@@ -26,7 +26,7 @@
 
         /* 1. THE FAST RUNWAY */
         #scroll-engine {
-            height: 125vh; /* Fast flick distance */
+            height: 125vh; 
             width: 100%;
             position: absolute;
             top: 0; left: 0;
@@ -43,7 +43,7 @@
             pointer-events: none;
         }
 
-        /* 2. THE PROTECTED LOOT */
+        /* 2. THE PROTECTED LOOT (Sized Up) */
         .model-container {
             position: fixed;
             inset: 0;
@@ -58,7 +58,21 @@
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-12px); }
         }
-        model-viewer { width: 45vw; height: 45vh; outline: none; }
+
+        /* Desktop Size */
+        model-viewer { 
+            width: 50vw; 
+            height: 50vh; 
+            outline: none; 
+        }
+
+        /* Mobile Size Boost (10-20%) */
+        @media (max-width: 768px) {
+            model-viewer {
+                width: 75vw; /* Increased from ~60vw */
+                height: 60vh; /* Increased from ~50vh */
+            }
+        }
 
         /* 3. BRANDING & UI */
         .header {
@@ -72,9 +86,15 @@
             pointer-events: none; display: flex; flex-direction: column;
             justify-content: flex-end; z-index: 100;
         }
+
+        /* Mobile UI Spacing */
+        @media (max-width: 768px) {
+            .interface { padding: 30px 25px; }
+        }
+
         .ui-wrap { pointer-events: auto; width: 100%; max-width: 1200px; margin: 0 auto; }
 
-        /* 4. THE 4PX SLIDER (REVERTED) */
+        /* 4. THE 4PX SLIDER */
         .slider-container { width: 100%; margin-bottom: 40px; display: flex; justify-content: center; }
         
         #rotate {
@@ -89,6 +109,10 @@
         .bottom-ui { display: flex; justify-content: space-between; align-items: flex-end; }
         .product-info h1 { font-size: 32px; text-transform: uppercase; margin: 0; font-weight: 900; letter-spacing: -0.02em;}
         .product-info p { color: rgba(255,255,255,0.5); font-size: 11px; letter-spacing: 0.2em; margin-top: 4px; text-transform: uppercase; }
+
+        @media (max-width: 768px) {
+            .product-info h1 { font-size: 26px; }
+        }
 
         .cta-button {
             background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);

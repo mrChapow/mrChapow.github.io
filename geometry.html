@@ -12,6 +12,7 @@
             --accent: #ffffff;
             --bg: #000000;
             --secondary: #666666;
+            --transition-speed: 0.4s;
         }
 
         body, html {
@@ -26,13 +27,14 @@
             letter-spacing: -0.02em;
         }
 
-        /* 1. LAYOUT SCROLL ENGINE */
+        /* 1. LAYOUT SCROLL ENGINE (Interaction Fix) */
         #scroll-container {
             height: 100vh;
             overflow-y: scroll;
             scroll-snap-type: y mandatory;
             position: relative;
             z-index: 10;
+            pointer-events: none; /* Allows clicks to pass through to model-viewer */
         }
 
         .product-section {
@@ -41,7 +43,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            pointer-events: none; /* Let scroll pass through to container */
+            pointer-events: all; /* Captures scroll swipes */
         }
 
         /* 2. FIXED VISUAL ELEMENTS */
@@ -70,10 +72,10 @@
             height: 100%;
             --poster-color: transparent;
             exposure: 1.2;
-            z-index: 3;
+            z-index: 3; /* Behind scroll sections but visible through them */
         }
 
-        /* 3. INTERFACE */
+        /* 3. INTERFACE & TRANSITIONS */
         .header-container {
             position: fixed;
             top: 40px;
@@ -88,7 +90,6 @@
         }
 
         .brand-id { font-weight: 800; font-size: 14px; text-transform: uppercase; letter-spacing: 0.3em; pointer-events: auto; }
-
         .top-nav { display: flex; justify-content: center; gap: 30px; pointer-events: auto; }
         .nav-link { color: var(--secondary); text-decoration: none; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.2em; transition: color 0.3s ease; }
         .nav-link.active, .nav-link:hover { color: var(--accent); }
@@ -112,10 +113,36 @@
         }
 
         .product-info { max-width: 380px; }
-        .product-title { font-size: 32px; font-weight: 300; margin: 0 0 10px 0; text-transform: uppercase; transition: opacity 0.3s; }
-        .product-description { font-size: 12px; line-height: 1.6; color: var(--secondary); margin: 0; transition: opacity 0.3s; }
+        
+        /* Smooth Fade Classes */
+        .product-title, .product-description, .price {
+            transition: opacity var(--transition-speed) ease, transform var(--transition-speed) ease;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .ui-fade {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        .product-title { font-size: 32px; font-weight: 300; margin: 0 0 10px 0; text-transform: uppercase; }
+        .product-description { font-size: 12px; line-height: 1.6; color: var(--secondary); margin: 0; }
         .price { display: block; font-size: 18px; margin-bottom: 20px; font-weight: 500; }
-        .cta-button { background: var(--accent); color: var(--bg); border: none; padding: 18px 48px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; }
+        
+        .cta-button { 
+            background: var(--accent); 
+            color: var(--bg); 
+            border: none; 
+            padding: 18px 48px; 
+            font-size: 12px; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            letter-spacing: 0.1em; 
+            cursor: pointer; 
+            transition: transform 0.2s ease;
+        }
+        .cta-button:active { transform: scale(0.95); }
 
         @media (max-width: 768px) {
             .interface { padding: 25px; }
@@ -154,7 +181,7 @@
 
         <div class="interface">
             <div class="bottom-ui">
-                <div class="product-info">
+                <div class="product-info" id="ui-text-container">
                     <h1 id="shirt-title" class="product-title">Archive 001</h1>
                     <p id="shirt-desc" class="product-description">
                         Cloud Pixel Art Edition. Direct fund for lab research.
@@ -175,8 +202,12 @@
 
     <script>
         const modelViewer = document.querySelector('#shirt-viewer');
+        const uiElements = [
+            document.getElementById('shirt-title'),
+            document.getElementById('shirt-desc'),
+            document.getElementById('shirt-price')
+        ];
         
-        // Shirt Data Archive
         const archive = {
             "1": {
                 title: "Archive 001",
@@ -195,19 +226,17 @@
         let textureCache = {};
 
         modelViewer.addEventListener('load', async () => {
-            // Pre-load all textures for instant swapping
             for (const key in archive) {
                 textureCache[key] = await modelViewer.createTexture(archive[key].texture);
             }
 
             const material = modelViewer.model.materials.find(m => m.name === '1') || modelViewer.model.materials[0];
 
-            // Observe scrolling
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         const id = entry.target.getAttribute('data-id');
-                        updateUI(id, material);
+                        updateArchiveDisplay(id, material);
                     }
                 });
             }, { threshold: 0.5 });
@@ -215,23 +244,29 @@
             document.querySelectorAll('.product-section').forEach(s => observer.observe(s));
         });
 
-        function updateUI(id, material) {
+        function updateArchiveDisplay(id, material) {
             const data = archive[id];
             
-            // Text updates
-            document.getElementById('shirt-title').innerText = data.title;
-            document.getElementById('shirt-desc').innerText = data.desc;
-            document.getElementById('shirt-price').innerText = data.price;
+            // Apply fade-out
+            uiElements.forEach(el => el.classList.add('ui-fade'));
 
-            // Texture Swap
-            if (material && textureCache[id]) {
-                material.pbrMetallicRoughness.baseColorTexture.setTexture(textureCache[id]);
-                
-                // Keep the pixel art sharp
-                const sampler = material.pbrMetallicRoughness.baseColorTexture.texture.sampler;
-                sampler.setMinFilter(9728);
-                sampler.setMagFilter(9728);
-            }
+            setTimeout(() => {
+                // Change content
+                document.getElementById('shirt-title').innerText = data.title;
+                document.getElementById('shirt-desc').innerText = data.desc;
+                document.getElementById('shirt-price').innerText = data.price;
+
+                // Texture Swap
+                if (material && textureCache[id]) {
+                    material.pbrMetallicRoughness.baseColorTexture.setTexture(textureCache[id]);
+                    const sampler = material.pbrMetallicRoughness.baseColorTexture.texture.sampler;
+                    sampler.setMinFilter(9728);
+                    sampler.setMagFilter(9728);
+                }
+
+                // Apply fade-in
+                uiElements.forEach(el => el.classList.remove('ui-fade'));
+            }, 300);
         }
     </script>
 

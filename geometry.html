@@ -11,41 +11,35 @@
         :root { 
             --accent: #000000;
             --bg: #ffffff;
-            --secondary: #666666;
             --glass: rgba(255, 255, 255, 0.4);
         }
 
         body, html {
             margin: 0; padding: 0;
             width: 100%; height: 100%;
-            background-color: var(--bg);
-            color: var(--accent);
+            background-color: #000;
             font-family: "Inter", sans-serif;
             overflow-x: hidden;
         }
 
-        /* 1. UPDATED CLT1 BACKGROUND LAYER */
+        /* 1. THE DYNAMIC BACKGROUND */
         #parallax-bg {
             position: fixed;
             inset: 0;
             z-index: 1;
             overflow: hidden;
-            background: #000; 
         }
 
-        .street-view-img {
+        #street-img {
             position: absolute;
             width: 100%; height: 100%;
             object-fit: cover;
-            /* Pointing to the new properly-aligned file */
-            background-image: url('streetviewCLT1.png');
-            background-position: center 20%; /* Adjusted for street vanishing point */
+            background-position: center;
             background-size: cover;
-            transition: transform 0.1s linear;
-            will-change: transform;
+            will-change: transform, background-image;
         }
 
-        /* 2. THE FLOATING CONTAINER */
+        /* 2. THE FLOATING LOOT (NO CHANGES TO SHIRT) */
         .model-container {
             position: fixed;
             inset: 0;
@@ -59,7 +53,7 @@
 
         @keyframes floatingBob {
             0% { transform: translateY(0px); }
-            50% { transform: translateY(-12px); }
+            50% { transform: translateY(-15px); }
             100% { transform: translateY(0px); }
         }
 
@@ -69,7 +63,7 @@
             --poster-color: transparent;
         }
 
-        /* 3. INTERFACE & UI */
+        /* 3. UI LAYERS */
         .interface {
             position: fixed; inset: 0; padding: 40px;
             pointer-events: none; display: flex; flex-direction: column;
@@ -86,16 +80,16 @@
         #rotation-slider {
             -webkit-appearance: none;
             width: 100%; max-width: 400px; height: 2px;
-            background: rgba(0,0,0,0.1); outline: none;
+            background: rgba(255,255,255,0.2); outline: none;
         }
 
         #rotation-slider::-webkit-slider-thumb {
             -webkit-appearance: none; appearance: none;
             width: 40px; height: 2px;
-            background: var(--accent); cursor: pointer;
+            background: #fff; cursor: pointer;
         }
 
-        .bottom-ui { display: flex; justify-content: space-between; align-items: flex-end; }
+        .bottom-ui { display: flex; justify-content: space-between; align-items: flex-end; color: white; }
 
         .cta-button {
             background: var(--glass);
@@ -107,16 +101,15 @@
             letter-spacing: 0.15em; cursor: pointer;
         }
 
-        .header-container { position: fixed; top: 40px; width: 100%; display: flex; justify-content: center; z-index: 9999; pointer-events: none; }
+        .header-container { position: fixed; top: 40px; width: 100%; display: flex; justify-content: center; z-index: 9999; pointer-events: none; color: white;}
 
-        /* 4. SCROLL ENGINE */
-        #scroll-engine { height: 500vh; }
+        #scroll-engine { height: 600vh; } /* 100vh per image roughly */
     </style>
 </head>
 <body>
 
     <div id="parallax-bg">
-        <div id="street-img" class="street-view-img"></div>
+        <div id="street-img"></div>
     </div>
 
     <header class="header-container">
@@ -144,7 +137,7 @@
             <div class="bottom-ui">
                 <div class="product-info">
                     <h1 style="font-size: 32px; text-transform:uppercase; margin:0; font-weight: 900; letter-spacing: -0.04em;">Archive 001</h1>
-                    <p style="color:var(--secondary); font-size: 12px; letter-spacing: 0.1em; margin-top: 4px;">SECTOR: CLT // 001</p>
+                    <p style="color:rgba(255,255,255,0.6); font-size: 12px; letter-spacing: 0.1em; margin-top: 4px;">SECTOR: CLT // APPROACHING</p>
                 </div>
                 <div class="purchase-zone">
                     <button class="cta-button">Pre-Order</button>
@@ -160,17 +153,48 @@
         const streetImg = document.querySelector('#street-img');
         const slider = document.querySelector('#rotation-slider');
 
+        // 1. Image sequence configuration
+        const images = [
+            'street-view.jpg',
+            'street-view1.jpg',
+            'street-view2.jpg',
+            'street-view3.jpg',
+            'street-view4.jpg',
+            'street-view5.jpg'
+        ];
+
+        // Preload images to prevent flickering
+        images.forEach(src => {
+            const img = new Image();
+            img.src = src;
+        });
+
+        // 2. Slider Logic
         slider.addEventListener('input', (e) => {
             modelViewer.cameraOrbit = `${e.target.value}deg 75deg 105%`;
             modelViewer.autoRotate = false;
         });
 
+        // 3. The Walk-Through Engine
         window.addEventListener('scroll', () => {
             const scrollPercent = window.scrollY / (document.body.scrollHeight - window.innerHeight);
-            // Zooming in on the new aligned image
-            const zoom = 1 + (scrollPercent * 0.8);
-            streetImg.style.transform = `scale(${zoom})`;
+            
+            // Calculate which image to show (0 to 5)
+            const frameIndex = Math.min(
+                images.length - 1,
+                Math.floor(scrollPercent * images.length)
+            );
+
+            // Update the background image
+            streetImg.style.backgroundImage = `url('${images[frameIndex]}')`;
+
+            // Optional: Internal zoom per frame to smooth the jump
+            const internalZoom = 1 + ((scrollPercent * images.length % 1) * 0.05);
+            streetImg.style.transform = `scale(${internalZoom})`;
         });
+
+        // Initialize first frame
+        streetImg.style.backgroundImage = `url('${images[0]}')`;
     </script>
 </body>
 </html>

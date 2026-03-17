@@ -11,7 +11,7 @@
 
         #root { position: fixed; inset: 0; background: radial-gradient(circle at center, #111 0%, #000 70%); z-index: 1; }
 
-        /* THE MODEL - Scaled down */
+        /* THE MODEL - Scaled down to 0.7 */
         model-viewer {
             position: fixed;
             inset: 0;
@@ -26,36 +26,36 @@
             overflow-y: scroll;
             scroll-snap-type: y mandatory;
             position: relative;
-            z-index: 10;
+            z-index: 10; /* The scroll layer sits high */
         }
         .product-section { height: 100vh; scroll-snap-align: start; }
 
-        /* THE TOGGLE BUTTON */
+        /* THE TOGGLE BUTTON - Set to z-index 100 to be above the scroll layer */
         .mode-toggle {
             position: fixed;
-            top: 120px;
+            top: 40px;
             right: 40px;
-            z-index: 10000;
-            background: transparent;
-            border: 1px solid var(--secondary);
-            color: var(--secondary);
-            padding: 8px 12px;
-            font-size: 10px;
+            z-index: 100; 
+            background: black;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 12px 20px;
+            font-size: 11px;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.1em;
             cursor: pointer;
             pointer-events: auto;
         }
         .mode-toggle.active {
-            border-color: var(--accent);
-            color: var(--accent);
-            background: rgba(255,255,255,0.1);
+            background: white;
+            color: black;
         }
 
         /* UI ELEMENTS */
-        .interface { position: fixed; inset: 0; padding: 40px; pointer-events: none; display: flex; flex-direction: column; justify-content: flex-end; z-index: 100; }
+        .interface { position: fixed; inset: 0; padding: 40px; pointer-events: none; display: flex; flex-direction: column; justify-content: flex-end; z-index: 50; }
         .bottom-ui { display: flex; justify-content: space-between; align-items: flex-end; pointer-events: auto; }
-        .brand-id { position: fixed; top: 40px; width: 100%; text-align: center; font-weight: 800; letter-spacing: 0.3em; z-index: 9999; }
+        .brand-id { position: fixed; top: 40px; left: 40px; font-weight: 800; letter-spacing: 0.3em; z-index: 50; }
     </style>
 </head>
 <body>
@@ -63,7 +63,7 @@
     <div id="root">
         <div class="brand-id">COTA // LAB</div>
         
-        <button id="toggle-btn" class="mode-toggle" onclick="toggleMode()">Mode: Scroll</button>
+        <button id="toggle-btn" class="mode-toggle">INTERACT</button>
 
         <model-viewer 
             id="shirt-viewer"
@@ -80,9 +80,9 @@
             <div class="bottom-ui">
                 <div class="product-info">
                     <h1 id="shirt-title" style="text-transform:uppercase; margin:0;">Archive 001</h1>
-                    <p id="shirt-price" style="color:var(--secondary);">$1.15</p>
+                    <p id="shirt-price" style="color:var(--secondary); font-size: 18px; margin-top: 5px;">$1.15</p>
                 </div>
-                <button style="background:white; color:black; border:none; padding:15px 30px; font-weight:700;">ACQUIRE</button>
+                <button style="background:white; color:black; border:none; padding:15px 30px; font-weight:700; cursor: pointer;">ACQUIRE</button>
             </div>
         </div>
     </div>
@@ -98,21 +98,20 @@
         const toggleBtn = document.querySelector('#toggle-btn');
         let isRotateMode = false;
 
-        // 1. Toggle Functionality
-        function toggleMode() {
+        // Toggle logic with direct Event Listener
+        toggleBtn.addEventListener('click', () => {
             isRotateMode = !isRotateMode;
             if (isRotateMode) {
-                scrollContainer.style.display = 'none'; // Remove the glass shield
-                toggleBtn.innerText = "Mode: Rotate";
+                scrollContainer.style.pointerEvents = 'none'; // Clicks pass through
+                toggleBtn.innerText = "EXIT INTERACT";
                 toggleBtn.classList.add('active');
             } else {
-                scrollContainer.style.display = 'block'; // Bring back scroll functionality
-                toggleBtn.innerText = "Mode: Scroll";
+                scrollContainer.style.pointerEvents = 'auto'; // Scroll catches clicks
+                toggleBtn.innerText = "INTERACT";
                 toggleBtn.classList.remove('active');
             }
-        }
+        });
 
-        // 2. Archive Data & Texture Swapping
         const archive = {
             "1": { title: "Archive 001", price: "$1.15", texture: "cota_cloud_pixelart.png" },
             "2": { title: "Archive 002", price: "$1.75", texture: "lovefont.png" }
@@ -124,7 +123,9 @@
             for (const key in archive) {
                 textureCache[key] = await modelViewer.createTexture(archive[key].texture);
             }
-            const material = modelViewer.model.materials[0];
+            
+            // Texture mapping logic
+            const material = modelViewer.model.materials.find(m => m.name === '1') || modelViewer.model.materials[0];
 
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
@@ -137,7 +138,8 @@
                         if (material && textureCache[id]) {
                             material.pbrMetallicRoughness.baseColorTexture.setTexture(textureCache[id]);
                             const sampler = material.pbrMetallicRoughness.baseColorTexture.texture.sampler;
-                            sampler.setMinFilter(9728); sampler.setMagFilter(9728);
+                            sampler.setMinFilter(9728); 
+                            sampler.setMagFilter(9728);
                         }
                     }
                 });

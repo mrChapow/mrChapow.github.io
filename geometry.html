@@ -3,37 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cota Lab // CLT Street View</title>
+    <title>Cota Lab // CLT Archive</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
         :root { --bg: #000; --glass: rgba(255, 255, 255, 0.05); }
         body, html { margin: 0; padding: 0; background: var(--bg); font-family: "Inter", sans-serif; color: white; overflow-x: hidden; }
 
-        /* THE ORIGINAL CLT ENGINE */
         #parallax-bg {
             position: fixed; inset: 0; z-index: 1;
             background-size: cover; background-position: center;
             will-change: background-image;
         }
 
-        .main-stage {
-            position: relative; z-index: 10;
-            height: 250vh; /* Long runway for the 12-frame burst */
-            display: flex; flex-direction: column; align-items: center;
-        }
+        .main-stage { position: relative; z-index: 10; height: 250vh; display: flex; flex-direction: column; align-items: center; }
 
-        /* STICKY MODEL AREA */
         .model-hold {
             position: sticky; top: 0; height: 100vh; width: 100%;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
 
-        model-viewer { 
-            width: 90vw; height: 60vh; outline: none; 
-            --poster-color: transparent;
-        }
+        model-viewer { width: 90vw; height: 60vh; outline: none; }
 
-        /* SLIDER UI */
         .slider-wrap { width: 260px; margin-top: -20px; text-align: center; }
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; cursor: pointer; }
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 2px; background: rgba(255,255,255,0.3); }
@@ -42,7 +32,6 @@
             background: #fff; margin-top: -6px; box-shadow: 0 0 15px rgba(255,255,255,0.5);
         }
 
-        /* LIQUID GLASS REVEAL */
         .glass-reveal {
             margin-top: 20vh; width: 85%; max-width: 420px;
             padding: 40px; border-radius: 30px;
@@ -53,7 +42,7 @@
             margin-bottom: 100px;
         }
 
-        h1 { font-size: 32px; font-weight: 900; text-transform: uppercase; margin: 0 0 10px 0; }
+        h1 { font-size: 32px; font-weight: 900; text-transform: uppercase; margin: 0; }
         .buy-btn {
             width: 100%; padding: 20px; margin-top: 30px;
             background: white; color: black; border: none; border-radius: 12px;
@@ -76,7 +65,7 @@
 
         <div class="glass-reveal">
             <h1>CLT Archive</h1>
-            <p style="opacity: 0.7; font-size: 14px; line-height: 1.6;">Heavyweight cotton construction. Digital cloud mapping derived from Charlotte street-view datasets.</p>
+            <p style="opacity: 0.7; font-size: 14px; line-height: 1.6;">Heavyweight cotton. Pixel-mapped cloud architecture.</p>
             <button class="buy-btn">Add to Cart</button>
         </div>
     </main>
@@ -86,30 +75,36 @@
         const shirt = document.getElementById('shirt');
         const slider = document.getElementById('rot');
         
-        // The 12 CLT Street View frames
-        const frames = Array.from({length: 12}, (_, i) => `burstscene${i}.png`);
+        // MAPPED TO YOUR EXACT FILENAMES
+        const frames = [
+            'street-view.jpg', 
+            'street-view 1.jpg', 
+            'street-view 2.jpg', 
+            'street-view 3.jpg', 
+            'street-view 4.jpg', 
+            'street-view 5.jpg'
+        ];
 
-        // Apply CLT texture immediately
+        // APPLY THE CORRECT CLT TEXTURE
         shirt.addEventListener('load', async () => {
             const mat = shirt.model.materials[0];
             const tex = await shirt.createTexture('cota_cloud_pixelart.png');
             mat.pbrMetallicRoughness.baseColorTexture.setTexture(tex);
         });
 
-        // Slider control
         slider.oninput = (e) => {
             shirt.removeAttribute('auto-rotate');
             shirt.cameraOrbit = `${e.target.value}deg 75deg 105%`;
         };
 
-        // Scroll Scrubbing for the 12-frame CLT Burst
         window.addEventListener('scroll', () => {
             const scrollPercent = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
-            const frameIdx = Math.min(Math.floor(scrollPercent * frames.length * 1.5), frames.length - 1);
+            // Spreading your 6 frames across the scroll
+            const frameIdx = Math.min(Math.floor(scrollPercent * frames.length), frames.length - 1);
             bg.style.backgroundImage = `url('${frames[frameIdx]}')`;
         });
 
-        // Init
+        // Initialize with the base image
         bg.style.backgroundImage = `url('${frames[0]}')`;
     </script>
 </body>

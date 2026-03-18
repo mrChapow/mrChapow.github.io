@@ -3,70 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cota Lab // CLT Archive</title>
+    <title>COTA LAB // CLT ARCHIVE</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
-        :root { --bg: #000; --glass: rgba(255, 255, 255, 0.05); }
-        body, html { margin: 0; padding: 0; background: var(--bg); font-family: "Inter", sans-serif; color: white; overflow-x: hidden; }
+        :root { 
+            --bg: #000; 
+            --glass: rgba(255, 255, 255, 0.03); 
+            --accent: #fff;
+        }
 
+        body, html { 
+            margin: 0; padding: 0; 
+            background: var(--bg); 
+            font-family: "Inter", sans-serif; 
+            color: white; 
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* 1. HEADER LOGO */
+        header {
+            position: fixed; top: 0; left: 0; width: 100%;
+            display: flex; justify-content: center;
+            padding: 30px 0; z-index: 100; pointer-events: none;
+        }
+        .logo {
+            font-weight: 900; font-size: 1.2rem;
+            letter-spacing: 0.8em; text-transform: uppercase;
+            margin-right: -0.8em; /* Offsets last letter spacing */
+        }
+
+        /* 2. BACKGROUND ENGINE */
         #parallax-bg {
             position: fixed; inset: 0; z-index: 1;
             background-size: cover; background-position: center;
+            transition: background-image 0.1s ease-out;
             will-change: background-image;
         }
+        #parallax-bg::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.4), transparent 20%, transparent 80%, rgba(0,0,0,0.8));
+        }
 
-        .main-stage { position: relative; z-index: 10; height: 250vh; display: flex; flex-direction: column; align-items: center; }
+        /* 3. LAYOUT PHYSICS */
+        .main-stage { 
+            position: relative; z-index: 10; 
+            display: flex; flex-direction: column; align-items: center; 
+            /* Height dictates scroll speed for the 6 frames */
+            height: 300vh; 
+        }
 
-        .model-hold {
-            position: sticky; top: 0; height: 100vh; width: 100%;
+        .product-container {
+            width: 100%; display: flex; flex-direction: column; align-items: center;
+            margin-top: 10vh; /* Initial entry height */
+        }
+
+        /* 3D MODEL & SLIDER */
+        .viewer-wrap {
+            width: 100%; height: 65vh;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
+        model-viewer { 
+            width: 95vw; height: 100%; 
+            outline: none; --progress-bar-color: transparent;
+        }
 
-        model-viewer { width: 90vw; height: 60vh; outline: none; }
-
-        .slider-wrap { width: 260px; margin-top: -20px; text-align: center; }
-        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; cursor: pointer; }
-        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 2px; background: rgba(255,255,255,0.3); }
+        .slider-wrap { 
+            width: 220px; margin-top: -30px; 
+            text-align: center; z-index: 20;
+        }
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 1px; background: rgba(255,255,255,0.2); }
         input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none; height: 14px; width: 14px; border-radius: 50%;
-            background: #fff; margin-top: -6px; box-shadow: 0 0 15px rgba(255,255,255,0.5);
+            -webkit-appearance: none; height: 12px; width: 12px; border-radius: 50%;
+            background: #fff; margin-top: -5.5px; cursor: pointer;
+            box-shadow: 0 0 10px rgba(255,255,255,0.3);
         }
 
-        .glass-reveal {
-            margin-top: 20vh; width: 85%; max-width: 420px;
-            padding: 40px; border-radius: 30px;
+        /* LIQUID GLASS TILE */
+        .liquid-glass {
+            width: 85%; max-width: 400px;
+            margin-top: 20px; padding: 35px;
+            border-radius: 24px;
             background: var(--glass);
-            backdrop-filter: blur(40px) saturate(150%);
-            -webkit-backdrop-filter: blur(40px) saturate(150%);
-            border: 1px solid rgba(255,255,255,0.1);
-            margin-bottom: 100px;
+            backdrop-filter: blur(50px) saturate(160%);
+            -webkit-backdrop-filter: blur(50px) saturate(160%);
+            border: 1px solid rgba(255,255,255,0.08);
+            box-sizing: border-box;
         }
 
-        h1 { font-size: 32px; font-weight: 900; text-transform: uppercase; margin: 0; }
+        .glass-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 15px; }
+        .glass-header h1 { font-size: 24px; font-weight: 900; margin: 0; letter-spacing: -0.02em; }
+        .price { font-family: monospace; opacity: 0.6; font-size: 14px; }
+
+        .desc { font-size: 13px; line-height: 1.6; opacity: 0.5; margin-bottom: 30px; }
+
+        /* SIZE PICKER LOGIC */
+        .size-row { display: flex; gap: 10px; margin-bottom: 20px; }
+        .size-btn {
+            flex: 1; border: 1px solid rgba(255,255,255,0.1); 
+            background: transparent; color: white; padding: 10px 0;
+            border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer;
+            transition: 0.2s;
+        }
+        .size-btn.active { background: white; color: black; border-color: white; }
+
         .buy-btn {
-            width: 100%; padding: 20px; margin-top: 30px;
+            width: 100%; padding: 18px;
             background: white; color: black; border: none; border-radius: 12px;
             font-weight: 900; text-transform: uppercase; cursor: pointer;
+            font-size: 14px; transition: transform 0.1s;
+        }
+        .buy-btn:active { transform: scale(0.98); }
+
+        .archive-tag {
+            font-size: 9px; letter-spacing: 4px; opacity: 0.3;
+            text-align: center; margin-top: 25px; text-transform: uppercase;
         }
     </style>
 </head>
 <body>
 
+    <header><div class="logo">Cota Lab</div></header>
+
     <div id="parallax-bg"></div>
 
     <main class="main-stage">
-        <div class="model-hold">
-            <model-viewer id="shirt" src="Tshirt.glb" camera-orbit="0deg 75deg 105%" auto-rotate rotation-per-second="12deg"></model-viewer>
-            <div class="slider-wrap">
-                <input type="range" id="rot" min="-180" max="180" value="0">
-                <p style="font-size: 9px; letter-spacing: 4px; opacity: 0.4; margin-top: 15px;">CLT ARCHIVE // 01</p>
+        <div class="product-container">
+            <div class="viewer-wrap">
+                <model-viewer id="shirt" 
+                    src="Tshirt.glb" 
+                    camera-orbit="0deg 75deg 105%" 
+                    auto-rotate 
+                    rotation-per-second="15deg"
+                    interaction-prompt="none">
+                </model-viewer>
+                
+                <div class="slider-wrap">
+                    <input type="range" id="rot" min="-180" max="180" value="0">
+                </div>
             </div>
-        </div>
 
-        <div class="glass-reveal">
-            <h1>CLT Archive</h1>
-            <p style="opacity: 0.7; font-size: 14px; line-height: 1.6;">Heavyweight cotton. Pixel-mapped cloud architecture.</p>
-            <button class="buy-btn">Add to Cart</button>
+            <div class="liquid-glass">
+                <div class="glass-header">
+                    <h1>CLT // ARCHIVE</h1>
+                    <span class="price">$54.00</span>
+                </div>
+                <p class="desc">Heavyweight digital-to-physical garment. Featuring pixel-mapped cloud architecture from the CLT metropolitan grid.</p>
+                
+                <div class="size-row">
+                    <button class="size-btn">S</button>
+                    <button class="size-btn active">M</button>
+                    <button class="size-btn">L</button>
+                    <button class="size-btn">XL</button>
+                </div>
+
+                <button class="buy-btn">Acquire Archive</button>
+                
+                <div class="archive-tag">V3.4 // Stable Build</div>
+            </div>
         </div>
     </main>
 
@@ -75,7 +170,6 @@
         const shirt = document.getElementById('shirt');
         const slider = document.getElementById('rot');
         
-        // MAPPED TO YOUR EXACT FILENAMES
         const frames = [
             'street-view.jpg', 
             'street-view 1.jpg', 
@@ -85,27 +179,51 @@
             'street-view 5.jpg'
         ];
 
-        // APPLY THE CORRECT CLT TEXTURE
+        // 1. PRELOADER ENGINE (Prevents "Flashbangs")
+        const preloadFrames = () => {
+            frames.forEach(src => {
+                const img = new Image();
+                img.src = src;
+            });
+        };
+        preloadFrames();
+
+        // 2. TEXTURE INJECTION
         shirt.addEventListener('load', async () => {
             const mat = shirt.model.materials[0];
             const tex = await shirt.createTexture('cota_cloud_pixelart.png');
-            mat.pbrMetallicRoughness.baseColorTexture.setTexture(tex);
+            // Check if baseColorTexture exists before setting
+            if (mat.pbrMetallicRoughness.baseColorTexture) {
+                mat.pbrMetallicRoughness.baseColorTexture.setTexture(tex);
+            }
         });
 
+        // 3. 360° SLIDER LOGIC
         slider.oninput = (e) => {
             shirt.removeAttribute('auto-rotate');
             shirt.cameraOrbit = `${e.target.value}deg 75deg 105%`;
         };
 
+        // 4. SCROLL-SCRUB ENGINE
         window.addEventListener('scroll', () => {
-            const scrollPercent = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
-            // Spreading your 6 frames across the scroll
+            const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = Math.max(0, Math.min(1, window.scrollY / scrollHeight));
+            
+            // Map scroll to 6 frames
             const frameIdx = Math.min(Math.floor(scrollPercent * frames.length), frames.length - 1);
             bg.style.backgroundImage = `url('${frames[frameIdx]}')`;
         });
 
-        // Initialize with the base image
+        // Initialize first frame
         bg.style.backgroundImage = `url('${frames[0]}')`;
+
+        // 5. UI INTERACTION
+        document.querySelectorAll('.size-btn').forEach(btn => {
+            btn.onclick = () => {
+                document.querySelector('.size-btn.active').classList.remove('active');
+                btn.classList.add('active');
+            };
+        });
     </script>
 </body>
 </html>

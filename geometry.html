@@ -24,7 +24,6 @@
             overscroll-behavior-y: none;
         }
 
-        /* 1. RUNWAY - Dynamically sized in JS based on Scene count */
         #scroll-engine { width: 100%; position: absolute; top: 0; left: 0; z-index: 0; }
 
         #parallax-bg {
@@ -34,7 +33,6 @@
             transition: filter 0.5s ease;
         }
 
-        /* 2. THE LOOT */
         .model-container {
             position: fixed; inset: 0; z-index: 3;
             display: flex; align-items: center; justify-content: center;
@@ -52,10 +50,9 @@
         }
 
         @media (max-width: 768px) {
-            model-viewer { width: 75vw; height: 60vh; }
+            model-viewer { width: 85vw; height: 65vh; }
         }
 
-        /* 3. BRANDING & UI */
         .header {
             position: fixed; top: 40px; width: 100%;
             display: flex; justify-content: center; z-index: 100;
@@ -86,8 +83,6 @@
         .product-info h1 { font-size: 32px; text-transform: uppercase; margin: 0; font-weight: 900; letter-spacing: -0.02em;}
         #sector-label { color: rgba(255,255,255,0.5); font-size: 11px; letter-spacing: 0.2em; margin-top: 4px; text-transform: uppercase; }
 
-        @media (max-width: 768px) { .product-info h1 { font-size: 26px; } }
-
         .cta-button {
             background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             color: white; border: 1px solid rgba(255,255,255,0.15);
@@ -102,9 +97,7 @@
     <div id="scroll-engine"></div>
     <div id="parallax-bg"></div>
 
-    <header class="header">
-        <div class="brand-id">COTA // LAB</div>
-    </header>
+    <header class="header"><div class="brand-id">COTA // LAB</div></header>
 
     <div class="model-container">
         <model-viewer id="viewer" src="Tshirt.glb" camera-orbit="0deg 75deg 105%" shadow-intensity="1" exposure="1.1" style="pointer-events:none;"></model-viewer>
@@ -112,17 +105,13 @@
 
     <div class="interface">
         <div class="ui-wrap">
-            <div class="slider-container">
-                <input type="range" id="rotate" min="-180" max="180" value="0">
-            </div>
+            <div class="slider-container"><input type="range" id="rotate" min="-180" max="180" value="0"></div>
             <div class="bottom-ui">
                 <div class="product-info">
                     <h1 id="product-name">Archive 001</h1>
                     <p id="sector-label">Sector: CLT // Transit</p>
                 </div>
-                <div class="purchase-zone">
-                    <button class="cta-button">Pre-Order</button>
-                </div>
+                <button class="cta-button">Pre-Order</button>
             </div>
         </div>
     </div>
@@ -135,34 +124,32 @@
         const sectorLabel = document.getElementById('sector-label');
         const engine = document.getElementById('scroll-engine');
 
-        // WORLD DEFINITION: Add your scenes and PNG textures here
         const world = [
             {
                 name: "Archive 001",
                 label: "Sector: CLT // Pixel Sky",
                 texture: "cota_cloud_pixelart.png",
-                images: [
-                    'street-view.jpg', 'street-view 1.jpg', 'street-view 2.jpg', 
-                    'street-view 3.jpg', 'street-view 4.jpg', 'street-view 5.jpg'
-                ]
+                images: ['street-view.jpg', 'street-view 1.jpg', 'street-view 2.jpg', 'street-view 3.jpg', 'street-view 4.jpg', 'street-view 5.jpg']
             },
             {
                 name: "Archive 002",
                 label: "Sector: LAB // Type Core",
                 texture: "lovefont.png",
-                images: [
-                    'lab-view.jpg', 'lab-view 1.jpg', 'lab-view 2.jpg', 'lab-view 3.jpg'
-                ]
+                images: ['lab-view.jpg', 'lab-view 1.jpg', 'lab-view 2.jpg', 'lab-view 3.jpg']
+            },
+            {
+                name: "Burst Archive",
+                label: "Sector: BURST // Dynamic",
+                texture: "cota_cloud_pixelart.png", // Or a new texture if you have one
+                images: Array.from({length: 12}, (_, i) => `burstscene${i}.png`) 
             }
         ];
 
-        // Set runway height based on scene count
         engine.style.height = (world.length * 150) + "vh";
-
         let currentSceneIndex = 0;
         let isSpinning = false;
 
-        // Preload Assets
+        // Preload
         world.forEach(scene => {
             scene.images.forEach(src => { const img = new Image(); img.src = src; });
             const tex = new Image(); tex.src = scene.texture;
@@ -174,15 +161,10 @@
 
         window.addEventListener('scroll', () => {
             const scrollPercent = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
-            
-            // Determine Scene
             const sceneTarget = Math.min(Math.floor(scrollPercent * world.length), world.length - 1);
-            
-            // Determine Frame within Scene
             const sceneProgress = (scrollPercent * world.length) % 1;
             const frameTarget = Math.min(Math.floor(sceneProgress * world[sceneTarget].images.length), world[sceneTarget].images.length - 1);
 
-            // Handle Scene Swap
             if (sceneTarget !== currentSceneIndex) {
                 currentSceneIndex = sceneTarget;
                 triggerSceneTransition(world[sceneTarget]);
@@ -194,12 +176,12 @@
         async function triggerSceneTransition(newScene) {
             isSpinning = true;
             
-            // 1. Warp Out
-            viewer.style.transform = 'scale(0.6)';
-            viewer.style.filter = 'blur(10px) brightness(2)';
-            bg.style.filter = 'blur(15px) grayscale(1)';
+            // 1. Visual Warp
+            viewer.style.transform = 'scale(0.5) rotate(5deg)';
+            viewer.style.filter = 'blur(15px) brightness(2.5)';
+            bg.style.filter = 'blur(20px) contrast(1.5)';
 
-            // 2. Texture Swap (PBR Material 0)
+            // 2. Texture Swap
             if (viewer.model) {
                 const material = viewer.model.materials[0];
                 const newTexture = await viewer.createTexture(newScene.texture);
@@ -207,17 +189,16 @@
             }
 
             setTimeout(() => {
-                // Update Text
                 productName.innerText = newScene.name;
                 sectorLabel.innerText = newScene.label;
                 
-                // 3. Power Spin & Warp In
-                viewer.style.transform = 'scale(1)';
-                viewer.style.filter = 'blur(0px) brightness(1.1)';
-                bg.style.filter = 'blur(0px) grayscale(0)';
-                
+                // 3. THE FIXED POWER SPIN
                 const currentRot = parseInt(slider.value);
                 viewer.cameraOrbit = `${currentRot + 720}deg 75deg 105%`;
+                
+                viewer.style.transform = 'scale(1) rotate(0deg)';
+                viewer.style.filter = 'blur(0px) brightness(1.1)';
+                bg.style.filter = 'blur(0px) contrast(1)';
 
                 setTimeout(() => { isSpinning = false; }, 800);
             }, 400);

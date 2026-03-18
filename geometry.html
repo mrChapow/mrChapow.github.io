@@ -3,138 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cota Lab // Archive v3.2</title>
+    <title>Cota Lab // CLT Archive</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
-        :root { --bg: #050505; --glass: rgba(255, 255, 255, 0.03); }
-        body, html { margin: 0; padding: 0; background: var(--bg); font-family: "Inter", sans-serif; color: white; overflow-x: hidden; }
+        :root { --bg: #000; --glass: rgba(255, 255, 255, 0.05); }
+        body, html { margin: 0; padding: 0; background: var(--bg); font-family: "Inter", sans-serif; color: white; }
 
-        /* FIXED BACKGROUND BURST */
+        /* THE CLT STREET VIEW ENGINE */
         #parallax-bg {
             position: fixed; inset: 0; z-index: 1;
             background-size: cover; background-position: center;
+            background-repeat: no-repeat;
             will-change: background-image;
+            filter: brightness(0.7) contrast(1.2); /* Makes the street view grittier */
         }
 
-        .scroll-container { position: relative; z-index: 10; }
+        .scroll-wrapper { position: relative; z-index: 10; }
 
-        /* EACH PRODUCT TAKES 2 FULL PAGES OF SCROLL */
-        .product-page {
+        /* Tighter sectioning based on your sketch */
+        .product-section {
             position: relative;
-            min-height: 200vh; 
+            height: 180vh; 
             display: flex; flex-direction: column; align-items: center;
         }
 
-        /* AREA 1: THE MODEL & SLIDER */
-        .stage {
+        /* STAGE 1: THE SHIRT + SLIDER */
+        .model-stage {
             height: 100vh; width: 100%;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding-top: 20px;
         }
 
         model-viewer { 
-            width: 90vw; height: 60vh; outline: none; 
+            width: 95vw; height: 65vh; outline: none; 
             --poster-color: transparent;
         }
 
-        .slider-wrap {
-            width: 100%; max-width: 300px; padding: 20px;
-            display: flex; flex-direction: column; align-items: center;
+        .slider-ui {
+            width: 280px; text-align: center;
+            margin-top: -20px; /* Pulls slider closer to the shirt */
         }
 
         input[type=range] {
             -webkit-appearance: none; width: 100%; background: transparent;
         }
         input[type=range]::-webkit-slider-runnable-track {
-            width: 100%; height: 2px; background: rgba(255,255,255,0.2);
+            width: 100%; height: 1px; background: rgba(255,255,255,0.4);
         }
         input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none; height: 12px; width: 12px; border-radius: 50%;
-            background: #fff; margin-top: -5px; box-shadow: 0 0 10px white;
+            -webkit-appearance: none; height: 14px; width: 14px; border-radius: 50%;
+            background: #fff; margin-top: -6px; border: 2px solid black;
         }
 
-        /* AREA 2: THE LIQUID GLASS CARD */
-        .liquid-glass {
-            width: 85%; max-width: 450px;
-            margin-top: 20vh; /* Gap so it reveals as you scroll */
-            padding: 40px; border-radius: 32px;
+        /* STAGE 2: LIQUID GLASS (REVEALS ON SCROLL) */
+        .glass-card {
+            width: 88%; max-width: 440px;
+            margin-top: 5vh; 
+            padding: 35px; border-radius: 28px;
             background: var(--glass);
-            backdrop-filter: blur(40px) saturate(150%);
-            -webkit-backdrop-filter: blur(40px) saturate(150%);
-            border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: inset 0 0 20px rgba(255,255,255,0.05), 0 20px 50px rgba(0,0,0,0.5);
+            backdrop-filter: blur(50px) saturate(180%);
+            -webkit-backdrop-filter: blur(50px) saturate(180%);
+            border: 1px solid rgba(255,255,255,0.12);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
         }
 
-        .info-header { border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; padding-bottom: 20px; }
-        .info-header h1 { margin: 0; font-size: 28px; text-transform: uppercase; font-weight: 900; }
-        
-        .specs { font-size: 14px; line-height: 1.8; opacity: 0.7; margin-bottom: 30px; }
-        
-        .size-picker { display: flex; gap: 10px; margin-bottom: 30px; }
-        .size-btn {
-            flex: 1; padding: 10px; border: 1px solid rgba(255,255,255,0.2);
-            background: transparent; color: white; border-radius: 8px; font-weight: 700;
-        }
+        .glass-card h1 { font-size: 32px; font-weight: 900; margin: 0; text-transform: uppercase; }
+        .glass-card p { opacity: 0.6; font-size: 14px; line-height: 1.6; margin: 15px 0 25px 0; }
 
-        .buy-btn {
-            width: 100%; padding: 20px; border-radius: 12px; border: none;
-            background: white; color: black; font-weight: 900; text-transform: uppercase;
-            letter-spacing: 0.1em; cursor: pointer;
-        }
+        .buy-area { display: flex; gap: 10px; }
+        .size-box { flex: 1; height: 45px; border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-weight: 800; border-radius: 8px; }
+        .buy-btn { flex: 2; background: white; color: black; border: none; border-radius: 8px; font-weight: 900; text-transform: uppercase; cursor: pointer; }
+
     </style>
 </head>
 <body>
 
     <div id="parallax-bg"></div>
 
-    <div class="scroll-container">
+    <div class="scroll-wrapper">
         
-        <section class="product-page" id="p1">
-            <div class="stage">
-                <model-viewer id="m1" src="Tshirt.glb" camera-orbit="0deg 75deg 105%" auto-rotate rotation-per-second="10deg" interaction-prompt="none"></model-viewer>
-                <div class="slider-wrap">
-                    <input type="range" class="rot-slider" data-target="m1" min="-180" max="180" value="0">
-                    <p style="font-size: 10px; opacity: 0.4; letter-spacing: 2px; margin-top: 15px;">360° ARCHIVE VIEW</p>
+        <section class="product-section">
+            <div class="model-stage">
+                <model-viewer id="clt-viewer" src="Tshirt.glb" camera-orbit="0deg 75deg 105%" auto-rotate rotation-per-second="15deg" interaction-prompt="none"></model-viewer>
+                <div class="slider-ui">
+                    <input type="range" class="sync-slider" data-target="clt-viewer" min="-180" max="180" value="0">
+                    <p style="font-size: 9px; letter-spacing: 3px; opacity: 0.5; margin-top: 10px;">CLT // ARCHIVE 01</p>
                 </div>
             </div>
 
-            <div class="liquid-glass">
-                <div class="info-header">
-                    <h1>Archive // CLT</h1>
-                    <span style="font-size: 11px; opacity: 0.5;">PREMIUM HEAVYWEIGHT</span>
+            <div class="glass-card">
+                <h1>CLT Archive</h1>
+                <p>Limited Lab Drop. Heavyweight architecture with pixelated cloud mapping derived from CLT street views.</p>
+                <div class="buy-area">
+                    <div class="size-box">M</div>
+                    <div class="size-box">L</div>
+                    <button class="buy-btn">BUY</button>
                 </div>
-                <div class="specs">
-                    • 100% Organic Cotton<br>
-                    • Pixel-Cloud Mapping<br>
-                    • Oversized Architecture
-                </div>
-                <div class="size-picker">
-                    <button class="size-btn">S</button>
-                    <button class="size-btn">M</button>
-                    <button class="size-btn">L</button>
-                </div>
-                <button class="buy-btn">Secure Item</button>
             </div>
         </section>
 
-        <section class="product-page" id="p2">
-            <div class="stage">
-                <model-viewer id="m2" src="Tshirt.glb" camera-orbit="0deg 75deg 105%" auto-rotate rotation-per-second="10deg" interaction-prompt="none"></model-viewer>
-                <div class="slider-wrap">
-                    <input type="range" class="rot-slider" data-target="m2" min="-180" max="180" value="0">
+        <section class="product-section">
+            <div class="model-stage">
+                <model-viewer id="furry-viewer" src="Tshirt.glb" camera-orbit="0deg 75deg 105%" auto-rotate interaction-prompt="none"></model-viewer>
+                <div class="slider-ui">
+                    <input type="range" class="sync-slider" data-target="furry-viewer" min="-180" max="180" value="0">
                 </div>
             </div>
-
-            <div class="liquid-glass">
-                <div class="info-header">
-                    <h1>Archive // FURRY</h1>
-                    <span style="font-size: 11px; opacity: 0.5;">TACTILE CORE</span>
-                </div>
-                <div class="specs">
-                    • Specialized Texture Map<br>
-                    • "Lovefont" Digital Print<br>
-                    • Limited Lab Prototype
-                </div>
-                <button class="buy-btn">Secure Item</button>
+            <div class="glass-card">
+                <h1>Furry Core</h1>
+                <p>Tactile digital experiment. Mapping prototype utilizing the 'Lovefont' dataset.</p>
+                <button class="buy-btn" style="width: 100%; height: 45px;">SECURE ITEM</button>
             </div>
         </section>
 
@@ -142,42 +120,46 @@
 
     <script>
         const bg = document.getElementById('parallax-bg');
-        const frames = Array.from({length: 12}, (_, i) => `burstscene${i}.png`);
+        
+        // The CLT street view frames
+        const burstFrames = Array.from({length: 12}, (_, i) => `burstscene${i}.png`);
 
-        // Initialize Textures for CLT and Furry
-        const initModel = async (id, texPath) => {
-            const mv = document.getElementById(id);
-            mv.addEventListener('load', async () => {
-                const mat = mv.model.materials[0];
-                const tex = await mv.createTexture(texPath);
+        // Force the textures immediately
+        const applyTex = async (id, file) => {
+            const el = document.getElementById(id);
+            el.addEventListener('load', async () => {
+                const mat = el.model.materials[0];
+                const tex = await el.createTexture(file);
                 mat.pbrMetallicRoughness.baseColorTexture.setTexture(tex);
             });
         };
+        applyTex('clt-viewer', 'cota_cloud_pixelart.png');
+        applyTex('furry-viewer', 'lovefont.png');
 
-        initModel('m1', 'cota_cloud_pixelart.png');
-        initModel('m2', 'lovefont.png');
-
-        // Slider Control Logic
-        document.querySelectorAll('.rot-slider').forEach(slider => {
-            slider.addEventListener('input', (e) => {
+        // Slider logic
+        document.querySelectorAll('.sync-slider').forEach(s => {
+            s.addEventListener('input', (e) => {
                 const target = document.getElementById(e.target.dataset.target);
-                target.removeAttribute('auto-rotate'); // Stop idle spin when user touches
+                target.removeAttribute('auto-rotate');
                 target.cameraOrbit = `${e.target.value}deg 75deg 105%`;
             });
         });
 
-        // Background Scrubbing Logic
+        // Background Scrubbing - Locked to CLT frames for the first section
         window.addEventListener('scroll', () => {
-            const scrollY = window.scrollY;
             const vh = window.innerHeight;
+            const scrollY = window.scrollY;
             
-            // Background scrolls twice as fast for that "burst" feel
-            const progress = (scrollY % (vh * 2)) / (vh * 2);
-            const frameIdx = Math.min(Math.floor(progress * frames.length * 1.2), frames.length - 1);
-            bg.style.backgroundImage = `url('${frames[frameIdx]}')`;
+            // Only play the street view burst during the first 1.5 pages of scroll
+            if (scrollY < vh * 1.5) {
+                const progress = scrollY / (vh * 1.5);
+                const frameIdx = Math.min(Math.floor(progress * burstFrames.length), burstFrames.length - 1);
+                bg.style.backgroundImage = `url('${burstFrames[frameIdx]}')`;
+            }
         });
 
-        bg.style.backgroundImage = `url('${frames[0]}')`;
+        // Init background
+        bg.style.backgroundImage = `url('${burstFrames[0]}')`;
     </script>
 </body>
 </html>

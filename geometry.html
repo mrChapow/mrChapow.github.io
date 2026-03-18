@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cota Lab // Archive 001</title>
+    <title>Cota Lab // Multiverse</title>
     
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     
@@ -24,16 +24,17 @@
             overscroll-behavior-y: none;
         }
 
-        /* 1. RUNWAY */
-        #scroll-engine { height: 125vh; width: 100%; position: absolute; top: 0; left: 0; z-index: 0; }
+        /* 1. RUNWAY - Dynamically sized in JS based on Scene count */
+        #scroll-engine { width: 100%; position: absolute; top: 0; left: 0; z-index: 0; }
 
         #parallax-bg {
             position: fixed; inset: 0; z-index: 1;
             background-size: cover; background-position: center;
             will-change: background-image; pointer-events: none;
+            transition: filter 0.5s ease;
         }
 
-        /* 2. CENTERED LOOT (Mobile Sized) */
+        /* 2. THE LOOT */
         .model-container {
             position: fixed; inset: 0; z-index: 3;
             display: flex; align-items: center; justify-content: center;
@@ -45,7 +46,10 @@
             50% { transform: translateY(-12px); }
         }
 
-        model-viewer { width: 50vw; height: 50vh; outline: none; }
+        model-viewer { 
+            width: 50vw; height: 50vh; outline: none; 
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.4s ease;
+        }
 
         @media (max-width: 768px) {
             model-viewer { width: 75vw; height: 60vh; }
@@ -67,7 +71,6 @@
 
         .ui-wrap { pointer-events: auto; width: 100%; max-width: 1200px; margin: 0 auto; }
 
-        /* 4. THE 4PX SYMMETRIC SLIDER */
         .slider-container { width: 100%; margin-bottom: 40px; display: flex; justify-content: center; }
         
         #rotate {
@@ -81,80 +84,6 @@
 
         .bottom-ui { display: flex; justify-content: space-between; align-items: flex-end; }
         .product-info h1 { font-size: 32px; text-transform: uppercase; margin: 0; font-weight: 900; letter-spacing: -0.02em;}
-        .product-info p { color: rgba(255,255,255,0.5); font-size: 11px; letter-spacing: 0.2em; margin-top: 4px; text-transform: uppercase; }
+        #sector-label { color: rgba(255,255,255,0.5); font-size: 11px; letter-spacing: 0.2em; margin-top: 4px; text-transform: uppercase; }
 
-        @media (max-width: 768px) { .product-info h1 { font-size: 26px; } }
-
-        .cta-button {
-            background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            color: white; border: 1px solid rgba(255,255,255,0.15);
-            padding: 14px 40px; border-radius: 100px;
-            font-size: 10px; font-weight: 800; text-transform: uppercase;
-            letter-spacing: 0.15em; cursor: pointer;
-        }
-    </style>
-</head>
-<body>
-
-    <div id="scroll-engine"></div>
-    <div id="parallax-bg"></div>
-
-    <header class="header">
-        <div class="brand-id">COTA // LAB</div>
-    </header>
-
-    <div class="model-container">
-        <model-viewer id="viewer" src="Tshirt.glb" camera-orbit="0deg 75deg 105%" shadow-intensity="1" exposure="1.1" style="pointer-events:none;"></model-viewer>
-    </div>
-
-    <div class="interface">
-        <div class="ui-wrap">
-            <div class="slider-container">
-                <input type="range" id="rotate" min="-180" max="180" value="0">
-            </div>
-            <div class="bottom-ui">
-                <div class="product-info">
-                    <h1>Archive 001</h1>
-                    <p>Sector: CLT // Symmetric Transit</p>
-                </div>
-                <div class="purchase-zone">
-                    <button class="cta-button">Pre-Order</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const bg = document.getElementById('parallax-bg');
-        const viewer = document.getElementById('viewer');
-        const slider = document.getElementById('rotate');
-
-        const images = [
-            'street-view.jpg',
-            'street-view 1.jpg',
-            'street-view 2.jpg',
-            'street-view 3.jpg',
-            'street-view 4.jpg',
-            'street-view 5.jpg'
-        ];
-
-        images.forEach(src => { const img = new Image(); img.src = src; });
-
-        // TWO-WAY ROTATION LOGIC
-        slider.oninput = (e) => {
-            // Direct mapping: -180 (left) to 180 (right)
-            viewer.cameraOrbit = `${e.target.value}deg 75deg 105%`;
-            viewer.autoRotate = false;
-        };
-
-        window.addEventListener('scroll', () => {
-            const scrollTotal = document.documentElement.scrollHeight - window.innerHeight;
-            const scrollPercent = window.scrollY / scrollTotal;
-            const frameIndex = Math.min(Math.floor(scrollPercent * (images.length - 0.1)), images.length - 1);
-            bg.style.backgroundImage = `url('${images[frameIndex]}')`;
-        }, { passive: true });
-
-        bg.style.backgroundImage = `url('${images[0]}')`;
-    </script>
-</body>
-</html>
+        @media (max-width: 768px) { .product-info h1

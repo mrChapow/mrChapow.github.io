@@ -3,83 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cota Lab // Natural Flow</title>
-    
+    <title>Cota Lab // Archive v3.2</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
-    
     <style>
-        :root { 
-            --bg: #000000;
-            --glass: rgba(255, 255, 255, 0.08);
-            --glass-border: rgba(255, 255, 255, 0.15);
-        }
+        :root { --bg: #050505; --glass: rgba(255, 255, 255, 0.03); }
+        body, html { margin: 0; padding: 0; background: var(--bg); font-family: "Inter", sans-serif; color: white; overflow-x: hidden; }
 
-        body, html {
-            margin: 0; padding: 0;
-            background-color: var(--bg);
-            font-family: "Inter", sans-serif;
-            color: white;
-            overflow-x: hidden;
-        }
-
-        /* 1. THE CINEMATIC BACKGROUND (FIXED) */
+        /* FIXED BACKGROUND BURST */
         #parallax-bg {
             position: fixed; inset: 0; z-index: 1;
             background-size: cover; background-position: center;
             will-change: background-image;
         }
 
-        /* 2. THE SCROLLING TRACK */
-        .scroll-track {
-            position: relative; z-index: 10;
-        }
+        .scroll-container { position: relative; z-index: 10; }
 
-        .product-section {
-            /* Gives enough room for the scroll animation to play out before the next section hits */
-            min-height: 150vh; 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 20vh;
-        }
-
-        /* 3. THE LIQUID GLASS TILE */
-        .liquid-glass-tile {
-            width: 90%; max-width: 500px;
-            background: var(--glass);
-            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            padding: 40px;
-            text-align: left;
+        /* EACH PRODUCT TAKES 2 FULL PAGES OF SCROLL */
+        .product-page {
             position: relative;
-            z-index: 12;
-            margin-bottom: -10vh; /* Pulls the 3D model up so it overlaps the bottom of the glass */
+            min-height: 200vh; 
+            display: flex; flex-direction: column; align-items: center;
         }
 
-        h1 { font-size: 38px; font-weight: 900; text-transform: uppercase; margin: 0 0 10px 0; letter-spacing: -0.02em; }
-        .sector-label { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.6; display: block; margin-bottom: 30px; }
-
-        .cta-btn {
-            width: 100%; padding: 18px;
-            background: white; color: black;
-            border: none; border-radius: 100px;
-            font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em;
-            cursor: pointer;
-        }
-
-        /* 4. THE 3D MODEL */
-        .model-wrap {
-            width: 100%; height: 70vh;
-            display: flex; justify-content: center;
-            z-index: 11;
+        /* AREA 1: THE MODEL & SLIDER */
+        .stage {
+            height: 100vh; width: 100%;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
 
         model-viewer { 
-            width: 85vw; max-width: 800px; height: 100%; 
-            outline: none;
-            /* Added smooth rotation transition for the Power Spin */
-            transition: transform 0.4s ease; 
+            width: 90vw; height: 60vh; outline: none; 
+            --poster-color: transparent;
+        }
+
+        .slider-wrap {
+            width: 100%; max-width: 300px; padding: 20px;
+            display: flex; flex-direction: column; align-items: center;
+        }
+
+        input[type=range] {
+            -webkit-appearance: none; width: 100%; background: transparent;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%; height: 2px; background: rgba(255,255,255,0.2);
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; height: 12px; width: 12px; border-radius: 50%;
+            background: #fff; margin-top: -5px; box-shadow: 0 0 10px white;
+        }
+
+        /* AREA 2: THE LIQUID GLASS CARD */
+        .liquid-glass {
+            width: 85%; max-width: 450px;
+            margin-top: 20vh; /* Gap so it reveals as you scroll */
+            padding: 40px; border-radius: 32px;
+            background: var(--glass);
+            backdrop-filter: blur(40px) saturate(150%);
+            -webkit-backdrop-filter: blur(40px) saturate(150%);
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: inset 0 0 20px rgba(255,255,255,0.05), 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .info-header { border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; padding-bottom: 20px; }
+        .info-header h1 { margin: 0; font-size: 28px; text-transform: uppercase; font-weight: 900; }
+        
+        .specs { font-size: 14px; line-height: 1.8; opacity: 0.7; margin-bottom: 30px; }
+        
+        .size-picker { display: flex; gap: 10px; margin-bottom: 30px; }
+        .size-btn {
+            flex: 1; padding: 10px; border: 1px solid rgba(255,255,255,0.2);
+            background: transparent; color: white; border-radius: 8px; font-weight: 700;
+        }
+
+        .buy-btn {
+            width: 100%; padding: 20px; border-radius: 12px; border: none;
+            background: white; color: black; font-weight: 900; text-transform: uppercase;
+            letter-spacing: 0.1em; cursor: pointer;
         }
     </style>
 </head>
@@ -87,80 +86,98 @@
 
     <div id="parallax-bg"></div>
 
-    <main class="scroll-track">
+    <div class="scroll-container">
         
-        <section class="product-section" id="section-clt">
-            <div class="liquid-glass-tile">
-                <span class="sector-label">Sector: CLT // Pixel Sky</span>
-                <h1>Archive 001</h1>
-                <p style="opacity: 0.8; line-height: 1.5;">Heavyweight cotton construction. Mapped with digital cloud architecture.</p>
-                <button class="cta-btn">Pre-Order</button>
+        <section class="product-page" id="p1">
+            <div class="stage">
+                <model-viewer id="m1" src="Tshirt.glb" camera-orbit="0deg 75deg 105%" auto-rotate rotation-per-second="10deg" interaction-prompt="none"></model-viewer>
+                <div class="slider-wrap">
+                    <input type="range" class="rot-slider" data-target="m1" min="-180" max="180" value="0">
+                    <p style="font-size: 10px; opacity: 0.4; letter-spacing: 2px; margin-top: 15px;">360° ARCHIVE VIEW</p>
+                </div>
             </div>
-            <div class="model-wrap">
-                <model-viewer id="viewer-clt" src="Tshirt.glb" camera-orbit="0deg 75deg 105%" shadow-intensity="1" exposure="1.1"></model-viewer>
+
+            <div class="liquid-glass">
+                <div class="info-header">
+                    <h1>Archive // CLT</h1>
+                    <span style="font-size: 11px; opacity: 0.5;">PREMIUM HEAVYWEIGHT</span>
+                </div>
+                <div class="specs">
+                    • 100% Organic Cotton<br>
+                    • Pixel-Cloud Mapping<br>
+                    • Oversized Architecture
+                </div>
+                <div class="size-picker">
+                    <button class="size-btn">S</button>
+                    <button class="size-btn">M</button>
+                    <button class="size-btn">L</button>
+                </div>
+                <button class="buy-btn">Secure Item</button>
             </div>
         </section>
 
-        <section class="product-section" id="section-furry">
-            <div class="liquid-glass-tile">
-                <span class="sector-label">Sector: LAB // Type Core</span>
-                <h1>Archive 002</h1>
-                <p style="opacity: 0.8; line-height: 1.5;">High-tactility texture integration. The next evolution of digital garment mapping.</p>
-                <button class="cta-btn">Pre-Order</button>
+        <section class="product-page" id="p2">
+            <div class="stage">
+                <model-viewer id="m2" src="Tshirt.glb" camera-orbit="0deg 75deg 105%" auto-rotate rotation-per-second="10deg" interaction-prompt="none"></model-viewer>
+                <div class="slider-wrap">
+                    <input type="range" class="rot-slider" data-target="m2" min="-180" max="180" value="0">
+                </div>
             </div>
-            <div class="model-wrap">
-                <model-viewer id="viewer-furry" src="Tshirt.glb" camera-orbit="0deg 75deg 105%" shadow-intensity="1" exposure="1.1"></model-viewer>
+
+            <div class="liquid-glass">
+                <div class="info-header">
+                    <h1>Archive // FURRY</h1>
+                    <span style="font-size: 11px; opacity: 0.5;">TACTILE CORE</span>
+                </div>
+                <div class="specs">
+                    • Specialized Texture Map<br>
+                    • "Lovefont" Digital Print<br>
+                    • Limited Lab Prototype
+                </div>
+                <button class="buy-btn">Secure Item</button>
             </div>
         </section>
 
-    </main>
+    </div>
 
     <script>
         const bg = document.getElementById('parallax-bg');
-        const viewerCLT = document.getElementById('viewer-clt');
-        const viewerFurry = document.getElementById('viewer-furry');
+        const frames = Array.from({length: 12}, (_, i) => `burstscene${i}.png`);
 
-        // Burst Animation Frames
-        const burstFrames = Array.from({length: 12}, (_, i) => `burstscene${i}.png`);
-        
-        // Preload background frames
-        burstFrames.forEach(src => { const img = new Image(); img.src = src; });
+        // Initialize Textures for CLT and Furry
+        const initModel = async (id, texPath) => {
+            const mv = document.getElementById(id);
+            mv.addEventListener('load', async () => {
+                const mat = mv.model.materials[0];
+                const tex = await mv.createTexture(texPath);
+                mat.pbrMetallicRoughness.baseColorTexture.setTexture(tex);
+            });
+        };
 
-        // Apply Custom Textures silently on load (No Flashbangs)
-        viewerCLT.addEventListener('load', async () => {
-            const material = viewerCLT.model.materials[0];
-            const texture = await viewerCLT.createTexture('cota_cloud_pixelart.png');
-            material.pbrMetallicRoughness.baseColorTexture.setTexture(texture);
+        initModel('m1', 'cota_cloud_pixelart.png');
+        initModel('m2', 'lovefont.png');
+
+        // Slider Control Logic
+        document.querySelectorAll('.rot-slider').forEach(slider => {
+            slider.addEventListener('input', (e) => {
+                const target = document.getElementById(e.target.dataset.target);
+                target.removeAttribute('auto-rotate'); // Stop idle spin when user touches
+                target.cameraOrbit = `${e.target.value}deg 75deg 105%`;
+            });
         });
 
-        viewerFurry.addEventListener('load', async () => {
-            const material = viewerFurry.model.materials[0];
-            const texture = await viewerFurry.createTexture('lovefont.png');
-            material.pbrMetallicRoughness.baseColorTexture.setTexture(texture);
-        });
-
-        // Initialize Background
-        bg.style.backgroundImage = `url('${burstFrames[0]}')`;
-
-        let furrySpun = false;
-
+        // Background Scrubbing Logic
         window.addEventListener('scroll', () => {
             const scrollY = window.scrollY;
+            const vh = window.innerHeight;
             
-            // 1. Scrub Background Frames during the first half of the scroll
-            // 800 is roughly a ".5 page scroll" on most monitors. Adjust this to make it play faster/slower.
-            const animationPacing = Math.min(scrollY / 800, 1); 
-            const frameIndex = Math.min(Math.floor(animationPacing * burstFrames.length), burstFrames.length - 1);
-            bg.style.backgroundImage = `url('${burstFrames[frameIndex]}')`;
+            // Background scrolls twice as fast for that "burst" feel
+            const progress = (scrollY % (vh * 2)) / (vh * 2);
+            const frameIdx = Math.min(Math.floor(progress * frames.length * 1.2), frames.length - 1);
+            bg.style.backgroundImage = `url('${frames[frameIdx]}')`;
+        });
 
-            // 2. Trigger Power Spin when FURRY is pulled up into view
-            const furryRect = viewerFurry.getBoundingClientRect();
-            // If the top of the Furry model crosses the bottom 80% of the screen
-            if (furryRect.top < window.innerHeight * 0.8 && !furrySpun) {
-                furrySpun = true;
-                viewerFurry.cameraOrbit = `720deg 75deg 105%`; // Force the pure spin
-            }
-        }, { passive: true });
+        bg.style.backgroundImage = `url('${frames[0]}')`;
     </script>
 </body>
 </html>

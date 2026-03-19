@@ -13,6 +13,12 @@
             overflow-x: hidden; -webkit-font-smoothing: antialiased;
         }
 
+        /* PRELOADER HACK: Keeps images in GPU memory */
+        #preloader {
+            position: absolute; width: 0; height: 0; overflow: hidden; z-index: -1;
+            visibility: hidden; pointer-events: none;
+        }
+
         header {
             position: fixed; top: 0; width: 100%; display: flex; 
             justify-content: center; padding: 25px 0; z-index: 100; pointer-events: none;
@@ -25,67 +31,47 @@
             background-repeat: no-repeat;
             will-change: background-image;
         }
-        /* Gritty Overlay */
         #parallax-bg::after {
             content: ''; position: absolute; inset: 0;
             background: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent 15%, transparent 85%, rgba(0,0,0,1));
         }
 
-        .main-stage { 
-            position: relative; z-index: 10; 
-            display: flex; flex-direction: column; align-items: center; 
-            height: 220vh; 
-        }
+        .main-stage { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; height: 220vh; }
+        .product-container { width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 2vh; }
 
-        .product-container {
-            width: 100%; display: flex; flex-direction: column; align-items: center;
-            margin-top: 2vh;
-        }
-
-        /* 3D Model Section */
-        .viewer-wrap {
-            width: 100%; height: 72vh;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-        }
+        .viewer-wrap { width: 100%; height: 72vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         model-viewer { width: 100vw; height: 100%; outline: none; --progress-bar-color: transparent; }
 
-        /* Fixed Slider Logic */
         .slider-wrap { width: 220px; margin-top: -50px; text-align: center; z-index: 50; position: relative; }
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; cursor: ew-resize; height: 30px; }
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 1px; background: rgba(255,255,255,0.25); }
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none; height: 12px; width: 12px; border-radius: 50%;
-            background: #fff; margin-top: -5.5px; border: none; box-shadow: 0 0 10px rgba(255,255,255,0.2);
+            background: #fff; margin-top: -5.5px; border: none;
         }
 
-        /* Liquid Glass Tile */
         .liquid-glass {
-            width: 90%; max-width: 410px;
-            margin: 30px 0 100px 0; padding: 30px;
+            width: 90%; max-width: 410px; margin: 30px 0 100px 0; padding: 30px;
             border-radius: 26px; background: var(--glass);
-            backdrop-filter: blur(50px) saturate(160%);
-            -webkit-backdrop-filter: blur(50px) saturate(160%);
-            border: 1px solid rgba(255,255,255,0.08);
-            box-sizing: border-box;
+            backdrop-filter: blur(50px) saturate(160%); -webkit-backdrop-filter: blur(50px) saturate(160%);
+            border: 1px solid rgba(255,255,255,0.08); box-sizing: border-box;
         }
 
         .glass-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
-        .glass-header h1 { font-size: 24px; font-weight: 900; margin: 0; letter-spacing: -0.01em; }
+        .glass-header h1 { font-size: 24px; font-weight: 900; margin: 0; }
         .price { font-family: monospace; opacity: 0.4; font-size: 13px; }
         .desc { font-size: 13px; line-height: 1.6; opacity: 0.4; margin-bottom: 30px; }
 
         .size-row { display: flex; gap: 8px; margin-bottom: 25px; }
         .size-btn {
-            flex: 1; border: 1px solid rgba(255,255,255,0.08); 
-            background: transparent; color: white; padding: 12px 0;
-            border-radius: 10px; font-size: 10px; font-weight: 800; cursor: pointer; transition: 0.2s;
+            flex: 1; border: 1px solid rgba(255,255,255,0.08); background: transparent; color: white; 
+            padding: 12px 0; border-radius: 10px; font-size: 10px; font-weight: 800; cursor: pointer;
         }
         .size-btn.active { background: white; color: black; border-color: white; }
 
         .buy-btn {
-            width: 100%; padding: 20px;
-            background: white; color: black; border: none; border-radius: 14px;
-            font-weight: 900; text-transform: uppercase; cursor: pointer; font-size: 14px;
+            width: 100%; padding: 20px; background: white; color: black; border: none; 
+            border-radius: 14px; font-weight: 900; text-transform: uppercase; cursor: pointer;
         }
 
         .archive-tag { font-size: 8px; letter-spacing: 5px; opacity: 0.25; text-align: center; margin-top: 30px; }
@@ -93,20 +79,15 @@
 </head>
 <body>
 
+    <div id="preloader"></div>
+
     <header><div class="logo">Cota Lab</div></header>
     <div id="parallax-bg"></div>
 
     <main class="main-stage">
         <div class="product-container">
             <div class="viewer-wrap">
-                <model-viewer id="shirt" 
-                    src="Tshirt.glb" 
-                    camera-orbit="0deg 75deg 105%" 
-                    auto-rotate 
-                    rotation-per-second="15deg" 
-                    interaction-prompt="none" 
-                    touch-action="none">
-                </model-viewer>
+                <model-viewer id="shirt" src="Tshirt.glb" camera-orbit="0deg 75deg 105%" auto-rotate interaction-prompt="none" touch-action="none"></model-viewer>
                 <div class="slider-wrap">
                     <input type="range" id="rot" min="-180" max="180" value="0">
                 </div>
@@ -118,16 +99,14 @@
                     <span class="price">$54.00</span>
                 </div>
                 <p class="desc">Heavyweight digital-to-physical garment. Capturing pixel-mapped cloud architecture from the CLT metropolitan grid.</p>
-                
                 <div class="size-row">
                     <button class="size-btn">S</button>
                     <button class="size-btn active">M</button>
                     <button class="size-btn">L</button>
                     <button class="size-btn">XL</button>
                 </div>
-
                 <button class="buy-btn">Acquire Archive</button>
-                <div class="archive-tag">V3.6 // ULTRA-FAST STABLE</div>
+                <div class="archive-tag">V3.7 // ZERO-FLICKER STABLE</div>
             </div>
         </div>
     </main>
@@ -136,13 +115,22 @@
         const bg = document.getElementById('parallax-bg');
         const shirt = document.getElementById('shirt');
         const slider = document.getElementById('rot');
+        const preloader = document.getElementById('preloader');
         
         const frames = [
             'street-view.jpg', 'street-view 1.jpg', 'street-view 2.jpg', 
             'street-view 3.jpg', 'street-view 4.jpg', 'street-view 5.jpg'
         ];
 
-        // 1. ULTRA-FAST SCRUB (200px Trigger Window)
+        // 1. ADVANCED PRELOADER ENGINE
+        // This injects images into a hidden div to force the browser to cache them immediately.
+        frames.forEach((src) => {
+            const img = new Image();
+            img.src = src;
+            preloader.appendChild(img); 
+        });
+
+        // 2. ULTRA-FAST SCRUB (200px Trigger Window)
         const scrollLimit = 200; 
         window.addEventListener('scroll', () => {
             const scrollY = window.pageYOffset || document.documentElement.scrollTop;
@@ -156,7 +144,7 @@
         });
         bg.style.backgroundImage = `url('${frames[0]}')`;
 
-        // 2. TEXTURE INJECTION
+        // 3. TEXTURE INJECTION
         shirt.addEventListener('load', () => {
             const material = shirt.model.materials[0];
             const applyInitialTex = async () => {
@@ -168,13 +156,13 @@
             applyInitialTex();
         });
 
-        // 3. SLIDER CONTROL
+        // 4. SLIDER CONTROL
         slider.addEventListener('input', (e) => {
             shirt.removeAttribute('auto-rotate');
             shirt.cameraOrbit = `${e.target.value}deg 75deg 105%`;
         });
 
-        // 4. UI SELECTION
+        // 5. UI SELECTION
         document.querySelectorAll('.size-btn').forEach(btn => {
             btn.onclick = () => {
                 document.querySelector('.size-btn.active').classList.remove('active');

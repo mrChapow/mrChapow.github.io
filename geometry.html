@@ -3,150 +3,172 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>COTA LAB // ARCHIVE</title>
+    <title>COTA LAB // ARCHIVE 001</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
-        :root { --bg: #000; --glass: rgba(255, 255, 255, 0.03); --text-primary: #fff; }
-        body, html { margin: 0; padding: 0; background: var(--bg); font-family: "Inter", sans-serif; color: var(--text-primary); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+        :root { 
+            --bg: #000; 
+            --glass: rgba(20, 20, 20, 0.4); 
+            --border: rgba(255, 255, 255, 0.1);
+            --text-main: #fff;
+            --text-muted: rgba(255, 255, 255, 0.5);
+        }
+        
+        body, html { margin: 0; padding: 0; background: var(--bg); font-family: "Inter", sans-serif; color: var(--text-main); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+        * { box-sizing: border-box; }
 
-        /* PRELOADER HACK */
         #preloader { position: absolute; width: 0; height: 0; overflow: hidden; opacity: 0; pointer-events: none; }
 
-        header { position: fixed; top: 0; width: 100%; display: flex; justify-content: center; padding: 25px 0; z-index: 100; pointer-events: none; }
-        .logo { font-weight: 900; font-size: 1.1rem; letter-spacing: 0.9em; text-transform: uppercase; margin-right: -0.9em; }
+        /* --- 1. SITE NAVIGATION FOUNDATION --- */
+        .site-nav {
+            position: fixed; top: 0; left: 0; width: 100%; height: 80px;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 40px; z-index: 1000;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+            pointer-events: auto;
+        }
+        .nav-link { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; transition: opacity 0.2s; }
+        .nav-link:hover { opacity: 0.6; }
+        .logo { font-weight: 900; font-size: 1.2rem; letter-spacing: 0.8em; text-transform: uppercase; margin-right: -0.8em; pointer-events: none; }
 
-        /* SEGMENT 1: STREET VIEW (150vh) */
-        .section-clt {
+        /* --- 2. ARCHIVE STAGE (The 150vh Scroll Track) --- */
+        .archive-stage {
             position: relative;
-            height: 150vh; 
+            height: 150vh; /* Determines how long the background scrub lasts */
             width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        }
+
+        /* --- 3. STICKY INTERFACE (Locks UI in place while scrubbing) --- */
+        .interface-lock {
+            position: sticky; top: 0;
+            height: 100vh; width: 100%;
+            display: flex; flex-direction: column;
+            overflow: hidden;
         }
 
         #parallax-bg {
             position: absolute; inset: 0; z-index: 1;
             background-size: cover; background-position: center;
-            background-repeat: no-repeat;
-            will-change: background-image;
+            background-repeat: no-repeat; will-change: background-image;
         }
         #parallax-bg::after {
             content: ''; position: absolute; inset: 0;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent 30%, transparent 70%, rgba(0,0,0,1));
+            background: linear-gradient(to right, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.8) 100%);
         }
 
-        /* STICKY MODEL AREA */
-        .sticky-wrap {
-            position: sticky; top: 0; height: 100vh; width: 100%;
+        /* --- 4. PRODUCT LAYOUT (Tying Model & Info Together) --- */
+        .product-grid {
+            position: relative; z-index: 10;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            z-index: 10;
+            width: 100%; height: 100%;
+            padding: 80px 20px 20px 20px; /* Accounts for nav bar */
         }
-        model-viewer { width: 100vw; height: 75vh; outline: none; --progress-bar-color: transparent; }
 
-        .slider-wrap { width: 240px; margin-top: -50px; text-align: center; z-index: 50; position: relative; }
+        /* 3D Model Column */
+        .model-col {
+            width: 100%; height: 50vh;
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+        }
+        model-viewer { width: 100%; height: 100%; outline: none; --progress-bar-color: transparent; }
+
+        .slider-wrap { width: 220px; text-align: center; z-index: 50; margin-bottom: 20px; }
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; cursor: ew-resize; height: 30px; }
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 1px; background: rgba(255,255,255,0.3); }
-        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 12px; width: 12px; border-radius: 50%; background: #fff; margin-top: -5.5px; border: none; box-shadow: 0 0 10px rgba(255,255,255,0.2); }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 12px; width: 12px; border-radius: 50%; background: #fff; margin-top: -5.5px; border: none; }
 
-        /* LIQUID GLASS TILE (CONTENT STACK) */
-        .content-stack {
-            position: relative; z-index: 20;
-            width: 100%; display: flex; flex-direction: column; align-items: center;
-            background: var(--bg);
-            padding-bottom: 10vh; /* Bottom padding for scroll room */
+        /* Info Column (The Terminal) */
+        .info-col {
+            width: 100%; max-width: 440px;
+            padding: 30px;
+            border-radius: 16px; background: var(--glass);
+            backdrop-filter: blur(40px) saturate(150%); -webkit-backdrop-filter: blur(40px) saturate(150%);
+            border: 1px solid var(--border);
         }
 
-        .liquid-glass {
-            width: 92%; /* Slightly wider on mobile/longer */
-            max-width: 440px; 
-            margin: -2vh 0 80px 0; /* Tightened top margin significantly */
-            padding: 35px;
-            border-radius: 28px; background: var(--glass);
-            backdrop-filter: blur(50px) saturate(160%); -webkit-backdrop-filter: blur(50px) saturate(160%);
-            border: 1px solid rgba(255,255,255,0.08); box-sizing: border-box;
-            transition: all 0.3s ease-out; /* Smooth adaptation */
-        }
-
-        /* RESPONSIVE SCALING FOR PC */
+        /* --- 5. RESPONSIVE DESKTOP (Split-Pane layout) --- */
         @media (min-width: 1024px) {
-            .liquid-glass {
-                max-width: 550px; /* Wider tile on PC */
-                margin-top: -10vh; /* Pulls tile even closer to the 3D model */
-                padding: 50px; /* Spans content out vertically */
-            }
-            .glass-header h1 { font-size: 36px; } /* Way larger text on PC */
-            .price { font-size: 16px; }
-            .desc { font-size: 15px; line-height: 1.8; } /* Longer looking description */
-            .size-btn { padding: 15px 0; font-size: 12px; }
-            .buy-btn { padding: 25px; font-size: 16px; }
+            .product-grid { flex-direction: row; justify-content: space-between; padding: 100px 8vw 40px 8vw; }
+            .model-col { width: 60%; height: 80vh; justify-content: center; }
+            .slider-wrap { margin-bottom: 0; margin-top: -40px; }
+            .info-col { width: 35%; max-width: 480px; padding: 45px; margin-left: 40px; }
         }
 
-        /* TEXT STYLES */
-        .glass-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 15px; }
-        h1 { font-size: 26px; font-weight: 900; margin: 0; letter-spacing: -0.02em; text-transform: uppercase; }
-        .price { font-family: monospace; opacity: 0.5; font-size: 14px; }
-        .desc { font-size: 13px; opacity: 0.4; line-height: 1.6; margin-bottom: 35px; }
+        /* --- 6. TYPOGRAPHY & UI --- */
+        .header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
+        h1 { font-size: 24px; font-weight: 900; margin: 0; letter-spacing: -0.02em; text-transform: uppercase; line-height: 1.1; }
+        .price { font-family: monospace; font-size: 16px; letter-spacing: 0.05em; }
         
-        /* SIZE SELECTOR */
-        .size-row { display: flex; gap: 8px; margin-bottom: 25px; }
-        .size-btn {
-            flex: 1; border: 1px solid rgba(255,255,255,0.08); background: transparent; color: white; 
-            padding: 12px 0; border-radius: 12px; font-size: 10px; font-weight: 800; cursor: pointer; transition: 0.2s;
-        }
+        .desc { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 30px; }
+        
+        .size-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 10px; display: block; }
+        .size-row { display: flex; gap: 8px; margin-bottom: 30px; }
+        .size-btn { flex: 1; border: 1px solid var(--border); background: transparent; color: white; padding: 14px 0; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .size-btn:hover { border-color: rgba(255,255,255,0.4); }
         .size-btn.active { background: white; color: black; border-color: white; }
 
-        .buy-btn { width: 100%; padding: 20px; background: white; color: black; border: none; border-radius: 16px; font-weight: 900; text-transform: uppercase; cursor: pointer; font-size: 14px; }
+        .buy-btn { width: 100%; padding: 18px; background: white; color: black; border: none; border-radius: 8px; font-weight: 900; text-transform: uppercase; cursor: pointer; font-size: 13px; letter-spacing: 0.05em; transition: transform 0.1s; }
+        .buy-btn:active { transform: scale(0.98); }
         
-        .archive-tag { font-size: 8px; letter-spacing: 5px; opacity: 0.25; text-align: center; margin-top: 35px; text-transform: uppercase; }
+        .meta-tag { font-family: monospace; font-size: 10px; color: var(--text-muted); text-align: center; margin-top: 25px; text-transform: uppercase; }
 
-        /* NEXT SEGMENT LAYER PLACEHOLDER */
-        .next-segment {
-            height: 100vh; width: 100%;
-            display: flex; align-items: center; justify-content: center;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            background: #050505; /* Subtle contrast */
-        }
+        /* NEXT SEGMENT (To prove the scroll still works) */
+        .next-segment { height: 100vh; background: #050505; display: flex; align-items: center; justify-content: center; border-top: 1px solid var(--border); }
     </style>
 </head>
 <body>
 
     <div id="preloader"></div>
-    <header><div class="logo">Cota Lab</div></header>
 
-    <section class="section-clt">
-        <div id="parallax-bg"></div>
-        <div class="sticky-wrap">
-            <model-viewer id="shirt" src="Tshirt.glb" camera-orbit="0deg 75deg 105%" auto-rotate interaction-prompt="none" touch-action="none"></model-viewer>
-            <div class="slider-wrap">
-                <input type="range" id="rot" min="-180" max="180" value="0">
+    <nav class="site-nav">
+        <div class="nav-link">Index</div>
+        <div class="logo">Cota Lab</div>
+        <div class="nav-link">Cart [0]</div>
+    </nav>
+
+    <section class="archive-stage">
+        
+        <div class="interface-lock">
+            <div id="parallax-bg"></div>
+            
+            <div class="product-grid">
+                
+                <div class="model-col">
+                    <model-viewer id="shirt" src="Tshirt.glb" camera-orbit="0deg 75deg 105%" auto-rotate interaction-prompt="none" touch-action="none"></model-viewer>
+                    <div class="slider-wrap">
+                        <input type="range" id="rot" min="-180" max="180" value="0">
+                    </div>
+                </div>
+
+                <aside class="info-col">
+                    <div class="header-row">
+                        <h1>CLT //<br>Archive 001</h1>
+                        <span class="price">$54.00</span>
+                    </div>
+                    
+                    <p class="desc">Engineered to close the quality gap. Heavyweight physical garment loaded with pixel-mapped cloud architecture pulled directly from the Charlotte metropolitan grid. Take it or leave it.</p>
+                    
+                    <div>
+                        <span class="size-label">Select Size</span>
+                        <div class="size-row">
+                            <button class="size-btn">S</button>
+                            <button class="size-btn active">M</button>
+                            <button class="size-btn">L</button>
+                            <button class="size-btn">XL</button>
+                        </div>
+                    </div>
+
+                    <button class="buy-btn">Acquire Archive</button>
+                    <div class="meta-tag">SYS.V4.0 // DOMESTIC MFG</div>
+                </aside>
+
             </div>
         </div>
+
     </section>
 
-    <div class="content-stack">
-        <div class="liquid-glass">
-            <div class="glass-header">
-                <h1>CLT // ARCHIVE</h1>
-                <span class="price">$54.00</span>
-            </div>
-            <p class="desc">Heavyweight digital-to-physical garment. Capturing pixel-mapped cloud architecture from the CLT grid. Specifications: 100% Cotton, 320GSM, React-loaded texture mapping (v3.9 Stable). This archive entry is locked and authenticated. Vertical stack validated.</p>
-            
-            <div class="size-row">
-                <button class="size-btn">S</button>
-                <button class="size-btn active">M</button>
-                <button class="size-btn">L</button>
-                <button class="size-btn">XL</button>
-            </div>
-
-            <button class="buy-btn">Acquire Archive</button>
-            <div class="archive-tag">ARCHIVE BUILD V3.9 // STABLE</div>
-        </div>
-
-        <div class="next-segment">
-            <h2 style="letter-spacing: 12px; opacity: 0.15; text-transform: uppercase; font-size: 1rem;">NEXT ARCHIVE LAYER</h2>
-        </div>
-    </div>
+    <section class="next-segment">
+        <h2 style="letter-spacing: 0.5em; opacity: 0.3; font-size: 12px; text-transform: uppercase;">Next Phase Render</h2>
+    </section>
 
     <script>
         const bg = document.getElementById('parallax-bg');
@@ -156,23 +178,25 @@
         
         const frames = ['street-view.jpg', 'street-view 1.jpg', 'street-view 2.jpg', 'street-view 3.jpg', 'street-view 4.jpg', 'street-view 5.jpg'];
 
-        // PRELOAD ENGINE
+        // PRELOAD
         frames.forEach(src => {
             const img = new Image(); img.src = src; preloader.appendChild(img);
         });
 
-        // 150vh SCRUB LOGIC (Responsive Distance)
-        let scrubLimit;
-        const setScrubDistance = () => {
-            // Finished faster on desktop to feel tighter
-            scrubLimit = window.innerWidth >= 1024 ? 300 : window.innerHeight * 0.5;
-        };
-        setScrubDistance();
-        window.addEventListener('resize', setScrubDistance);
-
+        // BACKGROUND SCRUB LOGIC (Tied to the 150vh stage)
+        const stage = document.querySelector('.archive-stage');
+        
         window.addEventListener('scroll', () => {
-            const scrollY = window.pageYOffset;
-            const progress = Math.min(scrollY / scrubLimit, 1);
+            // Calculate how far we've scrolled inside the .archive-stage
+            const stageRect = stage.getBoundingClientRect();
+            // stageRect.top is 0 when the top of the stage hits the top of the viewport
+            // It goes negative as we scroll down.
+            
+            // We want the scrub to finish a bit before the end of the section
+            const scrollDistance = window.innerHeight * 0.75; 
+            const scrolledPixels = Math.max(0, -stageRect.top);
+            
+            const progress = Math.min(scrolledPixels / scrollDistance, 1);
             const frameIdx = Math.floor(progress * (frames.length - 1));
             
             const targetBg = `url('${frames[frameIdx]}')`;
@@ -180,9 +204,11 @@
                 bg.style.backgroundImage = targetBg;
             }
         });
+        
+        // Init first frame
         bg.style.backgroundImage = `url('${frames[0]}')`;
 
-        // TEXTURE
+        // TEXTURE INJECTION
         shirt.addEventListener('load', () => {
             const material = shirt.model.materials[0];
             const applyTex = async () => {
@@ -194,7 +220,7 @@
             applyTex();
         });
 
-        // SLIDER
+        // SLIDER CONTROL
         slider.addEventListener('input', (e) => {
             shirt.removeAttribute('auto-rotate');
             shirt.cameraOrbit = `${e.target.value}deg 75deg 105%`;

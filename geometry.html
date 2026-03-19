@@ -19,31 +19,25 @@
 
         #preloader { position: absolute; width: 0; height: 0; overflow: hidden; opacity: 0; pointer-events: none; }
 
-        /* --- 1. GLOBAL NAV --- */
         .site-nav {
             position: fixed; top: 0; left: 0; width: 100%; height: 70px;
             display: flex; justify-content: space-between; align-items: center;
             padding: 0 25px; z-index: 1000;
             background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
-            pointer-events: auto;
         }
-        .nav-link { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: opacity 0.2s; }
-        .nav-link:hover { opacity: 0.6; }
-        .logo { font-weight: 900; font-size: 1.1rem; letter-spacing: 0.6em; text-transform: uppercase; margin-right: -0.6em; pointer-events: none; }
+        .logo { font-weight: 900; font-size: 1.1rem; letter-spacing: 0.6em; text-transform: uppercase; margin-right: -0.6em; }
 
-        /* --- 2. ARCHIVE STAGE (150vh) --- */
+        /* THE TRACK: 150vh ensures there is enough room to scroll */
         .archive-stage {
             position: relative;
             height: 150vh; 
             width: 100%;
         }
 
-        /* --- 3. STICKY INTERFACE --- */
         .interface-lock {
             position: sticky; top: 0;
             height: 100vh; width: 100%;
             display: flex; flex-direction: column;
-            /* overflow: hidden REMOVED to fix the broken bottom cutoff on mobile */
         }
 
         #parallax-bg {
@@ -56,65 +50,52 @@
             background: linear-gradient(to right, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.85) 100%);
         }
 
-        /* --- 4. PRODUCT LAYOUT --- */
         .product-grid {
             position: relative; z-index: 10;
             display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
             width: 100%; height: 100vh;
-            padding: 85px 15px 2vh 15px; /* Clears the header cleanly */
+            padding: 85px 15px 2vh 15px;
         }
 
-        /* 3D Model Column */
         .model-col {
-            width: 100%; height: 42vh; /* Reduced height to leave room for the terminal */
+            width: 100%; height: 40vh;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
-        model-viewer { width: 100%; height: 100%; outline: none; --progress-bar-color: transparent; }
+        model-viewer { width: 100%; height: 100%; outline: none; }
 
         .slider-wrap { width: 220px; text-align: center; z-index: 50; margin-bottom: 10px; }
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; cursor: ew-resize; height: 30px; }
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 1px; background: rgba(255,255,255,0.3); }
         input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 12px; width: 12px; border-radius: 50%; background: #fff; margin-top: -5.5px; border: none; }
 
-        /* Info Column (The Terminal) */
         .info-col {
             width: 100%; max-width: 440px;
-            padding: 25px; /* Tightened for mobile */
+            padding: 25px;
             border-radius: 16px; background: var(--glass);
             backdrop-filter: blur(40px) saturate(150%); -webkit-backdrop-filter: blur(40px) saturate(150%);
             border: 1px solid var(--border);
         }
 
-        /* --- 5. RESPONSIVE DESKTOP --- */
         @media (min-width: 1024px) {
-            .site-nav { padding: 0 40px; height: 80px; }
-            .logo { font-size: 1.2rem; letter-spacing: 0.8em; margin-right: -0.8em; }
             .product-grid { flex-direction: row; justify-content: space-between; padding: 100px 8vw 40px 8vw; align-items: center; }
-            .model-col { width: 60%; height: 80vh; justify-content: center; }
-            .slider-wrap { margin-bottom: 0; margin-top: -40px; }
+            .model-col { width: 60%; height: 80vh; }
             .info-col { width: 35%; max-width: 480px; padding: 45px; margin-left: 40px; }
         }
 
-        /* --- 6. TYPOGRAPHY & UI --- */
+        /* TYPOGRAPHY */
         .header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
-        h1 { font-size: 22px; font-weight: 900; margin: 0; letter-spacing: -0.02em; text-transform: uppercase; line-height: 1.1; }
-        .price { font-family: monospace; font-size: 15px; letter-spacing: 0.05em; opacity: 0.8; }
-        
+        h1 { font-size: 22px; font-weight: 900; margin: 0; letter-spacing: -0.02em; text-transform: uppercase; }
+        .price { font-family: monospace; font-size: 15px; opacity: 0.8; }
         .desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; margin-bottom: 25px; }
         
-        .size-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 10px; display: block; }
         .size-row { display: flex; gap: 8px; margin-bottom: 25px; }
-        .size-btn { flex: 1; border: 1px solid var(--border); background: transparent; color: white; padding: 12px 0; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; transition: 0.2s; }
-        .size-btn:hover { border-color: rgba(255,255,255,0.4); }
+        .size-btn { flex: 1; border: 1px solid var(--border); background: transparent; color: white; padding: 12px 0; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; }
         .size-btn.active { background: white; color: black; border-color: white; }
 
-        .buy-btn { width: 100%; padding: 18px; background: white; color: black; border: none; border-radius: 8px; font-weight: 900; text-transform: uppercase; cursor: pointer; font-size: 13px; letter-spacing: 0.05em; transition: transform 0.1s; }
-        .buy-btn:active { transform: scale(0.98); }
-        
-        .meta-tag { font-family: monospace; font-size: 9px; color: var(--text-muted); text-align: center; margin-top: 20px; text-transform: uppercase; letter-spacing: 0.1em; }
+        .buy-btn { width: 100%; padding: 18px; background: white; color: black; border: none; border-radius: 8px; font-weight: 900; text-transform: uppercase; cursor: pointer; }
+        .meta-tag { font-family: monospace; font-size: 9px; color: var(--text-muted); text-align: center; margin-top: 20px; text-transform: uppercase; }
 
-        /* NEXT SEGMENT */
-        .next-segment { height: 100vh; background: #050505; display: flex; align-items: center; justify-content: center; border-top: 1px solid var(--border); }
+        .next-segment { height: 100vh; background: #050505; border-top: 1px solid var(--border); }
     </style>
 </head>
 <body>
@@ -122,91 +103,74 @@
     <div id="preloader"></div>
 
     <nav class="site-nav">
-        <div class="nav-link">Index</div>
-        <div class="logo">Cota Lab</div>
-        <div class="nav-link">Cart [0]</div>
+        <div class="logo" style="margin-left: auto; margin-right: auto;">Cota Lab</div>
     </nav>
 
-    <section class="archive-stage">
-        
+    <section class="archive-stage" id="main-track">
         <div class="interface-lock">
             <div id="parallax-bg"></div>
-            
             <div class="product-grid">
-                
                 <div class="model-col">
                     <model-viewer id="shirt" src="Tshirt.glb" camera-orbit="0deg 75deg 105%" auto-rotate interaction-prompt="none" touch-action="none"></model-viewer>
                     <div class="slider-wrap">
                         <input type="range" id="rot" min="-180" max="180" value="0">
                     </div>
                 </div>
-
                 <aside class="info-col">
                     <div class="header-row">
                         <h1>CLT //<br>Archive 001</h1>
                         <span class="price">$54.00</span>
                     </div>
-                    
-                    <p class="desc">Engineered to close the quality gap. Heavyweight physical garment loaded with pixel-mapped cloud architecture pulled directly from the Charlotte metropolitan grid. Take it or leave it.</p>
-                    
-                    <div>
-                        <span class="size-label">Select Size</span>
-                        <div class="size-row">
-                            <button class="size-btn">S</button>
-                            <button class="size-btn active">M</button>
-                            <button class="size-btn">L</button>
-                            <button class="size-btn">XL</button>
-                        </div>
+                    <p class="desc">Engineered to close the quality gap. Heavyweight physical garment loaded with pixel-mapped cloud architecture. Take it or leave it.</p>
+                    <div class="size-row">
+                        <button class="size-btn">S</button>
+                        <button class="size-btn active">M</button>
+                        <button class="size-btn">L</button>
+                        <button class="size-btn">XL</button>
                     </div>
-
                     <button class="buy-btn">Acquire Archive</button>
-                    <div class="meta-tag">SYS.V4.1 // STABLE COMPILE</div>
+                    <div class="meta-tag">SYS.V4.2 // CONTINUOUS SCRUB</div>
                 </aside>
-
             </div>
         </div>
-
     </section>
 
-    <section class="next-segment">
-        <h2 style="letter-spacing: 0.5em; opacity: 0.3; font-size: 12px; text-transform: uppercase;">Next Phase Render</h2>
-    </section>
+    <section class="next-segment"></section>
 
     <script>
         const bg = document.getElementById('parallax-bg');
         const shirt = document.getElementById('shirt');
         const slider = document.getElementById('rot');
-        const preloader = document.getElementById('preloader');
+        const track = document.getElementById('main-track');
         
         const frames = ['street-view.jpg', 'street-view 1.jpg', 'street-view 2.jpg', 'street-view 3.jpg', 'street-view 4.jpg', 'street-view 5.jpg'];
 
         // PRELOAD
-        frames.forEach(src => {
-            const img = new Image(); img.src = src; preloader.appendChild(img);
-        });
+        frames.forEach(src => { const img = new Image(); img.src = src; document.getElementById('preloader').appendChild(img); });
 
-        // ZERO-LATENCY BACKGROUND SCRUB
-        // We use raw window.scrollY so it triggers the exact millisecond you scroll.
-        window.addEventListener('scroll', () => {
+        // THE CONTINUOUS ENGINE
+        function updateBackground() {
             const scrollY = window.scrollY;
+            // The scroll distance is the height of the track minus the viewport height
+            const maxScroll = track.offsetHeight - window.innerHeight;
             
-            // Defines how fast the animation finishes. 
-            // Setting this to innerHeight * 0.75 means it finishes well before the next section appears.
-            const scrubLimit = window.innerHeight * 0.75; 
+            // Normalize progress 0 to 1 across the ENTIRE scroll area
+            const progress = Math.min(Math.max(scrollY / maxScroll, 0), 1);
             
-            const progress = Math.min(scrollY / scrubLimit, 1);
             const frameIdx = Math.floor(progress * (frames.length - 1));
             
             const targetBg = `url('${frames[frameIdx]}')`;
             if (bg.style.backgroundImage !== targetBg) {
                 bg.style.backgroundImage = targetBg;
             }
-        });
+            requestAnimationFrame(updateBackground);
+        }
         
-        // Init first frame
+        // Start the loop
         bg.style.backgroundImage = `url('${frames[0]}')`;
+        requestAnimationFrame(updateBackground);
 
-        // TEXTURE INJECTION
+        // TEXTURE
         shirt.addEventListener('load', () => {
             const material = shirt.model.materials[0];
             const applyTex = async () => {
@@ -218,19 +182,9 @@
             applyTex();
         });
 
-        // SLIDER CONTROL
         slider.addEventListener('input', (e) => {
             shirt.removeAttribute('auto-rotate');
             shirt.cameraOrbit = `${e.target.value}deg 75deg 105%`;
-        });
-
-        // UI SELECTION
-        document.querySelectorAll('.size-btn').forEach(btn => {
-            btn.onclick = () => {
-                const active = document.querySelector('.size-btn.active');
-                if(active) active.classList.remove('active');
-                btn.classList.add('active');
-            };
         });
     </script>
 </body>

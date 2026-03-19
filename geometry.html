@@ -6,147 +6,152 @@
     <title>COTA LAB // ARCHIVE 001</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
-        :root { --bg: #000; --text: #fff; --border: rgba(255, 255, 255, 0.1); }
+        :root { --bg: #000; --text: #fff; --dim: rgba(255,255,255,0.4); }
         
         body, html { margin: 0; padding: 0; background: var(--bg); font-family: "Inter", sans-serif; color: var(--text); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
         * { box-sizing: border-box; }
 
         /* --- NAV --- */
         .site-nav {
-            position: fixed; top: 0; width: 100%; height: 70px;
+            position: fixed; top: 0; width: 100%; height: 80px;
             display: flex; justify-content: space-between; align-items: center;
             padding: 0 30px; z-index: 1000;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
         }
-        .logo { font-weight: 900; font-size: 1.1rem; letter-spacing: 0.7em; text-transform: uppercase; margin-right: -0.7em; }
-        .nav-link { font-size: 10px; font-weight: 700; text-transform: uppercase; opacity: 0.5; letter-spacing: 0.1em; }
+        .logo { font-weight: 900; font-size: 1.1rem; letter-spacing: 0.8em; text-transform: uppercase; margin-right: -0.8em; }
+        .nav-link { font-size: 10px; font-weight: 800; text-transform: uppercase; opacity: 0.4; letter-spacing: 0.2em; }
 
-        /* --- BACKGROUND ENGINE --- */
-        .archive-stage { position: relative; height: 220vh; width: 100%; }
+        /* --- THE MASTER TRACK (300vh) --- */
+        .scroll-track { position: relative; height: 300vh; width: 100%; }
         
-        .interface-lock {
+        /* The Sticky Pane: Bolted to the screen */
+        .sticky-pane {
             position: sticky; top: 0;
             height: 100vh; width: 100%;
-            display: flex; flex-direction: column; overflow: hidden;
+            overflow: hidden;
+            display: flex; flex-direction: column;
         }
 
-        #parallax-bg {
+        #bg-sequence {
             position: absolute; inset: 0; z-index: 1;
             background-size: cover; background-position: center;
             background-repeat: no-repeat;
             background-image: url('street-view.jpg');
         }
-        #parallax-bg::after {
+        #bg-sequence::after {
             content: ''; position: absolute; inset: 0;
-            background: linear-gradient(to right, rgba(0,0,0,0.4), rgba(0,0,0,0.85));
+            background: linear-gradient(to right, rgba(0,0,0,0.4), rgba(0,0,0,0.8));
         }
 
-        /* --- THE CONTENT GRID --- */
-        #product-content {
+        /* --- STATIC UI OVERLAY --- */
+        .static-ui {
             position: relative; z-index: 10;
             display: flex; flex-direction: column; align-items: center;
-            width: 100%; height: 100%;
-            /* This creates the "Half-Inch" start. Change 40vh to 20vh if it's too deep. */
-            padding-top: 40vh; 
-            will-change: transform;
+            justify-content: center;
+            height: 100vh; width: 100%;
+            padding: 20px;
         }
 
-        .model-col { 
+        .model-wrap { 
             width: 100%; height: 40vh; 
-            display: flex; flex-direction: column; align-items: center;
+            display: flex; flex-direction: column; align-items: center; 
+            margin-top: 60px; /* Margin under Logo */
         }
         model-viewer { width: 100%; height: 100%; outline: none; }
 
-        /* Restored Slider */
-        .slider-wrap { width: 180px; margin-top: 10px; }
+        .slider-wrap { width: 160px; margin-top: 15px; }
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
-        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 1px; background: rgba(255,255,255,0.3); }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 1px; background: rgba(255,255,255,0.2); }
         input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 10px; width: 10px; border-radius: 50%; background: #fff; margin-top: -4.5px; }
 
-        /* Typography */
-        .info-col {
+        .info-wrap {
             width: 100%; max-width: 400px;
-            padding: 40px 25px; text-align: center;
+            padding: 40px 20px; text-align: center;
         }
-        h1 { font-size: 24px; font-weight: 900; text-transform: uppercase; margin: 0; letter-spacing: -0.02em; }
-        .price { font-family: monospace; font-size: 15px; opacity: 0.5; display: block; margin: 8px 0 20px; }
-        .desc { font-size: 12px; opacity: 0.4; line-height: 1.7; margin-bottom: 30px; }
-        
-        .buy-btn { 
-            width: 100%; padding: 18px; background: white; color: black; 
-            border: none; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em;
-        }
+        h1 { font-size: 26px; font-weight: 900; text-transform: uppercase; margin: 0; }
+        .price { font-family: monospace; font-size: 15px; color: var(--dim); display: block; margin: 10px 0 25px; }
+        .desc { font-size: 12px; color: var(--dim); line-height: 1.8; margin-bottom: 30px; }
+        .buy-btn { width: 100%; padding: 18px; border: 1px solid #fff; background: transparent; color: #fff; font-weight: 900; text-transform: uppercase; cursor: pointer; letter-spacing: 0.1em; }
 
-        /* DESKTOP SPLIT RE-STABILIZED */
+        /* DESKTOP STABILITY */
         @media (min-width: 1024px) {
-            #product-content { flex-direction: row; justify-content: space-around; padding: 15vh 8vw 0; }
-            .model-col { width: 55%; height: 75vh; }
-            .info-col { width: 35%; text-align: left; padding: 0; }
+            .static-ui { flex-direction: row; justify-content: space-around; padding: 0 10vw; }
+            .model-wrap { width: 50%; height: 80vh; margin-top: 0; }
+            .info-wrap { width: 35%; text-align: left; padding: 0; }
         }
 
-        .scene-transition { height: 100vh; background: #000; border-top: 1px solid var(--border); }
+        /* SCENE 2 STARTS HERE */
+        .next-scene { height: 100vh; background: #000; border-top: 1px solid rgba(255,255,255,0.1); }
     </style>
 </head>
 <body>
 
     <nav class="site-nav">
-        <div class="nav-link">Archive</div>
+        <div class="nav-link">Coll. 01</div>
         <div class="logo">Cota Lab</div>
-        <div class="nav-link">Cart [0]</div>
+        <div class="nav-link">Cart (0)</div>
     </nav>
 
-    <section class="archive-stage" id="track">
-        <div class="interface-lock">
-            <div id="parallax-bg"></div>
+    <div class="scroll-track" id="master-track">
+        <div class="sticky-pane">
+            <div id="bg-sequence"></div>
             
-            <div id="product-content">
-                <div class="model-col">
+            <div class="static-ui">
+                <div class="model-wrap">
                     <model-viewer id="shirt" src="Tshirt.glb" camera-orbit="0deg 75deg 105%" auto-rotate interaction-prompt="none" touch-action="none"></model-viewer>
                     <div class="slider-wrap">
                         <input type="range" id="rot" min="-180" max="180" value="0">
                     </div>
                 </div>
 
-                <aside class="info-col">
-                    <h1>CLT // 001</h1>
-                    <span class="price">$54.00</span>
-                    <p class="desc">Engineered for the domestic grid. Heavyweight 320GSM cotton. The gap is closed.</p>
+                <div class="info-wrap">
+                    <h1>CLT // ARCHIVE 001</h1>
+                    <span class="price">$54.00 USD</span>
+                    <p class="desc">Domestic craft. Heavyweight 320GSM cotton. Engineered for the Charlotte metropolitan grid. Authenticated Archive.</p>
                     <button class="buy-btn">Acquire Archive</button>
-                    <div style="font-family: monospace; font-size: 8px; margin-top: 30px; opacity: 0.2; letter-spacing: 0.3em;">RESTORED_V4.9</div>
-                </aside>
+                    <div style="font-family: monospace; font-size: 8px; margin-top: 40px; color: var(--dim); letter-spacing: 0.4em;">V5.1 // STATIC_LOCK_ACTIVE</div>
+                </div>
             </div>
         </div>
-    </section>
+    </div>
 
-    <div class="scene-transition"></div>
+    <section class="next-scene"></section>
 
     <script>
-        const bg = document.getElementById('parallax-bg');
-        const content = document.getElementById('product-content');
-        const track = document.getElementById('track');
+        const bg = document.getElementById('bg-sequence');
+        const track = document.getElementById('master-track');
         const shirt = document.getElementById('shirt');
-        const slider = document.getElementById('rot');
+        const rot = document.getElementById('rot');
 
-        const frames = ['street-view.jpg', 'street-view 1.jpg', 'street-view 2.jpg', 'street-view 3.jpg', 'street-view 4.jpg', 'street-view 5.jpg'];
+        const frames = [
+            'street-view.jpg', 
+            'street-view 1.jpg', 
+            'street-view 2.jpg', 
+            'street-view 3.jpg', 
+            'street-view 4.jpg', 
+            'street-view 5.jpg'
+        ];
+
+        // PRELOAD
+        frames.forEach(src => { const img = new Image(); img.src = src; });
 
         window.addEventListener('scroll', () => {
             const scrollY = window.scrollY;
-            const maxScroll = track.offsetHeight - window.innerHeight;
-            const progress = Math.min(Math.max(scrollY / maxScroll, 0), 1);
+            const trackHeight = track.offsetHeight;
+            const viewHeight = window.innerHeight;
+            
+            // Progress through the total 300vh track (0 to 1)
+            const totalProgress = Math.min(Math.max(scrollY / (trackHeight - viewHeight), 0), 1);
 
-            // 1. BACKGROUND (Finishes at 75% of track)
-            const frameProgress = Math.min(progress / 0.75, 1);
-            const frameIdx = Math.floor(frameProgress * (frames.length - 1));
+            // Play the sequence over the first 66% of the scroll
+            // This ensures images finish while the UI is still sticky.
+            const sequenceProgress = Math.min(totalProgress / 0.66, 1);
+            const frameIdx = Math.floor(sequenceProgress * (frames.length - 1));
+            
             bg.style.backgroundImage = `url('${frames[frameIdx]}')`;
-
-            // 2. THE REVEAL (Moves content UP as you scroll)
-            // Starts at padding-top, scrolls into view and eventually out of the top.
-            const moveY = progress * 120; // Adjust this to control exit speed
-            content.style.transform = `translateY(-${moveY}vh)`;
         });
 
         // ROTATION
-        slider.addEventListener('input', (e) => {
+        rot.addEventListener('input', (e) => {
             shirt.removeAttribute('auto-rotate');
             shirt.cameraOrbit = `${e.target.value}deg 75deg 105%`;
         });

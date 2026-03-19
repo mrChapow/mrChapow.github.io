@@ -6,11 +6,11 @@
     <title>COTA LAB // ARCHIVE</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
-        :root { --bg: #000; --glass: rgba(255, 255, 255, 0.03); }
-        body, html { margin: 0; padding: 0; background: var(--bg); font-family: "Inter", sans-serif; color: white; overflow-x: hidden; }
+        :root { --bg: #000; --glass: rgba(255, 255, 255, 0.03); --text-primary: #fff; }
+        body, html { margin: 0; padding: 0; background: var(--bg); font-family: "Inter", sans-serif; color: var(--text-primary); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
 
-        /* PRELOADER */
-        #preloader { position: absolute; width: 0; height: 0; overflow: hidden; opacity: 0; }
+        /* PRELOADER HACK */
+        #preloader { position: absolute; width: 0; height: 0; overflow: hidden; opacity: 0; pointer-events: none; }
 
         header { position: fixed; top: 0; width: 100%; display: flex; justify-content: center; padding: 25px 0; z-index: 100; pointer-events: none; }
         .logo { font-weight: 900; font-size: 1.1rem; letter-spacing: 0.9em; text-transform: uppercase; margin-right: -0.9em; }
@@ -33,7 +33,7 @@
         }
         #parallax-bg::after {
             content: ''; position: absolute; inset: 0;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent 20%, transparent 80%, rgba(0,0,0,1));
+            background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent 30%, transparent 70%, rgba(0,0,0,1));
         }
 
         /* STICKY MODEL AREA */
@@ -42,39 +42,71 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             z-index: 10;
         }
-        model-viewer { width: 100vw; height: 70vh; outline: none; }
+        model-viewer { width: 100vw; height: 75vh; outline: none; --progress-bar-color: transparent; }
 
-        .slider-wrap { width: 220px; margin-top: -40px; text-align: center; z-index: 50; }
-        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; cursor: ew-resize; }
+        .slider-wrap { width: 240px; margin-top: -50px; text-align: center; z-index: 50; position: relative; }
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; cursor: ew-resize; height: 30px; }
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 1px; background: rgba(255,255,255,0.3); }
-        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 12px; width: 12px; border-radius: 50%; background: #fff; margin-top: -5.5px; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 12px; width: 12px; border-radius: 50%; background: #fff; margin-top: -5.5px; border: none; box-shadow: 0 0 10px rgba(255,255,255,0.2); }
 
-        /* PRODUCT CARD & NEXT SEGMENT */
+        /* LIQUID GLASS TILE (CONTENT STACK) */
         .content-stack {
             position: relative; z-index: 20;
             width: 100%; display: flex; flex-direction: column; align-items: center;
-            background: var(--bg); /* Cover for the next section */
+            background: var(--bg);
+            padding-bottom: 10vh; /* Bottom padding for scroll room */
         }
 
         .liquid-glass {
-            width: 90%; max-width: 410px; margin: -5vh 0 100px 0; padding: 30px;
-            border-radius: 26px; background: var(--glass);
+            width: 92%; /* Slightly wider on mobile/longer */
+            max-width: 440px; 
+            margin: -2vh 0 80px 0; /* Tightened top margin significantly */
+            padding: 35px;
+            border-radius: 28px; background: var(--glass);
             backdrop-filter: blur(50px) saturate(160%); -webkit-backdrop-filter: blur(50px) saturate(160%);
             border: 1px solid rgba(255,255,255,0.08); box-sizing: border-box;
+            transition: all 0.3s ease-out; /* Smooth adaptation */
         }
 
+        /* RESPONSIVE SCALING FOR PC */
+        @media (min-width: 1024px) {
+            .liquid-glass {
+                max-width: 550px; /* Wider tile on PC */
+                margin-top: -10vh; /* Pulls tile even closer to the 3D model */
+                padding: 50px; /* Spans content out vertically */
+            }
+            .glass-header h1 { font-size: 36px; } /* Way larger text on PC */
+            .price { font-size: 16px; }
+            .desc { font-size: 15px; line-height: 1.8; } /* Longer looking description */
+            .size-btn { padding: 15px 0; font-size: 12px; }
+            .buy-btn { padding: 25px; font-size: 16px; }
+        }
+
+        /* TEXT STYLES */
+        .glass-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 15px; }
+        h1 { font-size: 26px; font-weight: 900; margin: 0; letter-spacing: -0.02em; text-transform: uppercase; }
+        .price { font-family: monospace; opacity: 0.5; font-size: 14px; }
+        .desc { font-size: 13px; opacity: 0.4; line-height: 1.6; margin-bottom: 35px; }
+        
+        /* SIZE SELECTOR */
+        .size-row { display: flex; gap: 8px; margin-bottom: 25px; }
+        .size-btn {
+            flex: 1; border: 1px solid rgba(255,255,255,0.08); background: transparent; color: white; 
+            padding: 12px 0; border-radius: 12px; font-size: 10px; font-weight: 800; cursor: pointer; transition: 0.2s;
+        }
+        .size-btn.active { background: white; color: black; border-color: white; }
+
+        .buy-btn { width: 100%; padding: 20px; background: white; color: black; border: none; border-radius: 16px; font-weight: 900; text-transform: uppercase; cursor: pointer; font-size: 14px; }
+        
+        .archive-tag { font-size: 8px; letter-spacing: 5px; opacity: 0.25; text-align: center; margin-top: 35px; text-transform: uppercase; }
+
+        /* NEXT SEGMENT LAYER PLACEHOLDER */
         .next-segment {
             height: 100vh; width: 100%;
             display: flex; align-items: center; justify-content: center;
             border-top: 1px solid rgba(255,255,255,0.1);
+            background: #050505; /* Subtle contrast */
         }
-
-        /* TEXT STYLES */
-        .glass-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
-        h1 { font-size: 24px; font-weight: 900; margin: 0; }
-        .price { font-family: monospace; opacity: 0.4; }
-        .desc { font-size: 13px; opacity: 0.4; line-height: 1.6; margin-bottom: 30px; }
-        .buy-btn { width: 100%; padding: 20px; background: white; color: black; border: none; border-radius: 14px; font-weight: 900; text-transform: uppercase; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -98,12 +130,21 @@
                 <h1>CLT // ARCHIVE</h1>
                 <span class="price">$54.00</span>
             </div>
-            <p class="desc">Heavyweight digital-to-physical garment. Capturing pixel-mapped cloud architecture.</p>
+            <p class="desc">Heavyweight digital-to-physical garment. Capturing pixel-mapped cloud architecture from the CLT grid. Specifications: 100% Cotton, 320GSM, React-loaded texture mapping (v3.9 Stable). This archive entry is locked and authenticated. Vertical stack validated.</p>
+            
+            <div class="size-row">
+                <button class="size-btn">S</button>
+                <button class="size-btn active">M</button>
+                <button class="size-btn">L</button>
+                <button class="size-btn">XL</button>
+            </div>
+
             <button class="buy-btn">Acquire Archive</button>
+            <div class="archive-tag">ARCHIVE BUILD V3.9 // STABLE</div>
         </div>
 
         <div class="next-segment">
-            <h2 style="letter-spacing: 10px; opacity: 0.2;">NEXT SEGMENT LAYER</h2>
+            <h2 style="letter-spacing: 12px; opacity: 0.15; text-transform: uppercase; font-size: 1rem;">NEXT ARCHIVE LAYER</h2>
         </div>
     </div>
 
@@ -115,13 +156,20 @@
         
         const frames = ['street-view.jpg', 'street-view 1.jpg', 'street-view 2.jpg', 'street-view 3.jpg', 'street-view 4.jpg', 'street-view 5.jpg'];
 
-        // PRELOAD
+        // PRELOAD ENGINE
         frames.forEach(src => {
             const img = new Image(); img.src = src; preloader.appendChild(img);
         });
 
-        // 150vh SCRUB LOGIC
-        const scrubLimit = window.innerHeight * 0.5; // Finished by 50vh to feel fast
+        // 150vh SCRUB LOGIC (Responsive Distance)
+        let scrubLimit;
+        const setScrubDistance = () => {
+            // Finished faster on desktop to feel tighter
+            scrubLimit = window.innerWidth >= 1024 ? 300 : window.innerHeight * 0.5;
+        };
+        setScrubDistance();
+        window.addEventListener('resize', setScrubDistance);
+
         window.addEventListener('scroll', () => {
             const scrollY = window.pageYOffset;
             const progress = Math.min(scrollY / scrubLimit, 1);
@@ -150,6 +198,15 @@
         slider.addEventListener('input', (e) => {
             shirt.removeAttribute('auto-rotate');
             shirt.cameraOrbit = `${e.target.value}deg 75deg 105%`;
+        });
+
+        // UI SELECTION
+        document.querySelectorAll('.size-btn').forEach(btn => {
+            btn.onclick = () => {
+                const active = document.querySelector('.size-btn.active');
+                if(active) active.classList.remove('active');
+                btn.classList.add('active');
+            };
         });
     </script>
 </body>

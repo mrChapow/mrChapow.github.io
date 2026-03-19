@@ -8,125 +8,148 @@
     <style>
         :root { 
             --bg: #000; 
-            --glass: rgba(10, 10, 10, 0.7); 
+            --glass: rgba(18, 18, 18, 0.5); 
             --border: rgba(255, 255, 255, 0.1);
+            --text: #fff;
         }
         
-        body, html { margin: 0; padding: 0; background: var(--bg); font-family: "Inter", sans-serif; color: white; overflow-x: hidden; }
+        body, html { margin: 0; padding: 0; background: var(--bg); font-family: "Inter", sans-serif; color: var(--text); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+        * { box-sizing: border-box; }
 
-        /* --- 1. THE FILM STRIP BACKGROUND --- */
-        .bg-view-window {
-            position: absolute; inset: 0; z-index: 1;
-            overflow: hidden; /* Only show one "frame" at a time */
-            pointer-events: none;
+        /* HEADER FOUNDATION */
+        .site-nav {
+            position: fixed; top: 0; width: 100%; height: 70px;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 25px; z-index: 1000;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
         }
+        .logo { font-weight: 900; font-size: 1.1rem; letter-spacing: 0.6em; text-transform: uppercase; margin-right: -0.6em; }
+        .nav-link { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.6; }
 
-        #bg-strip {
-            position: absolute; top: 0; left: 0;
-            width: 100%; height: 600%; /* 6 images = 600% height */
+        /* THE STAGE */
+        .archive-stage { position: relative; height: 160vh; width: 100%; }
+        
+        .interface-lock {
+            position: sticky; top: 0;
+            height: 100vh; width: 100%;
             display: flex; flex-direction: column;
-            will-change: transform;
-            transition: transform 0.1s cubic-bezier(0.2, 0.8, 0.2, 1); /* Adds that "clever" smooth glide */
         }
 
-        .bg-frame {
-            width: 100%; height: 16.666%; /* 100/6 */
+        #parallax-bg {
+            position: absolute; inset: 0; z-index: 1;
             background-size: cover; background-position: center;
+            background-repeat: no-repeat;
+            background-image: url('street-view.jpg'); /* Fixed starting frame */
+        }
+        #parallax-bg::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(to right, rgba(0,0,0,0.5), rgba(0,0,0,0.85));
         }
 
-        /* Overlay to bind the UI to the background */
-        .bg-view-window::after {
-            content: ''; position: absolute; inset: 0; z-index: 5;
-            background: linear-gradient(to right, rgba(0,0,0,0.6), rgba(0,0,0,0.9));
-        }
-
-        /* --- 2. THE STICKY UI --- */
-        .archive-stage { position: relative; height: 200vh; width: 100%; }
-        
-        .interface-lock { 
-            position: sticky; top: 0; 
-            height: 100vh; width: 100%; 
-            display: flex; flex-direction: column; 
-        }
-
+        /* PRODUCT GRID */
         .product-grid {
-            position: relative; z-index: 100;
+            position: relative; z-index: 10;
             display: flex; flex-direction: column; align-items: center;
-            height: 100%; padding: 80px 20px;
+            height: 100vh; padding: 80px 15px 40px;
         }
 
-        .model-col { width: 100%; height: 40vh; }
+        .model-col { width: 100%; height: 42vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         model-viewer { width: 100%; height: 100%; outline: none; }
 
         .info-col {
-            width: 100%; max-width: 420px; padding: 30px;
-            border-radius: 24px; background: var(--glass);
-            backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+            width: 100%; max-width: 440px; padding: 25px;
+            border-radius: 16px; background: var(--glass);
+            backdrop-filter: blur(40px) saturate(150%); -webkit-backdrop-filter: blur(40px) saturate(150%);
             border: 1px solid var(--border);
         }
 
-        /* DESKTOP SPLIT */
+        /* DESKTOP RESTORED */
         @media (min-width: 1024px) {
-            .product-grid { flex-direction: row; justify-content: space-around; padding-top: 120px; }
-            .model-col { width: 50%; height: 75vh; }
-            .info-col { width: 35%; padding: 50px; }
+            .product-grid { flex-direction: row; justify-content: space-between; padding: 100px 8vw 40px; align-items: center; }
+            .model-col { width: 60%; height: 80vh; }
+            .info-col { width: 35%; max-width: 480px; padding: 45px; }
         }
 
-        h1 { font-size: 24px; font-weight: 900; text-transform: uppercase; margin: 0 0 10px; letter-spacing: -0.03em; }
-        .desc { font-size: 13px; opacity: 0.5; line-height: 1.6; margin-bottom: 25px; }
-        .buy-btn { width: 100%; padding: 20px; background: #fff; color: #000; border: none; border-radius: 12px; font-weight: 900; text-transform: uppercase; cursor: pointer; }
+        /* UI ELEMENTS */
+        .header-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
+        h1 { font-size: 22px; font-weight: 900; margin: 0; text-transform: uppercase; line-height: 1.1; }
+        .price { font-family: monospace; font-size: 15px; opacity: 0.6; }
+        .desc { font-size: 12px; opacity: 0.5; line-height: 1.6; margin-bottom: 25px; }
+        
+        .size-row { display: flex; gap: 8px; margin-bottom: 25px; }
+        .size-btn { flex: 1; border: 1px solid var(--border); background: transparent; color: white; padding: 12px 0; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; }
+        .size-btn.active { background: white; color: black; border-color: white; }
+
+        .buy-btn { width: 100%; padding: 18px; background: white; color: black; border: none; border-radius: 8px; font-weight: 900; text-transform: uppercase; cursor: pointer; font-size: 13px; }
+        .meta-tag { font-family: monospace; font-size: 9px; opacity: 0.3; text-align: center; margin-top: 20px; text-transform: uppercase; letter-spacing: 0.1em; }
+
+        .next-segment { height: 100vh; background: #050505; border-top: 1px solid var(--border); }
     </style>
 </head>
 <body>
 
-    <section class="archive-stage" id="scroll-track">
-        <div class="interface-lock">
-            
-            <div class="bg-view-window">
-                <div id="bg-strip">
-                    <div class="bg-frame" style="background-image: url('street-view.jpg');"></div>
-                    <div class="bg-frame" style="background-image: url('street-view 1.jpg');"></div>
-                    <div class="bg-frame" style="background-image: url('street-view 2.jpg');"></div>
-                    <div class="bg-frame" style="background-image: url('street-view 3.jpg');"></div>
-                    <div class="bg-frame" style="background-image: url('street-view 4.jpg');"></div>
-                    <div class="bg-frame" style="background-image: url('street-view 5.jpg');"></div>
-                </div>
-            </div>
+    <nav class="site-nav">
+        <div class="nav-link">Index</div>
+        <div class="logo">Cota Lab</div>
+        <div class="nav-link">Cart [0]</div>
+    </nav>
 
+    <section class="archive-stage" id="track">
+        <div class="interface-lock">
+            <div id="parallax-bg"></div>
+            
             <div class="product-grid">
                 <div class="model-col">
                     <model-viewer id="shirt" src="Tshirt.glb" camera-orbit="0deg 75deg 105%" auto-rotate interaction-prompt="none" touch-action="none"></model-viewer>
                 </div>
+
                 <aside class="info-col">
-                    <h1>CLT // ARCHIVE 001</h1>
-                    <p class="desc">Heavyweight physical garment. Pixel-mapped cloud architecture. Optimized for the grid.</p>
+                    <div class="header-row">
+                        <h1>CLT //<br>Archive 001</h1>
+                        <span class="price">$54.00</span>
+                    </div>
+                    <p class="desc">Heavyweight digital-to-physical garment. Authenticated Charlotte metropolitan grid data. Domestic manufacturing. Take it or leave it.</p>
+                    <div class="size-row">
+                        <button class="size-btn">S</button>
+                        <button class="size-btn active">M</button>
+                        <button class="size-btn">L</button>
+                        <button class="size-btn">XL</button>
+                    </div>
                     <button class="buy-btn">Acquire Archive</button>
+                    <div class="meta-tag">RESTORATION BUILD // V4.5</div>
                 </aside>
             </div>
         </div>
     </section>
 
-    <div style="height: 100vh; background: #000;"></div>
+    <div class="next-segment"></div>
 
     <script>
-        const strip = document.getElementById('bg-strip');
-        const track = document.getElementById('scroll-track');
+        const bg = document.getElementById('parallax-bg');
+        const track = document.getElementById('track');
         const shirt = document.getElementById('shirt');
+        
+        const frames = ['street-view.jpg', 'street-view 1.jpg', 'street-view 2.jpg', 'street-view 3.jpg', 'street-view 4.jpg', 'street-view 5.jpg'];
 
-        // SIMPLE MOTION ENGINE
+        // PRELOAD (Invisible)
+        frames.forEach(src => { const img = new Image(); img.src = src; });
+
+        // CLEAN SCROLL ENGINE
         window.addEventListener('scroll', () => {
             const scrollY = window.scrollY;
             const maxScroll = track.offsetHeight - window.innerHeight;
             
-            // Percentage (0 to 1)
+            // Normalize scroll (0 to 1)
             const progress = Math.min(Math.max(scrollY / maxScroll, 0), 1);
             
-            // Move the strip UP by a percentage of its total height
-            // We multiply by 83.33 (which is 100% minus the last frame's height) 
-            // so the last frame stops perfectly in view.
-            const moveY = progress * 83.33; 
+            // Map to image index
+            const frameIdx = Math.floor(progress * (frames.length - 1));
             
-            strip.style.transform = `translateY(-${moveY}%)`;
+            // Direct Background Update
+            const targetBg = `url('${frames[frameIdx]}')`;
+            if (bg.style.backgroundImage !== targetBg) {
+                bg.style.backgroundImage = targetBg;
+            }
         });
 
         // TEXTURE INJECTION
@@ -139,6 +162,14 @@
                 }
             };
             applyTex();
+        });
+
+        // SIZE SELECTION
+        document.querySelectorAll('.size-btn').forEach(btn => {
+            btn.onclick = () => {
+                document.querySelector('.size-btn.active').classList.remove('active');
+                btn.classList.add('active');
+            };
         });
     </script>
 </body>

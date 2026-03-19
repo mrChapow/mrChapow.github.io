@@ -8,169 +8,128 @@
     <style>
         :root { 
             --bg: #000; 
-            --glass: rgba(20, 20, 20, 0.4); 
+            --glass: rgba(10, 10, 10, 0.7); 
             --border: rgba(255, 255, 255, 0.1);
-            --text-main: #fff;
-            --text-muted: rgba(255, 255, 255, 0.5);
         }
         
-        body, html { margin: 0; padding: 0; background: var(--bg); font-family: "Inter", sans-serif; color: var(--text-main); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
-        * { box-sizing: border-box; }
+        body, html { margin: 0; padding: 0; background: var(--bg); font-family: "Inter", sans-serif; color: white; overflow-x: hidden; }
 
-        #preloader { position: absolute; width: 0; height: 0; overflow: hidden; opacity: 0; pointer-events: none; }
-
-        .site-nav {
-            position: fixed; top: 0; left: 0; width: 100%; height: 70px;
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 0 25px; z-index: 1000;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
-        }
-        .logo { font-weight: 900; font-size: 1.1rem; letter-spacing: 0.6em; text-transform: uppercase; margin-right: -0.6em; }
-
-        /* THE TRACK: 150vh ensures there is enough room to scroll */
-        .archive-stage {
-            position: relative;
-            height: 150vh; 
-            width: 100%;
-        }
-
-        .interface-lock {
-            position: sticky; top: 0;
-            height: 100vh; width: 100%;
-            display: flex; flex-direction: column;
-        }
-
-        #parallax-bg {
+        /* --- 1. THE FILM STRIP BACKGROUND --- */
+        .bg-view-window {
             position: absolute; inset: 0; z-index: 1;
-            background-size: cover; background-position: center;
-            background-repeat: no-repeat; will-change: background-image;
+            overflow: hidden; /* Only show one "frame" at a time */
+            pointer-events: none;
         }
-        #parallax-bg::after {
-            content: ''; position: absolute; inset: 0;
-            background: linear-gradient(to right, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.85) 100%);
+
+        #bg-strip {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 600%; /* 6 images = 600% height */
+            display: flex; flex-direction: column;
+            will-change: transform;
+            transition: transform 0.1s cubic-bezier(0.2, 0.8, 0.2, 1); /* Adds that "clever" smooth glide */
+        }
+
+        .bg-frame {
+            width: 100%; height: 16.666%; /* 100/6 */
+            background-size: cover; background-position: center;
+        }
+
+        /* Overlay to bind the UI to the background */
+        .bg-view-window::after {
+            content: ''; position: absolute; inset: 0; z-index: 5;
+            background: linear-gradient(to right, rgba(0,0,0,0.6), rgba(0,0,0,0.9));
+        }
+
+        /* --- 2. THE STICKY UI --- */
+        .archive-stage { position: relative; height: 200vh; width: 100%; }
+        
+        .interface-lock { 
+            position: sticky; top: 0; 
+            height: 100vh; width: 100%; 
+            display: flex; flex-direction: column; 
         }
 
         .product-grid {
-            position: relative; z-index: 10;
-            display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
-            width: 100%; height: 100vh;
-            padding: 85px 15px 2vh 15px;
+            position: relative; z-index: 100;
+            display: flex; flex-direction: column; align-items: center;
+            height: 100%; padding: 80px 20px;
         }
 
-        .model-col {
-            width: 100%; height: 40vh;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-        }
+        .model-col { width: 100%; height: 40vh; }
         model-viewer { width: 100%; height: 100%; outline: none; }
 
-        .slider-wrap { width: 220px; text-align: center; z-index: 50; margin-bottom: 10px; }
-        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; cursor: ew-resize; height: 30px; }
-        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 1px; background: rgba(255,255,255,0.3); }
-        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 12px; width: 12px; border-radius: 50%; background: #fff; margin-top: -5.5px; border: none; }
-
         .info-col {
-            width: 100%; max-width: 440px;
-            padding: 25px;
-            border-radius: 16px; background: var(--glass);
-            backdrop-filter: blur(40px) saturate(150%); -webkit-backdrop-filter: blur(40px) saturate(150%);
+            width: 100%; max-width: 420px; padding: 30px;
+            border-radius: 24px; background: var(--glass);
+            backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
             border: 1px solid var(--border);
         }
 
+        /* DESKTOP SPLIT */
         @media (min-width: 1024px) {
-            .product-grid { flex-direction: row; justify-content: space-between; padding: 100px 8vw 40px 8vw; align-items: center; }
-            .model-col { width: 60%; height: 80vh; }
-            .info-col { width: 35%; max-width: 480px; padding: 45px; margin-left: 40px; }
+            .product-grid { flex-direction: row; justify-content: space-around; padding-top: 120px; }
+            .model-col { width: 50%; height: 75vh; }
+            .info-col { width: 35%; padding: 50px; }
         }
 
-        /* TYPOGRAPHY */
-        .header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
-        h1 { font-size: 22px; font-weight: 900; margin: 0; letter-spacing: -0.02em; text-transform: uppercase; }
-        .price { font-family: monospace; font-size: 15px; opacity: 0.8; }
-        .desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; margin-bottom: 25px; }
-        
-        .size-row { display: flex; gap: 8px; margin-bottom: 25px; }
-        .size-btn { flex: 1; border: 1px solid var(--border); background: transparent; color: white; padding: 12px 0; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; }
-        .size-btn.active { background: white; color: black; border-color: white; }
-
-        .buy-btn { width: 100%; padding: 18px; background: white; color: black; border: none; border-radius: 8px; font-weight: 900; text-transform: uppercase; cursor: pointer; }
-        .meta-tag { font-family: monospace; font-size: 9px; color: var(--text-muted); text-align: center; margin-top: 20px; text-transform: uppercase; }
-
-        .next-segment { height: 100vh; background: #050505; border-top: 1px solid var(--border); }
+        h1 { font-size: 24px; font-weight: 900; text-transform: uppercase; margin: 0 0 10px; letter-spacing: -0.03em; }
+        .desc { font-size: 13px; opacity: 0.5; line-height: 1.6; margin-bottom: 25px; }
+        .buy-btn { width: 100%; padding: 20px; background: #fff; color: #000; border: none; border-radius: 12px; font-weight: 900; text-transform: uppercase; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div id="preloader"></div>
-
-    <nav class="site-nav">
-        <div class="logo" style="margin-left: auto; margin-right: auto;">Cota Lab</div>
-    </nav>
-
-    <section class="archive-stage" id="main-track">
+    <section class="archive-stage" id="scroll-track">
         <div class="interface-lock">
-            <div id="parallax-bg"></div>
+            
+            <div class="bg-view-window">
+                <div id="bg-strip">
+                    <div class="bg-frame" style="background-image: url('street-view.jpg');"></div>
+                    <div class="bg-frame" style="background-image: url('street-view 1.jpg');"></div>
+                    <div class="bg-frame" style="background-image: url('street-view 2.jpg');"></div>
+                    <div class="bg-frame" style="background-image: url('street-view 3.jpg');"></div>
+                    <div class="bg-frame" style="background-image: url('street-view 4.jpg');"></div>
+                    <div class="bg-frame" style="background-image: url('street-view 5.jpg');"></div>
+                </div>
+            </div>
+
             <div class="product-grid">
                 <div class="model-col">
                     <model-viewer id="shirt" src="Tshirt.glb" camera-orbit="0deg 75deg 105%" auto-rotate interaction-prompt="none" touch-action="none"></model-viewer>
-                    <div class="slider-wrap">
-                        <input type="range" id="rot" min="-180" max="180" value="0">
-                    </div>
                 </div>
                 <aside class="info-col">
-                    <div class="header-row">
-                        <h1>CLT //<br>Archive 001</h1>
-                        <span class="price">$54.00</span>
-                    </div>
-                    <p class="desc">Engineered to close the quality gap. Heavyweight physical garment loaded with pixel-mapped cloud architecture. Take it or leave it.</p>
-                    <div class="size-row">
-                        <button class="size-btn">S</button>
-                        <button class="size-btn active">M</button>
-                        <button class="size-btn">L</button>
-                        <button class="size-btn">XL</button>
-                    </div>
+                    <h1>CLT // ARCHIVE 001</h1>
+                    <p class="desc">Heavyweight physical garment. Pixel-mapped cloud architecture. Optimized for the grid.</p>
                     <button class="buy-btn">Acquire Archive</button>
-                    <div class="meta-tag">SYS.V4.2 // CONTINUOUS SCRUB</div>
                 </aside>
             </div>
         </div>
     </section>
 
-    <section class="next-segment"></section>
+    <div style="height: 100vh; background: #000;"></div>
 
     <script>
-        const bg = document.getElementById('parallax-bg');
+        const strip = document.getElementById('bg-strip');
+        const track = document.getElementById('scroll-track');
         const shirt = document.getElementById('shirt');
-        const slider = document.getElementById('rot');
-        const track = document.getElementById('main-track');
-        
-        const frames = ['street-view.jpg', 'street-view 1.jpg', 'street-view 2.jpg', 'street-view 3.jpg', 'street-view 4.jpg', 'street-view 5.jpg'];
 
-        // PRELOAD
-        frames.forEach(src => { const img = new Image(); img.src = src; document.getElementById('preloader').appendChild(img); });
-
-        // THE CONTINUOUS ENGINE
-        function updateBackground() {
+        // SIMPLE MOTION ENGINE
+        window.addEventListener('scroll', () => {
             const scrollY = window.scrollY;
-            // The scroll distance is the height of the track minus the viewport height
             const maxScroll = track.offsetHeight - window.innerHeight;
             
-            // Normalize progress 0 to 1 across the ENTIRE scroll area
+            // Percentage (0 to 1)
             const progress = Math.min(Math.max(scrollY / maxScroll, 0), 1);
             
-            const frameIdx = Math.floor(progress * (frames.length - 1));
+            // Move the strip UP by a percentage of its total height
+            // We multiply by 83.33 (which is 100% minus the last frame's height) 
+            // so the last frame stops perfectly in view.
+            const moveY = progress * 83.33; 
             
-            const targetBg = `url('${frames[frameIdx]}')`;
-            if (bg.style.backgroundImage !== targetBg) {
-                bg.style.backgroundImage = targetBg;
-            }
-            requestAnimationFrame(updateBackground);
-        }
-        
-        // Start the loop
-        bg.style.backgroundImage = `url('${frames[0]}')`;
-        requestAnimationFrame(updateBackground);
+            strip.style.transform = `translateY(-${moveY}%)`;
+        });
 
-        // TEXTURE
+        // TEXTURE INJECTION
         shirt.addEventListener('load', () => {
             const material = shirt.model.materials[0];
             const applyTex = async () => {
@@ -180,11 +139,6 @@
                 }
             };
             applyTex();
-        });
-
-        slider.addEventListener('input', (e) => {
-            shirt.removeAttribute('auto-rotate');
-            shirt.cameraOrbit = `${e.target.value}deg 75deg 105%`;
         });
     </script>
 </body>

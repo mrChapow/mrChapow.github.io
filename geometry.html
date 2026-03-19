@@ -6,31 +6,28 @@
     <title>COTA LAB // ARCHIVE 001</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
-        :root { 
-            --bg: #000; 
-            --text: #fff;
-            --dim: rgba(255, 255, 255, 0.4);
-        }
+        :root { --bg: #000; --text: #fff; --border: rgba(255, 255, 255, 0.1); }
         
         body, html { margin: 0; padding: 0; background: var(--bg); font-family: "Inter", sans-serif; color: var(--text); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+        * { box-sizing: border-box; }
 
-        /* --- NAVIGATION (Minimalist) --- */
+        /* --- NAV --- */
         .site-nav {
-            position: fixed; top: 0; width: 100%; height: 90px;
+            position: fixed; top: 0; width: 100%; height: 70px;
             display: flex; justify-content: space-between; align-items: center;
-            padding: 0 40px; z-index: 1000;
+            padding: 0 30px; z-index: 1000;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
         }
-        .logo { font-weight: 900; font-size: 1.2rem; letter-spacing: 0.8em; text-transform: uppercase; margin-right: -0.8em; }
-        .nav-link { font-size: 10px; font-weight: 800; letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.5; }
+        .logo { font-weight: 900; font-size: 1.1rem; letter-spacing: 0.7em; text-transform: uppercase; margin-right: -0.7em; }
+        .nav-link { font-size: 10px; font-weight: 700; text-transform: uppercase; opacity: 0.5; letter-spacing: 0.1em; }
 
-        /* --- THE TRACK --- */
-        .archive-stage { position: relative; height: 250vh; width: 100%; }
+        /* --- BACKGROUND ENGINE --- */
+        .archive-stage { position: relative; height: 220vh; width: 100%; }
         
         .interface-lock {
             position: sticky; top: 0;
             height: 100vh; width: 100%;
-            display: flex; flex-direction: column;
-            overflow: hidden;
+            display: flex; flex-direction: column; overflow: hidden;
         }
 
         #parallax-bg {
@@ -38,107 +35,97 @@
             background-size: cover; background-position: center;
             background-repeat: no-repeat;
             background-image: url('street-view.jpg');
-            will-change: transform;
         }
         #parallax-bg::after {
             content: ''; position: absolute; inset: 0;
-            background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.4) 100%),
-                        linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.8));
+            background: linear-gradient(to right, rgba(0,0,0,0.4), rgba(0,0,0,0.85));
         }
 
-        /* --- THE FLOATING CONTENT (No Containers) --- */
-        #hero-content {
+        /* --- THE CONTENT GRID --- */
+        #product-content {
             position: relative; z-index: 10;
             display: flex; flex-direction: column; align-items: center;
-            width: 100%; height: 100vh;
-            padding: 0 20px;
-            /* The starting "Half-Inch" offset */
-            transform: translateY(60vh); 
+            width: 100%; height: 100%;
+            /* This creates the "Half-Inch" start. Change 40vh to 20vh if it's too deep. */
+            padding-top: 40vh; 
             will-change: transform;
         }
 
-        .model-wrap { 
-            width: 100%; height: 45vh; 
+        .model-col { 
+            width: 100%; height: 40vh; 
             display: flex; flex-direction: column; align-items: center;
-            margin-top: 15vh;
         }
         model-viewer { width: 100%; height: 100%; outline: none; }
 
-        /* Restored Precision Slider */
-        .slider-wrap { width: 160px; margin-top: 20px; opacity: 0.6; }
+        /* Restored Slider */
+        .slider-wrap { width: 180px; margin-top: 10px; }
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
-        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 1px; background: #fff; }
-        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 8px; width: 8px; border-radius: 50%; background: #fff; margin-top: -3.5px; }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 1px; background: rgba(255,255,255,0.3); }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 10px; width: 10px; border-radius: 50%; background: #fff; margin-top: -4.5px; }
 
-        /* Typography Reveal */
-        .text-wrap {
-            text-align: center;
-            margin-top: 40px;
-            max-width: 320px;
+        /* Typography */
+        .info-col {
+            width: 100%; max-width: 400px;
+            padding: 40px 25px; text-align: center;
         }
-        h1 { font-size: 28px; font-weight: 900; text-transform: uppercase; margin: 0; letter-spacing: -0.03em; }
-        .price { font-family: monospace; font-size: 16px; display: block; margin: 10px 0 20px; opacity: 0.5; }
-        .desc { font-size: 12px; line-height: 1.8; opacity: 0.4; margin-bottom: 30px; }
+        h1 { font-size: 24px; font-weight: 900; text-transform: uppercase; margin: 0; letter-spacing: -0.02em; }
+        .price { font-family: monospace; font-size: 15px; opacity: 0.5; display: block; margin: 8px 0 20px; }
+        .desc { font-size: 12px; opacity: 0.4; line-height: 1.7; margin-bottom: 30px; }
         
         .buy-btn { 
-            background: none; border: 1px solid #fff; color: #fff;
-            padding: 15px 40px; border-radius: 0; /* Square for high-fashion look */
-            font-weight: 900; text-transform: uppercase; cursor: pointer;
-            letter-spacing: 0.2em; font-size: 11px;
-            transition: all 0.3s;
+            width: 100%; padding: 18px; background: white; color: black; 
+            border: none; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em;
         }
-        .buy-btn:hover { background: #fff; color: #000; }
 
-        /* DESKTOP (Split Floating) */
+        /* DESKTOP SPLIT RE-STABILIZED */
         @media (min-width: 1024px) {
-            #hero-content { flex-direction: row; justify-content: space-around; transform: translateY(40vh); padding: 0 10vw; }
-            .model-wrap { width: 50%; height: 75vh; margin-top: 0; }
-            .text-wrap { text-align: left; max-width: 400px; margin-top: 0; }
-            .buy-btn { width: auto; }
+            #product-content { flex-direction: row; justify-content: space-around; padding: 15vh 8vw 0; }
+            .model-col { width: 55%; height: 75vh; }
+            .info-col { width: 35%; text-align: left; padding: 0; }
         }
 
-        /* SPACE FOR NEXT SCENE */
-        .next-scene-spacer { height: 120vh; background: #000; }
+        .scene-transition { height: 100vh; background: #000; border-top: 1px solid var(--border); }
     </style>
 </head>
 <body>
 
     <nav class="site-nav">
-        <div class="nav-link">Coll.</div>
+        <div class="nav-link">Archive</div>
         <div class="logo">Cota Lab</div>
-        <div class="nav-link">Cart</div>
+        <div class="nav-link">Cart [0]</div>
     </nav>
 
     <section class="archive-stage" id="track">
         <div class="interface-lock">
             <div id="parallax-bg"></div>
             
-            <div id="hero-content">
-                <div class="model-wrap">
+            <div id="product-content">
+                <div class="model-col">
                     <model-viewer id="shirt" src="Tshirt.glb" camera-orbit="0deg 75deg 105%" auto-rotate interaction-prompt="none" touch-action="none"></model-viewer>
                     <div class="slider-wrap">
                         <input type="range" id="rot" min="-180" max="180" value="0">
                     </div>
                 </div>
 
-                <div class="text-wrap">
+                <aside class="info-col">
                     <h1>CLT // 001</h1>
-                    <span class="price">$54.00 USD</span>
-                    <p class="desc">Engineered quality. Pixel-mapped architecture. The gap is closed. This is the first archive.</p>
+                    <span class="price">$54.00</span>
+                    <p class="desc">Engineered for the domestic grid. Heavyweight 320GSM cotton. The gap is closed.</p>
                     <button class="buy-btn">Acquire Archive</button>
-                </div>
+                    <div style="font-family: monospace; font-size: 8px; margin-top: 30px; opacity: 0.2; letter-spacing: 0.3em;">RESTORED_V4.9</div>
+                </aside>
             </div>
         </div>
     </section>
 
-    <div class="next-scene-spacer"></div>
+    <div class="scene-transition"></div>
 
     <script>
         const bg = document.getElementById('parallax-bg');
-        const content = document.getElementById('hero-content');
+        const content = document.getElementById('product-content');
         const track = document.getElementById('track');
         const shirt = document.getElementById('shirt');
-        const rot = document.getElementById('rot');
+        const slider = document.getElementById('rot');
 
         const frames = ['street-view.jpg', 'street-view 1.jpg', 'street-view 2.jpg', 'street-view 3.jpg', 'street-view 4.jpg', 'street-view 5.jpg'];
 
@@ -147,26 +134,19 @@
             const maxScroll = track.offsetHeight - window.innerHeight;
             const progress = Math.min(Math.max(scrollY / maxScroll, 0), 1);
 
-            // 1. BACKGROUND SWAP (Finish frames by 75% scroll)
+            // 1. BACKGROUND (Finishes at 75% of track)
             const frameProgress = Math.min(progress / 0.75, 1);
             const frameIdx = Math.floor(frameProgress * (frames.length - 1));
             bg.style.backgroundImage = `url('${frames[frameIdx]}')`;
 
-            // 2. THE FLOATING REVEAL
-            // Start at 60vh offset, move to -20vh (scrolling past)
-            const isMobile = window.innerWidth < 1024;
-            const startPos = isMobile ? 60 : 40;
-            const endPos = -40;
-            const currentPos = startPos - (progress * (startPos - endPos));
-            content.style.transform = `translateY(${currentPos}vh)`;
-
-            // 3. ATMOSPHERIC ZOOM
-            const scale = 1 + (progress * 0.1);
-            bg.style.transform = `scale(${scale})`;
+            // 2. THE REVEAL (Moves content UP as you scroll)
+            // Starts at padding-top, scrolls into view and eventually out of the top.
+            const moveY = progress * 120; // Adjust this to control exit speed
+            content.style.transform = `translateY(-${moveY}vh)`;
         });
 
         // ROTATION
-        rot.addEventListener('input', (e) => {
+        slider.addEventListener('input', (e) => {
             shirt.removeAttribute('auto-rotate');
             shirt.cameraOrbit = `${e.target.value}deg 75deg 105%`;
         });

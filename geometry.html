@@ -19,31 +19,31 @@
 
         #preloader { position: absolute; width: 0; height: 0; overflow: hidden; opacity: 0; pointer-events: none; }
 
-        /* --- 1. SITE NAVIGATION FOUNDATION --- */
+        /* --- 1. GLOBAL NAV --- */
         .site-nav {
-            position: fixed; top: 0; left: 0; width: 100%; height: 80px;
+            position: fixed; top: 0; left: 0; width: 100%; height: 70px;
             display: flex; justify-content: space-between; align-items: center;
-            padding: 0 40px; z-index: 1000;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+            padding: 0 25px; z-index: 1000;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
             pointer-events: auto;
         }
-        .nav-link { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; transition: opacity 0.2s; }
+        .nav-link { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: opacity 0.2s; }
         .nav-link:hover { opacity: 0.6; }
-        .logo { font-weight: 900; font-size: 1.2rem; letter-spacing: 0.8em; text-transform: uppercase; margin-right: -0.8em; pointer-events: none; }
+        .logo { font-weight: 900; font-size: 1.1rem; letter-spacing: 0.6em; text-transform: uppercase; margin-right: -0.6em; pointer-events: none; }
 
-        /* --- 2. ARCHIVE STAGE (The 150vh Scroll Track) --- */
+        /* --- 2. ARCHIVE STAGE (150vh) --- */
         .archive-stage {
             position: relative;
-            height: 150vh; /* Determines how long the background scrub lasts */
+            height: 150vh; 
             width: 100%;
         }
 
-        /* --- 3. STICKY INTERFACE (Locks UI in place while scrubbing) --- */
+        /* --- 3. STICKY INTERFACE --- */
         .interface-lock {
             position: sticky; top: 0;
             height: 100vh; width: 100%;
             display: flex; flex-direction: column;
-            overflow: hidden;
+            /* overflow: hidden REMOVED to fix the broken bottom cutoff on mobile */
         }
 
         #parallax-bg {
@@ -53,25 +53,25 @@
         }
         #parallax-bg::after {
             content: ''; position: absolute; inset: 0;
-            background: linear-gradient(to right, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.8) 100%);
+            background: linear-gradient(to right, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.85) 100%);
         }
 
-        /* --- 4. PRODUCT LAYOUT (Tying Model & Info Together) --- */
+        /* --- 4. PRODUCT LAYOUT --- */
         .product-grid {
             position: relative; z-index: 10;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            width: 100%; height: 100%;
-            padding: 80px 20px 20px 20px; /* Accounts for nav bar */
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+            width: 100%; height: 100vh;
+            padding: 85px 15px 2vh 15px; /* Clears the header cleanly */
         }
 
         /* 3D Model Column */
         .model-col {
-            width: 100%; height: 50vh;
-            display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+            width: 100%; height: 42vh; /* Reduced height to leave room for the terminal */
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
         model-viewer { width: 100%; height: 100%; outline: none; --progress-bar-color: transparent; }
 
-        .slider-wrap { width: 220px; text-align: center; z-index: 50; margin-bottom: 20px; }
+        .slider-wrap { width: 220px; text-align: center; z-index: 50; margin-bottom: 10px; }
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; cursor: ew-resize; height: 30px; }
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 1px; background: rgba(255,255,255,0.3); }
         input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 12px; width: 12px; border-radius: 50%; background: #fff; margin-top: -5.5px; border: none; }
@@ -79,39 +79,41 @@
         /* Info Column (The Terminal) */
         .info-col {
             width: 100%; max-width: 440px;
-            padding: 30px;
+            padding: 25px; /* Tightened for mobile */
             border-radius: 16px; background: var(--glass);
             backdrop-filter: blur(40px) saturate(150%); -webkit-backdrop-filter: blur(40px) saturate(150%);
             border: 1px solid var(--border);
         }
 
-        /* --- 5. RESPONSIVE DESKTOP (Split-Pane layout) --- */
+        /* --- 5. RESPONSIVE DESKTOP --- */
         @media (min-width: 1024px) {
-            .product-grid { flex-direction: row; justify-content: space-between; padding: 100px 8vw 40px 8vw; }
+            .site-nav { padding: 0 40px; height: 80px; }
+            .logo { font-size: 1.2rem; letter-spacing: 0.8em; margin-right: -0.8em; }
+            .product-grid { flex-direction: row; justify-content: space-between; padding: 100px 8vw 40px 8vw; align-items: center; }
             .model-col { width: 60%; height: 80vh; justify-content: center; }
             .slider-wrap { margin-bottom: 0; margin-top: -40px; }
             .info-col { width: 35%; max-width: 480px; padding: 45px; margin-left: 40px; }
         }
 
         /* --- 6. TYPOGRAPHY & UI --- */
-        .header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
-        h1 { font-size: 24px; font-weight: 900; margin: 0; letter-spacing: -0.02em; text-transform: uppercase; line-height: 1.1; }
-        .price { font-family: monospace; font-size: 16px; letter-spacing: 0.05em; }
+        .header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
+        h1 { font-size: 22px; font-weight: 900; margin: 0; letter-spacing: -0.02em; text-transform: uppercase; line-height: 1.1; }
+        .price { font-family: monospace; font-size: 15px; letter-spacing: 0.05em; opacity: 0.8; }
         
-        .desc { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 30px; }
+        .desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; margin-bottom: 25px; }
         
         .size-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 10px; display: block; }
-        .size-row { display: flex; gap: 8px; margin-bottom: 30px; }
-        .size-btn { flex: 1; border: 1px solid var(--border); background: transparent; color: white; padding: 14px 0; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .size-row { display: flex; gap: 8px; margin-bottom: 25px; }
+        .size-btn { flex: 1; border: 1px solid var(--border); background: transparent; color: white; padding: 12px 0; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; transition: 0.2s; }
         .size-btn:hover { border-color: rgba(255,255,255,0.4); }
         .size-btn.active { background: white; color: black; border-color: white; }
 
         .buy-btn { width: 100%; padding: 18px; background: white; color: black; border: none; border-radius: 8px; font-weight: 900; text-transform: uppercase; cursor: pointer; font-size: 13px; letter-spacing: 0.05em; transition: transform 0.1s; }
         .buy-btn:active { transform: scale(0.98); }
         
-        .meta-tag { font-family: monospace; font-size: 10px; color: var(--text-muted); text-align: center; margin-top: 25px; text-transform: uppercase; }
+        .meta-tag { font-family: monospace; font-size: 9px; color: var(--text-muted); text-align: center; margin-top: 20px; text-transform: uppercase; letter-spacing: 0.1em; }
 
-        /* NEXT SEGMENT (To prove the scroll still works) */
+        /* NEXT SEGMENT */
         .next-segment { height: 100vh; background: #050505; display: flex; align-items: center; justify-content: center; border-top: 1px solid var(--border); }
     </style>
 </head>
@@ -158,7 +160,7 @@
                     </div>
 
                     <button class="buy-btn">Acquire Archive</button>
-                    <div class="meta-tag">SYS.V4.0 // DOMESTIC MFG</div>
+                    <div class="meta-tag">SYS.V4.1 // STABLE COMPILE</div>
                 </aside>
 
             </div>
@@ -183,20 +185,16 @@
             const img = new Image(); img.src = src; preloader.appendChild(img);
         });
 
-        // BACKGROUND SCRUB LOGIC (Tied to the 150vh stage)
-        const stage = document.querySelector('.archive-stage');
-        
+        // ZERO-LATENCY BACKGROUND SCRUB
+        // We use raw window.scrollY so it triggers the exact millisecond you scroll.
         window.addEventListener('scroll', () => {
-            // Calculate how far we've scrolled inside the .archive-stage
-            const stageRect = stage.getBoundingClientRect();
-            // stageRect.top is 0 when the top of the stage hits the top of the viewport
-            // It goes negative as we scroll down.
+            const scrollY = window.scrollY;
             
-            // We want the scrub to finish a bit before the end of the section
-            const scrollDistance = window.innerHeight * 0.75; 
-            const scrolledPixels = Math.max(0, -stageRect.top);
+            // Defines how fast the animation finishes. 
+            // Setting this to innerHeight * 0.75 means it finishes well before the next section appears.
+            const scrubLimit = window.innerHeight * 0.75; 
             
-            const progress = Math.min(scrolledPixels / scrollDistance, 1);
+            const progress = Math.min(scrollY / scrubLimit, 1);
             const frameIdx = Math.floor(progress * (frames.length - 1));
             
             const targetBg = `url('${frames[frameIdx]}')`;

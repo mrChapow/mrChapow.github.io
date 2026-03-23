@@ -6,7 +6,7 @@
     <title>COTA LAB // ARCHIVE 001</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
-        :root { --bg: #000; --text: #fff; --dim: rgba(255,255,255,0.4); }
+        :root { --bg: #000; --text: #fff; --dim: rgba(255,255,255,0.4); --accent: #fff; }
         
         body, html { margin: 0; padding: 0; background: var(--bg); font-family: "Inter", sans-serif; color: var(--text); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
         * { box-sizing: border-box; }
@@ -15,15 +15,14 @@
         .site-nav {
             position: fixed; top: 0; width: 100%; height: 80px;
             display: flex; justify-content: space-between; align-items: center;
-            padding: 0 30px; z-index: 1000;
+            padding: 0 30px; z-index: 1000; background: linear-gradient(to bottom, black, transparent);
         }
         .logo { font-weight: 900; font-size: 1.1rem; letter-spacing: 0.8em; text-transform: uppercase; margin-right: -0.8em; }
         .nav-link { font-size: 10px; font-weight: 800; text-transform: uppercase; opacity: 0.4; letter-spacing: 0.2em; }
 
-        /* --- THE MASTER TRACK (300vh) --- */
-        .scroll-track { position: relative; height: 300vh; width: 100%; }
+        /* --- THE TRACK (Reduced to 1.5 pages) --- */
+        .scroll-track { position: relative; height: 150vh; width: 100%; }
         
-        /* The Sticky Pane: Bolted to the screen */
         .sticky-pane {
             position: sticky; top: 0;
             height: 100vh; width: 100%;
@@ -39,10 +38,10 @@
         }
         #bg-sequence::after {
             content: ''; position: absolute; inset: 0;
-            background: linear-gradient(to right, rgba(0,0,0,0.4), rgba(0,0,0,0.8));
+            background: linear-gradient(to right, rgba(0,0,0,0.6), rgba(0,0,0,0.9));
         }
 
-        /* --- STATIC UI OVERLAY --- */
+        /* --- UI OVERLAY --- */
         .static-ui {
             position: relative; z-index: 10;
             display: flex; flex-direction: column; align-items: center;
@@ -52,9 +51,9 @@
         }
 
         .model-wrap { 
-            width: 100%; height: 40vh; 
+            width: 100%; height: 35vh; 
             display: flex; flex-direction: column; align-items: center; 
-            margin-top: 60px; /* Margin under Logo */
+            margin-top: 40px;
         }
         model-viewer { width: 100%; height: 100%; outline: none; }
 
@@ -65,22 +64,30 @@
 
         .info-wrap {
             width: 100%; max-width: 400px;
-            padding: 40px 20px; text-align: center;
+            padding: 20px; text-align: center;
         }
-        h1 { font-size: 26px; font-weight: 900; text-transform: uppercase; margin: 0; }
-        .price { font-family: monospace; font-size: 15px; color: var(--dim); display: block; margin: 10px 0 25px; }
-        .desc { font-size: 12px; color: var(--dim); line-height: 1.8; margin-bottom: 30px; }
-        .buy-btn { width: 100%; padding: 18px; border: 1px solid #fff; background: transparent; color: #fff; font-weight: 900; text-transform: uppercase; cursor: pointer; letter-spacing: 0.1em; }
+        h1 { font-size: 22px; font-weight: 900; text-transform: uppercase; margin: 0; }
+        .price { font-family: monospace; font-size: 14px; color: var(--dim); display: block; margin: 5px 0 15px; }
+        
+        /* --- SIZING GRID --- */
+        .size-label { font-family: monospace; font-size: 9px; text-transform: uppercase; color: var(--dim); margin-bottom: 10px; display: block; letter-spacing: 2px; }
+        .size-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
+        .size-btn { 
+            background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #fff; 
+            padding: 10px 0; font-size: 11px; font-family: monospace; cursor: pointer; transition: 0.2s;
+        }
+        .size-btn.active { border-color: #fff; background: #fff; color: #000; }
 
-        /* DESKTOP STABILITY */
+        .buy-btn { width: 100%; padding: 18px; border: 1px solid #fff; background: transparent; color: #fff; font-weight: 900; text-transform: uppercase; cursor: pointer; letter-spacing: 0.1em; }
+        .buy-btn:hover { background: #fff; color: #000; }
+
         @media (min-width: 1024px) {
             .static-ui { flex-direction: row; justify-content: space-around; padding: 0 10vw; }
-            .model-wrap { width: 50%; height: 80vh; margin-top: 0; }
-            .info-wrap { width: 35%; text-align: left; padding: 0; }
+            .model-wrap { width: 50%; height: 70vh; margin-top: 0; }
+            .info-wrap { width: 30%; text-align: left; padding: 0; }
         }
 
-        /* SCENE 2 STARTS HERE */
-        .next-scene { height: 100vh; background: #000; border-top: 1px solid rgba(255,255,255,0.1); }
+        .next-scene { height: 50vh; background: #000; display: flex; align-items: center; justify-content: center; font-family: monospace; font-size: 10px; color: var(--dim); }
     </style>
 </head>
 <body>
@@ -88,7 +95,7 @@
     <nav class="site-nav">
         <div class="nav-link">Coll. 01</div>
         <div class="logo">Cota Lab</div>
-        <div class="nav-link">Cart (0)</div>
+        <div class="nav-link" id="cart-display">Cart (0)</div>
     </nav>
 
     <div class="scroll-track" id="master-track">
@@ -106,57 +113,92 @@
                 <div class="info-wrap">
                     <h1>CLT // ARCHIVE 001</h1>
                     <span class="price">$54.00 USD</span>
-                    <p class="desc">Domestic craft. Heavyweight 320GSM cotton. Engineered for the Charlotte metropolitan grid. Authenticated Archive.</p>
-                    <button class="buy-btn">Acquire Archive</button>
-                    <div style="font-family: monospace; font-size: 8px; margin-top: 40px; color: var(--dim); letter-spacing: 0.4em;">V5.1 // STATIC_LOCK_ACTIVE</div>
+                    
+                    <span class="size-label">Select Geometry</span>
+                    <div class="size-grid">
+                        <button class="size-btn" data-id="price_SM">S</button>
+                        <button class="size-btn" data-id="price_MD">M</button>
+                        <button class="size-btn" data-id="price_LG">L</button>
+                        <button class="size-btn" data-id="price_XL">XL</button>
+                    </div>
+
+                    <button class="buy-btn" id="add-to-cart">Acquire Archive</button>
+                    
+                    <div style="font-family: monospace; font-size: 8px; margin-top: 30px; color: var(--dim); letter-spacing: 0.4em;">
+                        V5.1 // PAYMENTS_ENCRYPTED // CART_READY
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <section class="next-scene"></section>
+    <section class="next-scene">END OF ARCHIVE // COTA LAB 2026</section>
 
     <script>
         const bg = document.getElementById('bg-sequence');
         const track = document.getElementById('master-track');
         const shirt = document.getElementById('shirt');
         const rot = document.getElementById('rot');
+        
+        // --- CART LOGIC ---
+        let cart = [];
+        const cartDisplay = document.getElementById('cart-display');
+        const sizeBtns = document.querySelectorAll('.size-btn');
+        const buyBtn = document.getElementById('add-to-cart');
 
-        const frames = [
-            'street-view.jpg', 
-            'street-view 1.jpg', 
-            'street-view 2.jpg', 
-            'street-view 3.jpg', 
-            'street-view 4.jpg', 
-            'street-view 5.jpg'
-        ];
+        sizeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                sizeBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
 
-        // PRELOAD
+        buyBtn.addEventListener('click', () => {
+            const activeSize = document.querySelector('.size-btn.active');
+            if(!activeSize) {
+                alert("SELECT SIZE TO INITIALIZE TRANSFER");
+                return;
+            }
+
+            const priceId = activeSize.dataset.id;
+            const existing = cart.find(i => i.price === priceId);
+            
+            if(existing) {
+                existing.quantity += 1;
+            } else {
+                cart.push({ price: priceId, quantity: 1 });
+            }
+
+            const totalItems = cart.reduce((sum, i) => sum + i.quantity, 0);
+            cartDisplay.innerText = `Cart (${totalItems})`;
+            
+            // Visual feedback
+            buyBtn.innerText = "Added to Archive";
+            setTimeout(() => { buyBtn.innerText = "Acquire Archive"; }, 1000);
+            
+            console.log("Current Cart State:", cart);
+            // When ready, call Stripe redirect here using 'cart' array
+        });
+
+        // --- SCROLL ANIMATION ---
+        const frames = ['street-view.jpg', 'street-view 1.jpg', 'street-view 2.jpg', 'street-view 3.jpg', 'street-view 4.jpg', 'street-view 5.jpg'];
         frames.forEach(src => { const img = new Image(); img.src = src; });
 
         window.addEventListener('scroll', () => {
             const scrollY = window.scrollY;
             const trackHeight = track.offsetHeight;
             const viewHeight = window.innerHeight;
-            
-            // Progress through the total 300vh track (0 to 1)
             const totalProgress = Math.min(Math.max(scrollY / (trackHeight - viewHeight), 0), 1);
-
-            // Play the sequence over the first 66% of the scroll
-            // This ensures images finish while the UI is still sticky.
-            const sequenceProgress = Math.min(totalProgress / 0.66, 1);
-            const frameIdx = Math.floor(sequenceProgress * (frames.length - 1));
-            
+            const frameIdx = Math.floor(totalProgress * (frames.length - 1));
             bg.style.backgroundImage = `url('${frames[frameIdx]}')`;
         });
 
-        // ROTATION
         rot.addEventListener('input', (e) => {
             shirt.removeAttribute('auto-rotate');
             shirt.cameraOrbit = `${e.target.value}deg 75deg 105%`;
         });
 
-        // TEXTURE
+        // Texture Loading
         shirt.addEventListener('load', () => {
             const material = shirt.model.materials[0];
             const applyTex = async () => {

@@ -49,7 +49,7 @@
             background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 100%);
         }
 
-        /* --- GLASS PANEL UI --- */
+        /* --- UI PANEL --- */
         .static-ui {
             position: relative; z-index: 10;
             display: flex; flex-direction: column; align-items: center;
@@ -63,8 +63,7 @@
             display: flex; flex-direction: column; align-items: center; 
             margin-bottom: 20px;
         }
-        /* Enable interaction here */
-        model-viewer { width: 100%; height: 100%; outline: none; }
+        model-viewer { width: 100%; height: 100%; outline: none; --poster-color: transparent; }
 
         .info-panel {
             width: 100%; max-width: 380px;
@@ -130,10 +129,15 @@
                         src="Tshirt.glb" 
                         camera-orbit="0deg 75deg 105%" 
                         auto-rotate 
+                        rotation-speed="0.5"
                         camera-controls 
+                        touch-action="pan-y"
+                        interaction-prompt="auto"
                         enable-pan="false"
-                        min-camera-orbit="auto 0deg auto"
-                        max-camera-orbit="auto 100deg auto">
+                        min-camera-orbit="auto 65deg 80%"
+                        max-camera-orbit="auto 95deg 130%"
+                        interpolation-decay="200"
+                        shadow-intensity="1">
                     </model-viewer>
                 </div>
 
@@ -155,7 +159,7 @@
                     </div>
                     
                     <div class="status-tag" style="margin-top: 30px;">
-                        V6.0 // PAYMENTS_LIVE // ENCRYPTED
+                        V7.0 // PAYMENTS_READY // PERSISTENT_SESSION
                     </div>
                 </div>
             </div>
@@ -176,6 +180,7 @@
         const payBtn = document.getElementById('checkout-trigger');
 
         let cart = [];
+        let resetTimer;
 
         // --- SIZE SELECTION ---
         sizeBtns.forEach(btn => {
@@ -210,9 +215,14 @@
             setTimeout(() => { addBtn.innerText = "Add to Cart"; }, 800);
         });
 
-        // --- STRIPE REDIRECT ---
-        payBtn.addEventListener('click', () => {
-            alert("Redirecting to Stripe secure checkout...");
+        // --- CAMERA RESET LOGIC ---
+        const resetCamera = () => {
+            shirt.cameraOrbit = "0deg 75deg 105%";
+        };
+
+        shirt.addEventListener('interaction-set', () => {
+            clearTimeout(resetTimer);
+            resetTimer = setTimeout(resetCamera, 5000); // Reset after 5s of no touch
         });
 
         // --- SCROLL ANIMATION ---
@@ -237,6 +247,10 @@
                 }
             };
             applyTex();
+        });
+        
+        payBtn.addEventListener('click', () => {
+            alert("Redirecting to Stripe secure checkout...");
         });
     </script>
 </body>

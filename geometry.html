@@ -59,10 +59,11 @@
         }
 
         .model-wrap { 
-            width: 100%; height: 40vh; 
+            width: 100%; height: 45vh; 
             display: flex; flex-direction: column; align-items: center; 
             margin-bottom: 20px;
         }
+        /* Enable interaction here */
         model-viewer { width: 100%; height: 100%; outline: none; }
 
         .info-panel {
@@ -114,7 +115,7 @@
 <body>
 
     <nav class="site-nav">
-        <div class="nav-link">Manifest 001</div>
+        <div class="nav-link">Collection 01</div>
         <div class="logo">Cota Lab</div>
         <div class="nav-link" id="cart-count">Cart (0)</div>
     </nav>
@@ -125,7 +126,15 @@
             
             <div class="static-ui">
                 <div class="model-wrap">
-                    <model-viewer id="shirt" src="Tshirt.glb" camera-orbit="0deg 75deg 105%" auto-rotate interaction-prompt="none" touch-action="none"></model-viewer>
+                    <model-viewer id="shirt" 
+                        src="Tshirt.glb" 
+                        camera-orbit="0deg 75deg 105%" 
+                        auto-rotate 
+                        camera-controls 
+                        enable-pan="false"
+                        min-camera-orbit="auto 0deg auto"
+                        max-camera-orbit="auto 100deg auto">
+                    </model-viewer>
                 </div>
 
                 <div class="info-panel">
@@ -154,7 +163,7 @@
     </div>
 
     <section class="footer-scene">
-        <div class="status-tag">END OF MANIFEST // COTA LAB 2026</div>
+        <div class="status-tag">COTA LAB 2026 // ALL RIGHTS RESERVED</div>
     </section>
 
     <script>
@@ -193,7 +202,6 @@
                 cart.push({ price: priceId, quantity: 1 });
             }
 
-            // UI Feedback
             const total = cart.reduce((sum, i) => sum + i.quantity, 0);
             cartCount.innerText = `Cart (${total})`;
             payBtn.style.display = "block";
@@ -202,13 +210,12 @@
             setTimeout(() => { addBtn.innerText = "Add to Cart"; }, 800);
         });
 
-        // --- STRIPE REDIRECT (Placeholder) ---
+        // --- STRIPE REDIRECT ---
         payBtn.addEventListener('click', () => {
             alert("Redirecting to Stripe secure checkout...");
-            // Logic: stripe.redirectToCheckout({ lineItems: cart ... });
         });
 
-        // --- SCROLL ANIMATION (Optimized for 1.5 pages) ---
+        // --- SCROLL ANIMATION ---
         const frames = ['street-view.jpg', 'street-view 1.jpg', 'street-view 2.jpg', 'street-view 3.jpg', 'street-view 4.jpg', 'street-view 5.jpg'];
         
         window.addEventListener('scroll', () => {

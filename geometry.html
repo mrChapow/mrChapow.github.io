@@ -24,7 +24,6 @@
             overflow-x: hidden; -webkit-font-smoothing: antialiased;
         }
 
-        /* NAV */
         nav {
             position: fixed; top: 0; left: 0; right: 0; height: 60px;
             display: flex; align-items: center; justify-content: space-between;
@@ -50,14 +49,9 @@
         }
         .cart-dot.on { opacity: 1; transform: scale(1); }
 
-        /* SCROLL TRACK */
         .track { height: 260vh; position: relative; }
-        .sticky {
-            position: sticky; top: 0; height: 100vh;
-            overflow: hidden;
-        }
+        .sticky { position: sticky; top: 0; height: 100vh; overflow: hidden; }
 
-        /* BG */
         #bg {
             position: absolute; inset: 0;
             background-size: cover; background-position: center;
@@ -69,7 +63,6 @@
             background: linear-gradient(150deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.8) 100%);
         }
 
-        /* MAIN LAYOUT */
         .stage {
             position: relative; z-index: 10;
             height: 100vh;
@@ -78,21 +71,18 @@
             padding: 70px 20px 20px; gap: 16px;
         }
 
-        /* MODEL */
         .model-box {
             width: 100%; height: 42vh;
             position: relative;
         }
-        /* Preloaded hidden viewer */
         .model-box model-viewer {
             position: absolute; inset: 0;
             width: 100%; height: 100%;
             outline: none; --poster-color: transparent;
-            transition: opacity 0.35s ease;
+            transition: opacity 0.3s ease;
         }
         .model-box model-viewer.hidden { opacity: 0; pointer-events: none; }
 
-        /* PANEL */
         .panel {
             width: 100%; max-width: 390px;
             background: var(--glass);
@@ -106,101 +96,43 @@
             letter-spacing: 0.35em; text-transform: uppercase;
             color: var(--dim); margin-bottom: 6px;
         }
-        .title {
-            font-family: "Bebas Neue", sans-serif;
-            font-size: 2rem; letter-spacing: 0.1em; line-height: 1;
-        }
-        .price-row {
-            display: flex; align-items: center; gap: 10px; margin: 6px 0 18px;
-        }
+        .title { font-family: "Bebas Neue", sans-serif; font-size: 2rem; letter-spacing: 0.1em; line-height: 1; }
+        .price-row { display: flex; align-items: center; gap: 10px; margin: 6px 0 18px; }
         .price { font-family: "Space Mono", monospace; font-size: 12px; }
-        .badge {
-            font-family: "Space Mono", monospace; font-size: 7px;
-            background: var(--accent); color: #000;
-            padding: 2px 7px; letter-spacing: 0.15em; text-transform: uppercase;
-        }
+        .badge { font-family: "Space Mono", monospace; font-size: 7px; background: var(--accent); color: #000; padding: 2px 7px; letter-spacing: 0.15em; text-transform: uppercase; }
         .rule { height: 1px; background: var(--border); margin-bottom: 16px; }
-        .label {
-            font-family: "Space Mono", monospace; font-size: 7.5px;
-            text-transform: uppercase; letter-spacing: 0.28em;
-            color: var(--dim); display: block; margin-bottom: 8px;
-        }
+        .label { font-family: "Space Mono", monospace; font-size: 7.5px; text-transform: uppercase; letter-spacing: 0.28em; color: var(--dim); display: block; margin-bottom: 8px; }
 
-        /* SWATCHES */
         .swatches { display: flex; align-items: center; gap: 9px; margin-bottom: 16px; }
-        .swatch {
-            width: 22px; height: 22px; border-radius: 50%;
-            border: 2px solid transparent; cursor: pointer;
-            transition: border-color 0.2s, transform 0.15s;
-        }
+        .swatch { width: 22px; height: 22px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; transition: border-color 0.2s, transform 0.15s; }
         .swatch:hover { transform: scale(1.15); }
         .swatch.on { border-color: var(--accent); }
         .sw-black { background: #111; box-shadow: 0 0 0 1px rgba(255,255,255,0.15); }
         .sw-white { background: #efefef; box-shadow: 0 0 0 1px rgba(255,255,255,0.3); }
-        .swatch-name {
-            font-family: "Space Mono", monospace; font-size: 8px;
-            color: var(--dim); letter-spacing: 0.2em; text-transform: uppercase;
-        }
+        .swatch-name { font-family: "Space Mono", monospace; font-size: 8px; color: var(--dim); letter-spacing: 0.2em; text-transform: uppercase; }
 
-        /* SIZES */
         .sizes { display: grid; grid-template-columns: repeat(4,1fr); gap: 5px; margin-bottom: 16px; }
-        .sz {
-            background: transparent; border: 1px solid var(--border);
-            color: var(--dim); padding: 10px 0;
-            font-family: "Space Mono", monospace; font-size: 10px;
-            cursor: pointer; transition: all 0.15s; letter-spacing: 0.05em;
-        }
+        .sz { background: transparent; border: 1px solid var(--border); color: var(--dim); padding: 10px 0; font-family: "Space Mono", monospace; font-size: 10px; cursor: pointer; transition: all 0.15s; letter-spacing: 0.05em; }
         .sz:hover { border-color: rgba(240,237,232,0.6); color: var(--text); }
         .sz.on { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); }
 
-        /* BUTTONS */
         .btns { display: flex; flex-direction: column; gap: 6px; }
-        .btn {
-            width: 100%; padding: 13px;
-            font-family: "DM Sans", sans-serif; font-weight: 900;
-            font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em;
-            cursor: pointer; border: none; transition: all 0.2s;
-        }
-        .btn-outline {
-            background: transparent; border: 1px solid rgba(240,237,232,0.6); color: var(--text);
-        }
+        .btn { width: 100%; padding: 13px; font-family: "DM Sans", sans-serif; font-weight: 900; font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em; cursor: pointer; border: none; transition: all 0.2s; }
+        .btn-outline { background: transparent; border: 1px solid rgba(240,237,232,0.6); color: var(--text); }
         .btn-outline:hover { background: var(--text); color: var(--bg); }
         .btn-outline.ok { border-color: var(--accent); color: var(--accent); }
         .btn-fill { background: var(--accent); color: #000; display: none; }
         .btn-fill:hover { background: #d8ff20; }
 
-        .live {
-            display: flex; align-items: center; gap: 6px; margin-top: 16px;
-        }
-        .live-dot {
-            width: 5px; height: 5px; border-radius: 50%; background: var(--accent);
-            animation: blink 2s ease-in-out infinite; flex-shrink: 0;
-        }
+        .live { display: flex; align-items: center; gap: 6px; margin-top: 16px; }
+        .live-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); animation: blink 2s ease-in-out infinite; flex-shrink: 0; }
         @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
-        .live-text {
-            font-family: "Space Mono", monospace; font-size: 7.5px;
-            color: var(--dim); letter-spacing: 0.2em; text-transform: uppercase;
-        }
+        .live-text { font-family: "Space Mono", monospace; font-size: 7.5px; color: var(--dim); letter-spacing: 0.2em; text-transform: uppercase; }
 
-        /* CHIPS */
-        .chips {
-            position: absolute; bottom: 0; left: 0; right: 0;
-            z-index: 20; padding: 0 20px 28px;
-            display: flex; flex-wrap: wrap; gap: 4px;
-            justify-content: center;
-            opacity: 0; transform: translateY(14px);
-            transition: opacity 0.5s ease, transform 0.5s ease;
-            pointer-events: none;
-        }
+        .chips { position: absolute; bottom: 0; left: 0; right: 0; z-index: 20; padding: 0 20px 28px; display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; opacity: 0; transform: translateY(14px); transition: opacity 0.5s ease, transform 0.5s ease; pointer-events: none; }
         .chips.on { opacity: 1; transform: none; pointer-events: auto; }
-        .chip {
-            font-family: "Space Mono", monospace; font-size: 7.5px;
-            letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim);
-            background: rgba(5,5,5,0.6); border: 1px solid var(--border);
-            backdrop-filter: blur(8px); padding: 5px 10px;
-        }
+        .chip { font-family: "Space Mono", monospace; font-size: 7.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); background: rgba(5,5,5,0.6); border: 1px solid var(--border); backdrop-filter: blur(8px); padding: 5px 10px; }
 
-        /* DESKTOP */
         @media (min-width: 1024px) {
             .stage { flex-direction: row; gap: 60px; padding: 0 8vw; }
             .model-box { width: 50%; height: 74vh; }
@@ -208,29 +140,13 @@
             .chips { padding: 0 8vw 40px; }
         }
 
-        /* FOOTER */
-        footer {
-            height: 36vh; background: #020202;
-            border-top: 1px solid var(--border);
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center; gap: 8px;
-        }
+        footer { height: 36vh; background: #020202; border-top: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
         .footer-logo { font-family: "Bebas Neue", sans-serif; font-size: 1.8rem; letter-spacing: 0.3em; opacity: 0.1; }
         .footer-tag { font-family: "Space Mono", monospace; font-size: 7.5px; color: var(--dim); letter-spacing: 0.28em; text-transform: uppercase; }
 
-        /* MODAL */
-        .overlay {
-            position: fixed; inset: 0; z-index: 500;
-            background: rgba(0,0,0,0.88); backdrop-filter: blur(10px);
-            display: flex; align-items: center; justify-content: center;
-            opacity: 0; pointer-events: none; transition: opacity 0.25s;
-        }
+        .overlay { position: fixed; inset: 0; z-index: 500; background: rgba(0,0,0,0.88); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
         .overlay.on { opacity: 1; pointer-events: auto; }
-        .modal {
-            width: min(440px, 92vw); background: #0a0a0a;
-            border: 1px solid var(--border); border-radius: 2px; padding: 28px;
-            transform: translateY(16px); transition: transform 0.28s ease;
-        }
+        .modal { width: min(440px, 92vw); background: #0a0a0a; border: 1px solid var(--border); border-radius: 2px; padding: 28px; transform: translateY(16px); transition: transform 0.28s ease; }
         .overlay.on .modal { transform: none; }
         .modal-title { font-family: "Bebas Neue", sans-serif; font-size: 1.6rem; letter-spacing: 0.12em; margin-bottom: 20px; }
         .cart-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
@@ -245,22 +161,10 @@
         .modal-back:hover { color: var(--text); }
         .stripe-note { font-family: "Space Mono", monospace; font-size: 7px; color: var(--dim); text-align: center; margin-top: 10px; letter-spacing: 0.15em; text-transform: uppercase; }
 
-        /* TOAST */
-        .toast {
-            position: fixed; bottom: 22px; left: 50%;
-            transform: translateX(-50%) translateY(60px);
-            background: var(--text); color: var(--bg);
-            font-family: "Space Mono", monospace; font-size: 8px;
-            letter-spacing: 0.2em; text-transform: uppercase;
-            padding: 10px 16px; border-radius: 2px; z-index: 999;
-            transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
-            white-space: nowrap; pointer-events: none;
-        }
+        .toast { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%) translateY(60px); background: var(--text); color: var(--bg); font-family: "Space Mono", monospace; font-size: 8px; letter-spacing: 0.2em; text-transform: uppercase; padding: 10px 16px; border-radius: 2px; z-index: 999; transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1); white-space: nowrap; pointer-events: none; }
         .toast.on { transform: translateX(-50%) translateY(0); }
 
-        @keyframes shake {
-            0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)}
-        }
+        @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
     </style>
 </head>
 <body>
@@ -276,10 +180,17 @@
 <div class="track" id="track">
     <div class="sticky">
         <div id="bg"></div>
-
         <div class="stage">
-            <!-- MODEL BOX: two viewers stacked, swap visibility -->
-            <div class="model-box" id="model-box">
+            <div class="model-box">
+                <!--
+                    Both viewers load in parallel.
+                    On load, JS applies the correct texture to each.
+                    Swap = opacity toggle only. Zero reload, zero lag.
+
+                    TEXTURE MAP:
+                    - blackshirt.glb  → BlackTshirt.png
+                    - whiteshirt.glb  → CLT4shirttrans.png
+                -->
                 <model-viewer id="mv-black"
                     src="blackshirt.glb"
                     camera-orbit="0deg 75deg 105%"
@@ -308,7 +219,6 @@
                 </model-viewer>
             </div>
 
-            <!-- PANEL -->
             <div class="panel">
                 <div class="eyebrow">Cota Lab // Collection 01</div>
                 <div class="title">CLT // 001</div>
@@ -361,7 +271,6 @@
     <div class="footer-tag">© 2026 Cota Lab // All Rights Reserved</div>
 </footer>
 
-<!-- MODAL -->
 <div class="overlay" id="overlay">
     <div class="modal">
         <div class="modal-title">Your Cart</div>
@@ -382,13 +291,16 @@
 
 <script>
     const PRICE = 54.00;
+    const BG = ['street-view.jpg','street-view 1.jpg','street-view 2.jpg','street-view 3.jpg','street-view 4.jpg','street-view 5.jpg'];
 
-    const BG = [
-        'street-view.jpg','street-view 1.jpg','street-view 2.jpg',
-        'street-view 3.jpg','street-view 4.jpg','street-view 5.jpg'
-    ];
+    // ── TEXTURE CONFIG ──
+    // This is what gets applied to each GLB on load via JS.
+    // Change these filenames to update the graphic on either shirt.
+    const TEXTURES = {
+        black: 'BlackTshirt.png',
+        white: 'CLT4shirttrans.png'
+    };
 
-    // ── ELEMENTS ──
     const bg         = document.getElementById('bg');
     const track      = document.getElementById('track');
     const mvBlack    = document.getElementById('mv-black');
@@ -408,16 +320,52 @@
     const swatchName = document.getElementById('swatch-name');
     const sizeBtns   = document.querySelectorAll('.sz');
 
-    let cart         = [];
-    let activeColor  = 'black';
+    let cart = [];
+    let activeColor = 'black';
 
-    // ── BACKGROUND ──
+    // ── BG ──
     bg.style.backgroundImage = `url('${BG[0]}')`;
     bg.dataset.f = '0';
 
-    // ── COLORWAY SWAP ──
-    // Both GLBs load in parallel on page load (browser caches them).
-    // Swap is just opacity toggle — zero reload, zero lag.
+    // ── APPLY TEXTURE TO A MODEL-VIEWER ──
+    async function applyTexture(mv, textureFile) {
+        try {
+            const model = mv.model;
+            if (!model) return;
+
+            // Try every material until one accepts the texture
+            for (const mat of model.materials) {
+                const pbr = mat.pbrMetallicRoughness;
+                const tex = await mv.createTexture(textureFile);
+
+                if (pbr.baseColorTexture) {
+                    // Slot exists — set it directly
+                    pbr.baseColorTexture.setTexture(tex);
+                    console.log(`[COTA] ✓ ${textureFile} → ${mat.name} (baseColorTexture)`);
+                    return; // done
+                } else {
+                    // No slot — set base color factor to white so texture shows,
+                    // then assign texture. Works on most Principled BSDF exports.
+                    pbr.setBaseColorFactor([1, 1, 1, 1]);
+                    // Attempt direct texture assignment via model-viewer internal API
+                    if (typeof pbr.baseColorTexture !== 'undefined') {
+                        pbr.baseColorTexture.setTexture(tex);
+                        console.log(`[COTA] ✓ ${textureFile} → forced onto ${mat.name}`);
+                        return;
+                    }
+                }
+            }
+            console.warn(`[COTA] Could not apply ${textureFile} — no compatible texture slot found.`);
+        } catch(e) {
+            console.warn('[COTA] Texture error:', e);
+        }
+    }
+
+    // ── ON LOAD: apply textures to both ──
+    mvBlack.addEventListener('load', () => applyTexture(mvBlack, TEXTURES.black));
+    mvWhite.addEventListener('load', () => applyTexture(mvWhite, TEXTURES.white));
+
+    // ── COLORWAY SWAP (opacity only, no reload) ──
     swatches.forEach(s => {
         s.addEventListener('click', () => {
             const c = s.dataset.color;
@@ -426,53 +374,38 @@
             swatches.forEach(x => x.classList.remove('on'));
             s.classList.add('on');
             swatchName.textContent = c.charAt(0).toUpperCase() + c.slice(1);
-
-            if (c === 'black') {
-                mvBlack.classList.remove('hidden');
-                mvWhite.classList.add('hidden');
-            } else {
-                mvWhite.classList.remove('hidden');
-                mvBlack.classList.add('hidden');
-            }
+            mvBlack.classList.toggle('hidden', c !== 'black');
+            mvWhite.classList.toggle('hidden', c !== 'white');
         });
     });
 
     // ── SIZE ──
     sizeBtns.forEach(b => {
-        b.addEventListener('click', () => {
-            sizeBtns.forEach(x => x.classList.remove('on'));
-            b.classList.add('on');
-        });
+        b.addEventListener('click', () => { sizeBtns.forEach(x => x.classList.remove('on')); b.classList.add('on'); });
     });
 
-    // ── ADD TO CART ──
+    // ── CART ──
     addBtn.addEventListener('click', () => {
         const active = document.querySelector('.sz.on');
         if (!active) {
             showToast('Select a size first');
-            const grid = document.querySelector('.sizes');
-            grid.style.animation = 'none';
-            grid.offsetHeight;
-            grid.style.animation = 'shake 0.35s ease';
+            const g = document.querySelector('.sizes');
+            g.style.animation = 'none'; g.offsetHeight; g.style.animation = 'shake 0.35s ease';
             return;
         }
-        const size = active.dataset.size;
-        const pid  = active.dataset.pid;
-        const key  = `${size}-${activeColor}`;
+        const size = active.dataset.size, pid = active.dataset.pid;
+        const key = `${size}-${activeColor}`;
         const item = cart.find(i => i.key === key);
-        if (item) { item.qty++; } else { cart.push({ key, size, color: activeColor, pid, qty: 1 }); }
-
+        if (item) item.qty++; else cart.push({ key, size, color: activeColor, pid, qty: 1 });
         updateCart();
-        addBtn.textContent = '✓ Added';
-        addBtn.classList.add('ok');
+        addBtn.textContent = '✓ Added'; addBtn.classList.add('ok');
         setTimeout(() => { addBtn.textContent = 'Add to Cart'; addBtn.classList.remove('ok'); }, 1200);
         showToast(`${activeColor.charAt(0).toUpperCase()+activeColor.slice(1)} · Size ${size} added`);
     });
 
     function updateCart() {
-        const n = cart.reduce((s,i) => s + i.qty, 0);
-        cartDot.textContent = n;
-        cartDot.classList.toggle('on', n > 0);
+        const n = cart.reduce((s,i) => s+i.qty, 0);
+        cartDot.textContent = n; cartDot.classList.toggle('on', n > 0);
         checkoutBtn.style.display = n > 0 ? 'block' : 'none';
     }
 
@@ -481,24 +414,15 @@
         cartLines.innerHTML = '';
         let total = 0;
         cart.forEach(item => {
-            const cost = item.qty * PRICE;
-            total += cost;
-            const row = document.createElement('div');
-            row.className = 'cart-row';
-            row.innerHTML = `
-                <div>
-                    <div class="cart-name">CLT // 001</div>
-                    <div class="cart-sub">${item.color} · Size ${item.size} · Qty ${item.qty}</div>
-                </div>
-                <div class="cart-price">$${cost.toFixed(2)}</div>`;
+            const cost = item.qty * PRICE; total += cost;
+            const row = document.createElement('div'); row.className = 'cart-row';
+            row.innerHTML = `<div><div class="cart-name">CLT // 001</div><div class="cart-sub">${item.color} · Size ${item.size} · Qty ${item.qty}</div></div><div class="cart-price">$${cost.toFixed(2)}</div>`;
             cartLines.appendChild(row);
         });
         totalPrice.textContent = `$${total.toFixed(2)}`;
-        overlay.classList.add('on');
-        document.body.style.overflow = 'hidden';
+        overlay.classList.add('on'); document.body.style.overflow = 'hidden';
     }
     function closeModal() { overlay.classList.remove('on'); document.body.style.overflow = ''; }
-
     checkoutBtn.addEventListener('click', openModal);
     cartNav.addEventListener('click', () => { if (cart.length) openModal(); });
     modalBack.addEventListener('click', closeModal);
@@ -507,7 +431,6 @@
     // ── STRIPE ──
     stripeBtn.addEventListener('click', () => {
         /*
-        ── WIRE UP WHEN READY ──────────────────────────────
         1. Add to <head>: <script src="https://js.stripe.com/v3/"><\/script>
         2. Replace 'pk_test_PLACEHOLDER' with your publishable key
         3. Replace price_X_PLACEHOLDER on .sz buttons with real Price IDs
@@ -520,7 +443,6 @@
             successUrl: window.location.origin + '/success.html',
             cancelUrl: window.location.href,
         }).then(r => { if (r.error) showToast(r.error.message); });
-        ────────────────────────────────────────────────────
         */
         showToast('Stripe not yet configured');
     });
@@ -528,21 +450,13 @@
     // ── SCROLL ──
     let tick = false;
     window.addEventListener('scroll', () => { if (!tick) { requestAnimationFrame(onScroll); tick = true; } });
-
     function onScroll() {
-        const y   = window.scrollY;
-        const max = track.offsetHeight - window.innerHeight;
-        const p   = Math.min(Math.max(y / max, 0), 1);
-
+        const y = window.scrollY, max = track.offsetHeight - window.innerHeight;
+        const p = Math.min(Math.max(y / max, 0), 1);
         bg.style.transform = `translateY(${y * 0.2}px) scale(1.08)`;
-        bg.style.filter    = `brightness(${1 - p * 0.28})`;
-
+        bg.style.filter = `brightness(${1 - p * 0.28})`;
         const fi = Math.min(Math.floor(p * BG.length), BG.length - 1);
-        if (bg.dataset.f !== String(fi)) {
-            bg.style.backgroundImage = `url('${BG[fi]}')`;
-            bg.dataset.f = String(fi);
-        }
-
+        if (bg.dataset.f !== String(fi)) { bg.style.backgroundImage = `url('${BG[fi]}')`; bg.dataset.f = String(fi); }
         chips.classList.toggle('on', p > 0.5);
         tick = false;
     }
@@ -553,10 +467,7 @@
         ['mouseup','touchend'].forEach(e => {
             mv.addEventListener(e, () => {
                 clearTimeout(camTimer);
-                camTimer = setTimeout(() => {
-                    mvBlack.cameraOrbit = '0deg 75deg 105%';
-                    mvWhite.cameraOrbit = '0deg 75deg 105%';
-                }, 5000);
+                camTimer = setTimeout(() => { mv.cameraOrbit = '0deg 75deg 105%'; }, 5000);
             });
         });
     });
@@ -564,14 +475,10 @@
     // ── TOAST ──
     let toastTimer;
     function showToast(msg) {
-        toastEl.textContent = msg;
-        toastEl.classList.add('on');
+        toastEl.textContent = msg; toastEl.classList.add('on');
         clearTimeout(toastTimer);
         toastTimer = setTimeout(() => toastEl.classList.remove('on'), 2400);
     }
 </script>
 </body>
 </html>
-
-
-

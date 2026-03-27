@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>COTA LAB // CLT 001</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&family=DM+Sans:wght@300;400;600;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&family=DM+Sans:wght@900&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #050505;
@@ -14,623 +13,366 @@
             --dim: rgba(240,237,232,0.35);
             --glass: rgba(240,237,232,0.04);
             --border: rgba(240,237,232,0.1);
-            --border-active: rgba(240,237,232,0.7);
             --accent: #c8ff00;
-            --accent-dim: rgba(200,255,0,0.13);
+            --accent-dim: rgba(200,255,0,0.12);
         }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-        html { scroll-behavior: smooth; }
-
         body, html {
-            background: var(--bg);
+            background: var(--bg); color: var(--text);
             font-family: "DM Sans", sans-serif;
-            color: var(--text);
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden; -webkit-font-smoothing: antialiased;
         }
 
-        /* ── NAV ── */
-        .site-nav {
-            position: fixed; top: 0; width: 100%; height: 64px;
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 0 28px; z-index: 1000;
-            background: rgba(5,5,5,0.7);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+        /* NAV */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; height: 60px;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 24px; z-index: 100;
+            background: rgba(5,5,5,0.75);
+            backdrop-filter: blur(16px);
             border-bottom: 1px solid var(--border);
         }
-        .logo {
-            font-family: "Bebas Neue", sans-serif;
-            font-size: 1.25rem; letter-spacing: 0.28em; color: var(--text);
+        .logo { font-family: "Bebas Neue", sans-serif; font-size: 1.2rem; letter-spacing: 0.28em; }
+        .nav-item {
+            font-family: "Space Mono", monospace; font-size: 8px;
+            text-transform: uppercase; letter-spacing: 0.2em;
+            color: var(--dim); cursor: pointer;
+            display: flex; align-items: center; gap: 7px;
         }
-        .nav-tag {
-            font-family: "Space Mono", monospace;
-            font-size: 9px; font-weight: 700;
-            text-transform: uppercase; color: var(--dim);
-            letter-spacing: 0.18em; cursor: pointer;
-            transition: color 0.2s;
-            display: flex; align-items: center; gap: 8px;
-            user-select: none;
-        }
-        .nav-tag:hover { color: var(--text); }
-        .cart-bubble {
+        .cart-dot {
             background: var(--accent); color: #000;
-            font-family: "Space Mono", monospace;
-            font-size: 8px; font-weight: 700;
-            width: 17px; height: 17px; border-radius: 50%;
+            font-size: 8px; font-weight: 700; font-family: "Space Mono", monospace;
+            width: 16px; height: 16px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             opacity: 0; transform: scale(0);
-            transition: opacity 0.3s cubic-bezier(0.34,1.56,0.64,1),
-                        transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+            transition: opacity 0.3s, transform 0.3s;
         }
-        .cart-bubble.visible { opacity: 1; transform: scale(1); }
+        .cart-dot.on { opacity: 1; transform: scale(1); }
 
-        /* ── PAGE LOADER ── */
-        #page-loader {
-            position: fixed; inset: 0; z-index: 9000;
-            background: var(--bg);
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center; gap: 20px;
-            transition: opacity 0.6s ease;
-        }
-        #page-loader.hidden { opacity: 0; pointer-events: none; }
-        .loader-logo {
-            font-family: "Bebas Neue", sans-serif;
-            font-size: 2.5rem; letter-spacing: 0.3em;
-            opacity: 0.9;
-            animation: loaderPulse 1.4s ease-in-out infinite;
-        }
-        @keyframes loaderPulse { 0%,100%{opacity:0.9} 50%{opacity:0.3} }
-        .loader-bar-track {
-            width: 120px; height: 1px;
-            background: var(--border);
-            position: relative; overflow: hidden;
-        }
-        .loader-bar {
-            position: absolute; left: -100%; top: 0;
-            width: 100%; height: 100%;
-            background: var(--accent);
-            animation: loaderSlide 1.2s ease-in-out infinite;
-        }
-        @keyframes loaderSlide {
-            0% { left: -100%; }
-            50% { left: 0%; }
-            100% { left: 100%; }
-        }
-        .loader-tag {
-            font-family: "Space Mono", monospace;
-            font-size: 8px; color: var(--dim);
-            letter-spacing: 0.3em; text-transform: uppercase;
-        }
-
-        /* ── SCROLL TRACK ── */
-        .scroll-track { position: relative; height: 280vh; width: 100%; }
-        .sticky-pane {
-            position: sticky; top: 0;
-            height: 100vh; width: 100%;
+        /* SCROLL TRACK */
+        .track { height: 260vh; position: relative; }
+        .sticky {
+            position: sticky; top: 0; height: 100vh;
             overflow: hidden;
         }
 
-        /* ── BACKGROUND ── */
-        #bg-layer {
-            position: absolute; inset: 0; z-index: 0;
-            background-size: cover; background-position: center;
-            transform-origin: center;
-            will-change: transform, filter;
-        }
-        #bg-layer::after {
-            content: '';
+        /* BG */
+        #bg {
             position: absolute; inset: 0;
-            background: linear-gradient(
-                160deg,
-                rgba(0,0,0,0.82) 0%,
-                rgba(0,0,0,0.35) 45%,
-                rgba(0,0,0,0.85) 100%
-            );
-        }
-
-        /* Grain */
-        #bg-grain {
-            position: absolute; inset: 0; z-index: 1;
-            pointer-events: none; opacity: 0.032;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-            background-size: 200px;
-        }
-
-        /* ── LAYOUT ── */
-        .static-ui {
-            position: relative; z-index: 10;
-            display: flex; flex-direction: column; align-items: center;
-            justify-content: center;
-            height: 100vh;
-            padding: 80px 20px 20px;
-            gap: 18px;
-        }
-
-        /* ── MODEL WRAP ── */
-        .model-wrap {
-            width: 100%; height: 43vh;
-            display: flex; align-items: center; justify-content: center;
-            position: relative;
+            background-size: cover; background-position: center;
             will-change: transform;
         }
-
-        /* White shirt gets a soft halo so it's visible on dark bg */
-        .model-wrap::before {
+        #bg::after {
             content: '';
-            position: absolute;
-            width: 60%; height: 80%;
-            border-radius: 50%;
-            background: radial-gradient(ellipse, rgba(255,255,255,0) 0%, transparent 70%);
-            transition: background 0.6s ease;
-            pointer-events: none; z-index: 0;
-        }
-        .model-wrap.white-mode::before {
-            background: radial-gradient(ellipse, rgba(255,255,255,0.07) 0%, transparent 70%);
-        }
-
-        /* Fade overlay during GLB swap */
-        .model-fade {
             position: absolute; inset: 0;
-            pointer-events: none; opacity: 0;
-            transition: opacity 0.35s ease;
-            z-index: 3; border-radius: 4px;
-            background: var(--bg);
+            background: linear-gradient(150deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.8) 100%);
         }
-        .model-fade.fading { opacity: 1; }
 
-        model-viewer {
+        /* MAIN LAYOUT */
+        .stage {
+            position: relative; z-index: 10;
+            height: 100vh;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 70px 20px 20px; gap: 16px;
+        }
+
+        /* MODEL */
+        .model-box {
+            width: 100%; height: 42vh;
+            position: relative;
+        }
+        /* Preloaded hidden viewer */
+        .model-box model-viewer {
+            position: absolute; inset: 0;
             width: 100%; height: 100%;
-            outline: none;
-            --poster-color: transparent;
-            position: relative; z-index: 1;
+            outline: none; --poster-color: transparent;
+            transition: opacity 0.35s ease;
         }
+        .model-box model-viewer.hidden { opacity: 0; pointer-events: none; }
 
-        /* ── INFO PANEL ── */
-        .info-panel {
-            width: 100%; max-width: 400px;
-            padding: 24px 26px;
-            background: rgba(10,10,10,0.55);
-            backdrop-filter: blur(28px);
-            -webkit-backdrop-filter: blur(28px);
+        /* PANEL */
+        .panel {
+            width: 100%; max-width: 390px;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
             border: 1px solid var(--border);
             border-radius: 2px;
+            padding: 22px 24px;
         }
-
-        .item-eyebrow {
-            font-family: "Space Mono", monospace;
-            font-size: 7.5px; letter-spacing: 0.38em;
-            text-transform: uppercase; color: var(--dim);
-            margin-bottom: 7px;
+        .eyebrow {
+            font-family: "Space Mono", monospace; font-size: 7.5px;
+            letter-spacing: 0.35em; text-transform: uppercase;
+            color: var(--dim); margin-bottom: 6px;
         }
-        .item-title {
+        .title {
             font-family: "Bebas Neue", sans-serif;
-            font-size: 2.1rem; letter-spacing: 0.1em;
-            line-height: 1; margin-bottom: 2px;
+            font-size: 2rem; letter-spacing: 0.1em; line-height: 1;
         }
         .price-row {
-            display: flex; align-items: center; gap: 10px;
-            margin-bottom: 20px;
+            display: flex; align-items: center; gap: 10px; margin: 6px 0 18px;
         }
-        .price {
-            font-family: "Space Mono", monospace;
-            font-size: 12px; color: var(--text);
+        .price { font-family: "Space Mono", monospace; font-size: 12px; }
+        .badge {
+            font-family: "Space Mono", monospace; font-size: 7px;
+            background: var(--accent); color: #000;
+            padding: 2px 7px; letter-spacing: 0.15em; text-transform: uppercase;
         }
-        .price-tag {
-            font-family: "Space Mono", monospace;
-            font-size: 7px; color: #000;
-            background: var(--accent); padding: 3px 8px;
-            letter-spacing: 0.15em; text-transform: uppercase;
-        }
-        .divider {
-            width: 100%; height: 1px;
-            background: var(--border); margin-bottom: 16px;
-        }
-        .section-label {
-            font-family: "Space Mono", monospace;
-            font-size: 7.5px; text-transform: uppercase;
-            color: var(--dim); margin-bottom: 9px;
-            display: block; letter-spacing: 0.28em;
+        .rule { height: 1px; background: var(--border); margin-bottom: 16px; }
+        .label {
+            font-family: "Space Mono", monospace; font-size: 7.5px;
+            text-transform: uppercase; letter-spacing: 0.28em;
+            color: var(--dim); display: block; margin-bottom: 8px;
         }
 
-        /* ── COLOR SWATCHES ── */
-        .color-row {
-            display: flex; align-items: center; gap: 10px;
-            margin-bottom: 18px;
-        }
+        /* SWATCHES */
+        .swatches { display: flex; align-items: center; gap: 9px; margin-bottom: 16px; }
         .swatch {
-            width: 24px; height: 24px; border-radius: 50%;
-            cursor: pointer; border: 2px solid transparent;
-            transition: border-color 0.25s, transform 0.2s, box-shadow 0.25s;
-            flex-shrink: 0; position: relative;
+            width: 22px; height: 22px; border-radius: 50%;
+            border: 2px solid transparent; cursor: pointer;
+            transition: border-color 0.2s, transform 0.15s;
         }
         .swatch:hover { transform: scale(1.15); }
-        .swatch.active {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px var(--accent-dim);
-        }
-        .swatch-black {
-            background: #0e0e0e;
-            box-shadow: 0 0 0 1px rgba(255,255,255,0.18);
-        }
-        .swatch-black.active {
-            box-shadow: 0 0 0 1px rgba(255,255,255,0.18), 0 0 0 3px var(--accent-dim);
-        }
-        .swatch-white {
-            background: #efefef;
-            box-shadow: 0 0 0 1px rgba(255,255,255,0.35);
-        }
-        .swatch-white.active {
-            box-shadow: 0 0 0 1px rgba(255,255,255,0.35), 0 0 0 3px var(--accent-dim);
-        }
-        .swatch-label {
-            font-family: "Space Mono", monospace;
-            font-size: 8px; color: var(--dim);
-            letter-spacing: 0.22em; text-transform: uppercase;
+        .swatch.on { border-color: var(--accent); }
+        .sw-black { background: #111; box-shadow: 0 0 0 1px rgba(255,255,255,0.15); }
+        .sw-white { background: #efefef; box-shadow: 0 0 0 1px rgba(255,255,255,0.3); }
+        .swatch-name {
+            font-family: "Space Mono", monospace; font-size: 8px;
+            color: var(--dim); letter-spacing: 0.2em; text-transform: uppercase;
         }
 
-        /* ── SIZE GRID ── */
-        .size-grid {
-            display: grid; grid-template-columns: repeat(4, 1fr);
-            gap: 5px; margin-bottom: 18px;
-        }
-        .size-btn {
-            background: transparent;
-            border: 1px solid var(--border);
+        /* SIZES */
+        .sizes { display: grid; grid-template-columns: repeat(4,1fr); gap: 5px; margin-bottom: 16px; }
+        .sz {
+            background: transparent; border: 1px solid var(--border);
             color: var(--dim); padding: 10px 0;
-            font-family: "Space Mono", monospace;
-            font-size: 10px; cursor: pointer;
-            transition: all 0.18s; letter-spacing: 0.08em;
+            font-family: "Space Mono", monospace; font-size: 10px;
+            cursor: pointer; transition: all 0.15s; letter-spacing: 0.05em;
         }
-        .size-btn:hover { border-color: var(--border-active); color: var(--text); }
-        .size-btn.active {
-            border-color: var(--accent);
-            background: var(--accent-dim);
-            color: var(--accent);
-        }
+        .sz:hover { border-color: rgba(240,237,232,0.6); color: var(--text); }
+        .sz.on { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); }
 
-        /* ── BUTTONS ── */
-        .action-stack { display: flex; flex-direction: column; gap: 7px; }
+        /* BUTTONS */
+        .btns { display: flex; flex-direction: column; gap: 6px; }
         .btn {
-            width: 100%; padding: 14px;
-            font-family: "DM Sans", sans-serif;
-            font-weight: 900; font-size: 10.5px;
-            text-transform: uppercase; letter-spacing: 0.2em;
-            cursor: pointer; border: none; transition: all 0.22s;
+            width: 100%; padding: 13px;
+            font-family: "DM Sans", sans-serif; font-weight: 900;
+            font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em;
+            cursor: pointer; border: none; transition: all 0.2s;
         }
-        .btn-ghost {
-            background: transparent;
-            border: 1px solid var(--border-active);
-            color: var(--text);
+        .btn-outline {
+            background: transparent; border: 1px solid rgba(240,237,232,0.6); color: var(--text);
         }
-        .btn-ghost:hover { background: var(--text); color: var(--bg); }
-        .btn-ghost.confirmed { border-color: var(--accent); color: var(--accent); }
-        .btn-primary {
-            background: var(--accent); color: #000; display: none;
-        }
-        .btn-primary:hover { background: #d8ff20; }
+        .btn-outline:hover { background: var(--text); color: var(--bg); }
+        .btn-outline.ok { border-color: var(--accent); color: var(--accent); }
+        .btn-fill { background: var(--accent); color: #000; display: none; }
+        .btn-fill:hover { background: #d8ff20; }
 
-        .status-row {
-            display: flex; align-items: center; gap: 7px; margin-top: 18px;
+        .live {
+            display: flex; align-items: center; gap: 6px; margin-top: 16px;
         }
-        .status-dot {
-            width: 5px; height: 5px; border-radius: 50%;
-            background: var(--accent);
-            animation: pulse 2.2s ease-in-out infinite;
-            flex-shrink: 0;
+        .live-dot {
+            width: 5px; height: 5px; border-radius: 50%; background: var(--accent);
+            animation: blink 2s ease-in-out infinite; flex-shrink: 0;
         }
-        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.25} }
-        .status-text {
-            font-family: "Space Mono", monospace;
-            font-size: 7.5px; color: var(--dim);
-            letter-spacing: 0.2em; text-transform: uppercase;
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+        .live-text {
+            font-family: "Space Mono", monospace; font-size: 7.5px;
+            color: var(--dim); letter-spacing: 0.2em; text-transform: uppercase;
         }
 
-        /* ── SCROLL REVEAL CHIPS ── */
-        .reveal-block {
+        /* CHIPS */
+        .chips {
             position: absolute; bottom: 0; left: 0; right: 0;
             z-index: 20; padding: 0 20px 28px;
-            opacity: 0; transform: translateY(16px);
-            transition: opacity 0.55s ease, transform 0.55s ease;
+            display: flex; flex-wrap: wrap; gap: 4px;
+            justify-content: center;
+            opacity: 0; transform: translateY(14px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
             pointer-events: none;
         }
-        .reveal-block.visible {
-            opacity: 1; transform: translateY(0);
-            pointer-events: auto;
-        }
-        .detail-row {
-            display: flex; gap: 4px; flex-wrap: wrap;
-            max-width: 640px; margin: 0 auto;
-        }
-        .detail-chip {
-            font-family: "Space Mono", monospace;
-            font-size: 7.5px; letter-spacing: 0.2em;
-            text-transform: uppercase; color: var(--dim);
-            background: rgba(10,10,10,0.5);
-            border: 1px solid var(--border);
-            backdrop-filter: blur(12px);
-            padding: 6px 11px;
+        .chips.on { opacity: 1; transform: none; pointer-events: auto; }
+        .chip {
+            font-family: "Space Mono", monospace; font-size: 7.5px;
+            letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim);
+            background: rgba(5,5,5,0.6); border: 1px solid var(--border);
+            backdrop-filter: blur(8px); padding: 5px 10px;
         }
 
-        /* ── SCROLL HINT ── */
-        .scroll-hint {
-            position: absolute; bottom: 28px; left: 50%;
-            transform: translateX(-50%);
-            z-index: 20;
-            display: flex; flex-direction: column; align-items: center; gap: 6px;
-            opacity: 1; transition: opacity 0.5s ease;
-        }
-        .scroll-hint.hidden { opacity: 0; pointer-events: none; }
-        .scroll-hint-label {
-            font-family: "Space Mono", monospace;
-            font-size: 7px; color: var(--dim);
-            letter-spacing: 0.3em; text-transform: uppercase;
-        }
-        .scroll-arrow {
-            width: 1px; height: 28px;
-            background: linear-gradient(to bottom, var(--dim), transparent);
-            animation: scrollBounce 1.6s ease-in-out infinite;
-        }
-        @keyframes scrollBounce {
-            0%,100%{ transform: translateY(0); opacity:1; }
-            50%{ transform: translateY(6px); opacity:0.4; }
-        }
-
-        /* ── DESKTOP ── */
+        /* DESKTOP */
         @media (min-width: 1024px) {
-            .static-ui {
-                flex-direction: row; justify-content: center;
-                align-items: center; gap: 64px; padding: 0 8vw;
-            }
-            .model-wrap { width: 50%; height: 74vh; }
-            .info-panel { width: 350px; flex-shrink: 0; }
-            .reveal-block { padding: 0 8vw 44px; }
+            .stage { flex-direction: row; gap: 60px; padding: 0 8vw; }
+            .model-box { width: 50%; height: 74vh; }
+            .panel { width: 340px; flex-shrink: 0; }
+            .chips { padding: 0 8vw 40px; }
         }
 
-        /* ── FOOTER ── */
-        .footer-scene {
-            height: 38vh; background: #020202;
-            display: flex; align-items: center; justify-content: center;
+        /* FOOTER */
+        footer {
+            height: 36vh; background: #020202;
             border-top: 1px solid var(--border);
-            flex-direction: column; gap: 10px;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 8px;
         }
-        .footer-logo {
-            font-family: "Bebas Neue", sans-serif;
-            font-size: 1.9rem; letter-spacing: 0.32em; opacity: 0.1;
-        }
-        .footer-tag {
-            font-family: "Space Mono", monospace;
-            font-size: 7.5px; color: var(--dim);
-            letter-spacing: 0.3em; text-transform: uppercase;
-        }
+        .footer-logo { font-family: "Bebas Neue", sans-serif; font-size: 1.8rem; letter-spacing: 0.3em; opacity: 0.1; }
+        .footer-tag { font-family: "Space Mono", monospace; font-size: 7.5px; color: var(--dim); letter-spacing: 0.28em; text-transform: uppercase; }
 
-        /* ── MODAL ── */
-        .modal-overlay {
-            position: fixed; inset: 0; z-index: 2000;
-            background: rgba(0,0,0,0.88);
-            backdrop-filter: blur(12px);
+        /* MODAL */
+        .overlay {
+            position: fixed; inset: 0; z-index: 500;
+            background: rgba(0,0,0,0.88); backdrop-filter: blur(10px);
             display: flex; align-items: center; justify-content: center;
-            opacity: 0; pointer-events: none; transition: opacity 0.28s;
+            opacity: 0; pointer-events: none; transition: opacity 0.25s;
         }
-        .modal-overlay.open { opacity: 1; pointer-events: auto; }
+        .overlay.on { opacity: 1; pointer-events: auto; }
         .modal {
-            width: min(460px, 92vw);
-            background: #0a0a0a;
-            border: 1px solid var(--border);
-            border-radius: 2px; padding: 30px;
-            transform: translateY(18px);
-            transition: transform 0.28s cubic-bezier(0.34,1.2,0.64,1);
+            width: min(440px, 92vw); background: #0a0a0a;
+            border: 1px solid var(--border); border-radius: 2px; padding: 28px;
+            transform: translateY(16px); transition: transform 0.28s ease;
         }
-        .modal-overlay.open .modal { transform: translateY(0); }
-        .modal-title {
-            font-family: "Bebas Neue", sans-serif;
-            font-size: 1.7rem; letter-spacing: 0.12em; margin-bottom: 22px;
-        }
-        .cart-line {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 13px 0; border-bottom: 1px solid var(--border);
-        }
-        .cart-line-name { font-size: 12px; font-weight: 600; }
-        .cart-line-sub {
-            font-family: "Space Mono", monospace;
-            font-size: 7.5px; color: var(--dim); margin-top: 3px;
-            letter-spacing: 0.12em; text-transform: uppercase;
-        }
-        .cart-line-price {
-            font-family: "Space Mono", monospace; font-size: 11px;
-            flex-shrink: 0; margin-left: 12px;
-        }
-        .modal-total {
-            display: flex; justify-content: space-between;
-            align-items: center; padding: 16px 0 22px;
-        }
-        .modal-total-label {
-            font-family: "Space Mono", monospace;
-            font-size: 8px; text-transform: uppercase;
-            letter-spacing: 0.22em; color: var(--dim);
-        }
-        .modal-total-price {
-            font-family: "Space Mono", monospace; font-size: 13px;
-        }
-        .modal-actions { display: flex; flex-direction: column; gap: 7px; }
-        .modal-close {
-            background: none; border: none;
-            font-family: "Space Mono", monospace;
-            font-size: 7.5px; color: var(--dim);
-            letter-spacing: 0.22em; text-transform: uppercase;
-            cursor: pointer; padding: 10px; text-align: center;
-            transition: color 0.2s;
-        }
-        .modal-close:hover { color: var(--text); }
-        .stripe-note {
-            font-family: "Space Mono", monospace;
-            font-size: 7px; color: var(--dim); text-align: center;
-            margin-top: 10px; letter-spacing: 0.15em; text-transform: uppercase;
-        }
+        .overlay.on .modal { transform: none; }
+        .modal-title { font-family: "Bebas Neue", sans-serif; font-size: 1.6rem; letter-spacing: 0.12em; margin-bottom: 20px; }
+        .cart-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
+        .cart-name { font-size: 12px; font-weight: 600; }
+        .cart-sub { font-family: "Space Mono", monospace; font-size: 7.5px; color: var(--dim); margin-top: 2px; letter-spacing: 0.1em; text-transform: uppercase; }
+        .cart-price { font-family: "Space Mono", monospace; font-size: 11px; flex-shrink: 0; margin-left: 10px; }
+        .total-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 0 20px; }
+        .total-label { font-family: "Space Mono", monospace; font-size: 8px; color: var(--dim); letter-spacing: 0.22em; text-transform: uppercase; }
+        .total-price { font-family: "Space Mono", monospace; font-size: 13px; }
+        .modal-btns { display: flex; flex-direction: column; gap: 6px; }
+        .modal-back { background: none; border: none; font-family: "Space Mono", monospace; font-size: 7.5px; color: var(--dim); letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; padding: 9px; text-align: center; transition: color 0.2s; }
+        .modal-back:hover { color: var(--text); }
+        .stripe-note { font-family: "Space Mono", monospace; font-size: 7px; color: var(--dim); text-align: center; margin-top: 10px; letter-spacing: 0.15em; text-transform: uppercase; }
 
-        /* ── TOAST ── */
+        /* TOAST */
         .toast {
-            position: fixed; bottom: 24px; left: 50%;
-            transform: translateX(-50%) translateY(70px);
+            position: fixed; bottom: 22px; left: 50%;
+            transform: translateX(-50%) translateY(60px);
             background: var(--text); color: var(--bg);
-            font-family: "Space Mono", monospace;
-            font-size: 8.5px; letter-spacing: 0.2em; text-transform: uppercase;
-            padding: 11px 18px; border-radius: 2px; z-index: 9999;
-            transition: transform 0.38s cubic-bezier(0.34,1.56,0.64,1);
+            font-family: "Space Mono", monospace; font-size: 8px;
+            letter-spacing: 0.2em; text-transform: uppercase;
+            padding: 10px 16px; border-radius: 2px; z-index: 999;
+            transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
             white-space: nowrap; pointer-events: none;
         }
-        .toast.show { transform: translateX(-50%) translateY(0); }
+        .toast.on { transform: translateX(-50%) translateY(0); }
 
-        /* ── ANIMATIONS ── */
         @keyframes shake {
-            0%,100%{transform:translateX(0)}
-            20%{transform:translateX(-5px)}
-            40%{transform:translateX(5px)}
-            60%{transform:translateX(-3px)}
-            80%{transform:translateX(3px)}
-        }
-
-        /* Entry animation for info panel */
-        .info-panel {
-            animation: panelEntry 0.8s cubic-bezier(0.16,1,0.3,1) both;
-            animation-delay: 0.3s;
-        }
-        @keyframes panelEntry {
-            from { opacity:0; transform:translateY(16px); }
-            to   { opacity:1; transform:translateY(0); }
+            0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)}
         }
     </style>
 </head>
 <body>
 
-<!-- PAGE LOADER -->
-<div id="page-loader">
-    <div class="loader-logo">Cota Lab</div>
-    <div class="loader-bar-track"><div class="loader-bar"></div></div>
-    <div class="loader-tag">Loading Collection 01</div>
-</div>
-
-<nav class="site-nav">
-    <div class="nav-tag">Collection 01</div>
+<nav>
+    <div class="nav-item">Collection 01</div>
     <div class="logo">Cota Lab</div>
-    <div class="nav-tag" id="cart-icon">
-        Cart
-        <div class="cart-bubble" id="cart-bubble">0</div>
+    <div class="nav-item" id="cart-nav">
+        Cart <div class="cart-dot" id="cart-dot">0</div>
     </div>
 </nav>
 
-<div class="scroll-track" id="master-track">
-    <div class="sticky-pane">
+<div class="track" id="track">
+    <div class="sticky">
+        <div id="bg"></div>
 
-        <div id="bg-layer"></div>
-        <div id="bg-grain"></div>
-
-        <div class="static-ui">
-
-            <!-- MODEL -->
-            <div class="model-wrap" id="model-wrap">
-                <div class="model-fade" id="model-fade"></div>
-                <model-viewer id="shirt"
+        <div class="stage">
+            <!-- MODEL BOX: two viewers stacked, swap visibility -->
+            <div class="model-box" id="model-box">
+                <model-viewer id="mv-black"
                     src="blackshirt.glb"
                     camera-orbit="0deg 75deg 105%"
-                    auto-rotate
-                    rotation-per-second="12deg"
-                    camera-controls
-                    touch-action="none"
-                    disable-zoom
-                    interaction-prompt="none"
-                    enable-pan="false"
+                    auto-rotate rotation-per-second="12deg"
+                    camera-controls touch-action="none" disable-zoom
+                    interaction-prompt="none" enable-pan="false"
                     min-camera-orbit="auto 60deg 80%"
                     max-camera-orbit="auto 100deg 130%"
                     interpolation-decay="200"
-                    shadow-intensity="1"
-                    shadow-softness="0.8"
-                    exposure="1.1"
-                    environment-image="neutral">
+                    shadow-intensity="1" shadow-softness="0.8"
+                    exposure="1.0">
+                </model-viewer>
+
+                <model-viewer id="mv-white"
+                    src="whiteshirt.glb"
+                    camera-orbit="0deg 75deg 105%"
+                    auto-rotate rotation-per-second="12deg"
+                    camera-controls touch-action="none" disable-zoom
+                    interaction-prompt="none" enable-pan="false"
+                    min-camera-orbit="auto 60deg 80%"
+                    max-camera-orbit="auto 100deg 130%"
+                    interpolation-decay="200"
+                    shadow-intensity="1" shadow-softness="0.8"
+                    exposure="1.0"
+                    class="hidden">
                 </model-viewer>
             </div>
 
             <!-- PANEL -->
-            <div class="info-panel">
-                <div class="item-eyebrow">Cota Lab // Collection 01</div>
-                <div class="item-title">CLT // 001</div>
-
+            <div class="panel">
+                <div class="eyebrow">Cota Lab // Collection 01</div>
+                <div class="title">CLT // 001</div>
                 <div class="price-row">
                     <span class="price">$54.00 USD</span>
-                    <span class="price-tag">In Stock</span>
+                    <span class="badge">In Stock</span>
+                </div>
+                <div class="rule"></div>
+
+                <span class="label">Colorway</span>
+                <div class="swatches">
+                    <div class="swatch sw-black on" data-color="black"></div>
+                    <div class="swatch sw-white" data-color="white"></div>
+                    <span class="swatch-name" id="swatch-name">Black</span>
                 </div>
 
-                <div class="divider"></div>
-
-                <span class="section-label">Colorway</span>
-                <div class="color-row">
-                    <div class="swatch swatch-black active" data-color="black" title="Black"></div>
-                    <div class="swatch swatch-white" data-color="white" title="White"></div>
-                    <span class="swatch-label" id="swatch-label">Black</span>
+                <span class="label">Size</span>
+                <div class="sizes">
+                    <button class="sz" data-size="S"  data-pid="price_S_PLACEHOLDER">S</button>
+                    <button class="sz" data-size="M"  data-pid="price_M_PLACEHOLDER">M</button>
+                    <button class="sz" data-size="L"  data-pid="price_L_PLACEHOLDER">L</button>
+                    <button class="sz" data-size="XL" data-pid="price_XL_PLACEHOLDER">XL</button>
                 </div>
 
-                <span class="section-label">Size</span>
-                <div class="size-grid">
-                    <button class="size-btn" data-size="S"  data-price-id="price_S_PLACEHOLDER">S</button>
-                    <button class="size-btn" data-size="M"  data-price-id="price_M_PLACEHOLDER">M</button>
-                    <button class="size-btn" data-size="L"  data-price-id="price_L_PLACEHOLDER">L</button>
-                    <button class="size-btn" data-size="XL" data-price-id="price_XL_PLACEHOLDER">XL</button>
+                <div class="btns">
+                    <button class="btn btn-outline" id="add-btn">Add to Cart</button>
+                    <button class="btn btn-fill"    id="checkout-btn">Review & Checkout →</button>
                 </div>
 
-                <div class="action-stack">
-                    <button class="btn btn-ghost" id="add-to-cart">Add to Cart</button>
-                    <button class="btn btn-primary" id="checkout-trigger">Review & Checkout →</button>
-                </div>
-
-                <div class="status-row">
-                    <div class="status-dot"></div>
-                    <span class="status-text">Secure checkout via Stripe</span>
+                <div class="live">
+                    <div class="live-dot"></div>
+                    <span class="live-text">Secure checkout via Stripe</span>
                 </div>
             </div>
         </div>
 
-        <!-- Scroll hint — hides after scrolling -->
-        <div class="scroll-hint" id="scroll-hint">
-            <span class="scroll-hint-label">Scroll</span>
-            <div class="scroll-arrow"></div>
+        <div class="chips" id="chips">
+            <div class="chip">100% Cotton</div>
+            <div class="chip">Heavyweight 280gsm</div>
+            <div class="chip">Unisex Fit</div>
+            <div class="chip">Screen Printed</div>
+            <div class="chip">Limited Run</div>
+            <div class="chip">Ships 5–10 Days</div>
         </div>
-
-        <!-- Detail chips revealed on scroll -->
-        <div class="reveal-block" id="detail-reveal">
-            <div class="detail-row">
-                <div class="detail-chip">100% Cotton</div>
-                <div class="detail-chip">Heavyweight 280gsm</div>
-                <div class="detail-chip">Unisex Fit</div>
-                <div class="detail-chip">Screen Printed</div>
-                <div class="detail-chip">Limited Run</div>
-                <div class="detail-chip">Ships 5–10 Days</div>
-            </div>
-        </div>
-
     </div>
 </div>
 
-<section class="footer-scene">
+<footer>
     <div class="footer-logo">Cota Lab</div>
     <div class="footer-tag">© 2026 Cota Lab // All Rights Reserved</div>
-</section>
+</footer>
 
-<!-- CHECKOUT MODAL -->
-<div class="modal-overlay" id="modal-overlay">
+<!-- MODAL -->
+<div class="overlay" id="overlay">
     <div class="modal">
         <div class="modal-title">Your Cart</div>
         <div id="cart-lines"></div>
-        <div class="modal-total">
-            <span class="modal-total-label">Total</span>
-            <span class="modal-total-price" id="modal-total">$0.00</span>
+        <div class="total-row">
+            <span class="total-label">Total</span>
+            <span class="total-price" id="total-price">$0.00</span>
         </div>
-        <div class="modal-actions">
-            <button class="btn btn-primary" id="stripe-checkout-btn" style="display:block;">
-                Proceed to Payment →
-            </button>
-            <button class="modal-close" id="modal-close">← Continue Shopping</button>
+        <div class="modal-btns">
+            <button class="btn btn-fill" id="stripe-btn" style="display:block;">Proceed to Payment →</button>
+            <button class="modal-back" id="modal-back">← Continue Shopping</button>
         </div>
         <div class="stripe-note">⚡ Payments processed securely by Stripe</div>
     </div>
@@ -639,337 +381,197 @@
 <div class="toast" id="toast"></div>
 
 <script>
-    // ═══════════════════════════════════════════════
-    // CONFIG — swap values when going live
-    // ═══════════════════════════════════════════════
-    const PRICE_PER_UNIT = 54.00;
-    const TEXTURE_FILE   = 'CLT4shirttrans.png';
+    const PRICE = 54.00;
 
-    const GLB_FILES = {
-        black: 'blackshirt.glb',
-        white: 'whiteshirt.glb'
-    };
-
-    // Exposure per colorway — white needs more light to pop on dark bg
-    const EXPOSURE = {
-        black: '1.1',
-        white: '1.8'
-    };
-
-    const BG_FRAMES = [
-        'street-view.jpg',
-        'street-view 1.jpg',
-        'street-view 2.jpg',
-        'street-view 3.jpg',
-        'street-view 4.jpg',
-        'street-view 5.jpg'
+    const BG = [
+        'street-view.jpg','street-view 1.jpg','street-view 2.jpg',
+        'street-view 3.jpg','street-view 4.jpg','street-view 5.jpg'
     ];
 
-    // ═══════════════════════════════════════════════
-    // STATE
-    // ═══════════════════════════════════════════════
+    // ── ELEMENTS ──
+    const bg         = document.getElementById('bg');
+    const track      = document.getElementById('track');
+    const mvBlack    = document.getElementById('mv-black');
+    const mvWhite    = document.getElementById('mv-white');
+    const chips      = document.getElementById('chips');
+    const cartDot    = document.getElementById('cart-dot');
+    const cartNav    = document.getElementById('cart-nav');
+    const addBtn     = document.getElementById('add-btn');
+    const checkoutBtn= document.getElementById('checkout-btn');
+    const overlay    = document.getElementById('overlay');
+    const cartLines  = document.getElementById('cart-lines');
+    const totalPrice = document.getElementById('total-price');
+    const modalBack  = document.getElementById('modal-back');
+    const stripeBtn  = document.getElementById('stripe-btn');
+    const toastEl    = document.getElementById('toast');
+    const swatches   = document.querySelectorAll('.swatch');
+    const swatchName = document.getElementById('swatch-name');
+    const sizeBtns   = document.querySelectorAll('.sz');
+
     let cart         = [];
-    let currentColor = 'black';
-    let isSwapping   = false;
-    let modelLoaded  = false;
+    let activeColor  = 'black';
 
-    // ═══════════════════════════════════════════════
-    // ELEMENTS
-    // ═══════════════════════════════════════════════
-    const loader       = document.getElementById('page-loader');
-    const bgLayer      = document.getElementById('bg-layer');
-    const track        = document.getElementById('master-track');
-    const shirt        = document.getElementById('shirt');
-    const modelFade    = document.getElementById('model-fade');
-    const modelWrap    = document.getElementById('model-wrap');
-    const detailReveal = document.getElementById('detail-reveal');
-    const scrollHint   = document.getElementById('scroll-hint');
-    const cartBubble   = document.getElementById('cart-bubble');
-    const cartIcon     = document.getElementById('cart-icon');
-    const addBtn       = document.getElementById('add-to-cart');
-    const checkoutBtn  = document.getElementById('checkout-trigger');
-    const modalOverlay = document.getElementById('modal-overlay');
-    const cartLinesEl  = document.getElementById('cart-lines');
-    const modalTotal   = document.getElementById('modal-total');
-    const modalClose   = document.getElementById('modal-close');
-    const stripeBtn    = document.getElementById('stripe-checkout-btn');
-    const toastEl      = document.getElementById('toast');
-    const swatches     = document.querySelectorAll('.swatch');
-    const swatchLabel  = document.getElementById('swatch-label');
-    const sizeBtns     = document.querySelectorAll('.size-btn');
+    // ── BACKGROUND ──
+    bg.style.backgroundImage = `url('${BG[0]}')`;
+    bg.dataset.f = '0';
 
-    // ═══════════════════════════════════════════════
-    // PAGE LOADER — dismiss when model is ready
-    // ═══════════════════════════════════════════════
-    bgLayer.style.backgroundImage = `url('${BG_FRAMES[0]}')`;
-    bgLayer.dataset.currentFrame  = '0';
+    // ── COLORWAY SWAP ──
+    // Both GLBs load in parallel on page load (browser caches them).
+    // Swap is just opacity toggle — zero reload, zero lag.
+    swatches.forEach(s => {
+        s.addEventListener('click', () => {
+            const c = s.dataset.color;
+            if (c === activeColor) return;
+            activeColor = c;
+            swatches.forEach(x => x.classList.remove('on'));
+            s.classList.add('on');
+            swatchName.textContent = c.charAt(0).toUpperCase() + c.slice(1);
 
-    shirt.addEventListener('load', () => {
-        if (!modelLoaded) {
-            modelLoaded = true;
-            applyTexture();
-            setTimeout(() => { loader.classList.add('hidden'); }, 400);
-        } else {
-            applyTexture();
-        }
-    });
-
-    // Fallback — dismiss loader after 5s regardless
-    setTimeout(() => loader.classList.add('hidden'), 5000);
-
-    // ═══════════════════════════════════════════════
-    // TEXTURE
-    // ═══════════════════════════════════════════════
-    async function applyTexture() {
-        try {
-            const material = shirt.model?.materials?.[0];
-            if (!material) { console.warn('[COTA] No material found'); return; }
-
-            console.log('[COTA] Materials:', shirt.model.materials.map(m => m.name));
-
-            const tex = await shirt.createTexture(TEXTURE_FILE);
-            const pbr = material.pbrMetallicRoughness;
-
-            if (pbr.baseColorTexture) {
-                pbr.baseColorTexture.setTexture(tex);
-                console.log('[COTA] ✓ Texture applied');
+            if (c === 'black') {
+                mvBlack.classList.remove('hidden');
+                mvWhite.classList.add('hidden');
             } else {
-                console.warn('[COTA] No baseColorTexture slot — add a texture node in Blender material');
+                mvWhite.classList.remove('hidden');
+                mvBlack.classList.add('hidden');
             }
-        } catch(e) {
-            console.warn('[COTA] Texture error:', e);
-        }
-    }
-
-    // ═══════════════════════════════════════════════
-    // COLORWAY SWAP
-    // ═══════════════════════════════════════════════
-    function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
-
-    async function swapColorway(color) {
-        if (isSwapping || color === currentColor) return;
-        isSwapping = true;
-
-        // Fade out
-        modelFade.classList.add('fading');
-        await wait(350);
-
-        // Swap GLB + exposure
-        shirt.setAttribute('exposure', EXPOSURE[color]);
-        shirt.src = GLB_FILES[color];
-        currentColor = color;
-
-        // Toggle white halo
-        modelWrap.classList.toggle('white-mode', color === 'white');
-
-        // Wait for load (applyTexture fires automatically via 'load' listener)
-        await new Promise(resolve => shirt.addEventListener('load', resolve, { once: true }));
-        await wait(80);
-
-        // Fade in
-        modelFade.classList.remove('fading');
-        isSwapping = false;
-    }
-
-    // ═══════════════════════════════════════════════
-    // SWATCHES
-    // ═══════════════════════════════════════════════
-    swatches.forEach(swatch => {
-        swatch.addEventListener('click', () => {
-            const color = swatch.dataset.color;
-            if (color === currentColor || isSwapping) return;
-            swatches.forEach(s => s.classList.remove('active'));
-            swatch.classList.add('active');
-            swatchLabel.textContent = color.charAt(0).toUpperCase() + color.slice(1);
-            swapColorway(color);
         });
     });
 
-    // ═══════════════════════════════════════════════
-    // SIZE
-    // ═══════════════════════════════════════════════
-    sizeBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            sizeBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+    // ── SIZE ──
+    sizeBtns.forEach(b => {
+        b.addEventListener('click', () => {
+            sizeBtns.forEach(x => x.classList.remove('on'));
+            b.classList.add('on');
         });
     });
 
-    // ═══════════════════════════════════════════════
-    // CART
-    // ═══════════════════════════════════════════════
+    // ── ADD TO CART ──
     addBtn.addEventListener('click', () => {
-        const activeSize = document.querySelector('.size-btn.active');
-        if (!activeSize) {
+        const active = document.querySelector('.sz.on');
+        if (!active) {
             showToast('Select a size first');
-            const grid = document.querySelector('.size-grid');
+            const grid = document.querySelector('.sizes');
             grid.style.animation = 'none';
             grid.offsetHeight;
-            grid.style.animation = 'shake 0.4s ease';
+            grid.style.animation = 'shake 0.35s ease';
             return;
         }
+        const size = active.dataset.size;
+        const pid  = active.dataset.pid;
+        const key  = `${size}-${activeColor}`;
+        const item = cart.find(i => i.key === key);
+        if (item) { item.qty++; } else { cart.push({ key, size, color: activeColor, pid, qty: 1 }); }
 
-        const size     = activeSize.dataset.size;
-        const priceId  = activeSize.dataset.priceId;
-        const key      = `${size}-${currentColor}`;
-        const existing = cart.find(i => i.key === key);
-
-        if (existing) { existing.quantity += 1; }
-        else { cart.push({ key, size, color: currentColor, priceId, quantity: 1 }); }
-
-        updateCartUI();
-
+        updateCart();
         addBtn.textContent = '✓ Added';
-        addBtn.classList.add('confirmed');
-        setTimeout(() => {
-            addBtn.textContent = 'Add to Cart';
-            addBtn.classList.remove('confirmed');
-        }, 1300);
-
-        const label = currentColor.charAt(0).toUpperCase() + currentColor.slice(1);
-        showToast(`${label} · Size ${size} added to cart`);
+        addBtn.classList.add('ok');
+        setTimeout(() => { addBtn.textContent = 'Add to Cart'; addBtn.classList.remove('ok'); }, 1200);
+        showToast(`${activeColor.charAt(0).toUpperCase()+activeColor.slice(1)} · Size ${size} added`);
     });
 
-    function updateCartUI() {
-        const total = cart.reduce((s, i) => s + i.quantity, 0);
-        cartBubble.textContent = total;
-        cartBubble.classList.toggle('visible', total > 0);
-        checkoutBtn.style.display = total > 0 ? 'block' : 'none';
+    function updateCart() {
+        const n = cart.reduce((s,i) => s + i.qty, 0);
+        cartDot.textContent = n;
+        cartDot.classList.toggle('on', n > 0);
+        checkoutBtn.style.display = n > 0 ? 'block' : 'none';
     }
 
-    // ═══════════════════════════════════════════════
-    // MODAL
-    // ═══════════════════════════════════════════════
+    // ── MODAL ──
     function openModal() {
-        cartLinesEl.innerHTML = '';
-        let totalCost = 0;
+        cartLines.innerHTML = '';
+        let total = 0;
         cart.forEach(item => {
-            const lineCost = item.quantity * PRICE_PER_UNIT;
-            totalCost += lineCost;
-            const line = document.createElement('div');
-            line.className = 'cart-line';
-            const clabel = item.color.charAt(0).toUpperCase() + item.color.slice(1);
-            line.innerHTML = `
+            const cost = item.qty * PRICE;
+            total += cost;
+            const row = document.createElement('div');
+            row.className = 'cart-row';
+            row.innerHTML = `
                 <div>
-                    <div class="cart-line-name">CLT // 001</div>
-                    <div class="cart-line-sub">${clabel} · Size ${item.size} · Qty ${item.quantity}</div>
+                    <div class="cart-name">CLT // 001</div>
+                    <div class="cart-sub">${item.color} · Size ${item.size} · Qty ${item.qty}</div>
                 </div>
-                <div class="cart-line-price">$${lineCost.toFixed(2)}</div>
-            `;
-            cartLinesEl.appendChild(line);
+                <div class="cart-price">$${cost.toFixed(2)}</div>`;
+            cartLines.appendChild(row);
         });
-        modalTotal.textContent = `$${totalCost.toFixed(2)}`;
-        modalOverlay.classList.add('open');
+        totalPrice.textContent = `$${total.toFixed(2)}`;
+        overlay.classList.add('on');
         document.body.style.overflow = 'hidden';
     }
-
-    function closeModal() {
-        modalOverlay.classList.remove('open');
-        document.body.style.overflow = '';
-    }
+    function closeModal() { overlay.classList.remove('on'); document.body.style.overflow = ''; }
 
     checkoutBtn.addEventListener('click', openModal);
-    cartIcon.addEventListener('click', () => { if (cart.length > 0) openModal(); });
-    modalClose.addEventListener('click', closeModal);
-    modalOverlay.addEventListener('click', e => { if (e.target === modalOverlay) closeModal(); });
+    cartNav.addEventListener('click', () => { if (cart.length) openModal(); });
+    modalBack.addEventListener('click', closeModal);
+    overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
 
-    // ═══════════════════════════════════════════════
-    // STRIPE — ready to wire up
-    // ═══════════════════════════════════════════════
+    // ── STRIPE ──
     stripeBtn.addEventListener('click', () => {
         /*
-        ══════════════════════════════════════════════
-        STRIPE INTEGRATION — uncomment when ready
-        ══════════════════════════════════════════════
-        1. Add to <head>:
-           <script src="https://js.stripe.com/v3/"><\/script>
-
+        ── WIRE UP WHEN READY ──────────────────────────────
+        1. Add to <head>: <script src="https://js.stripe.com/v3/"><\/script>
         2. Replace 'pk_test_PLACEHOLDER' with your publishable key
-
-        3. Replace price_X_PLACEHOLDER on each size button with real Stripe Price IDs
-
+        3. Replace price_X_PLACEHOLDER on .sz buttons with real Price IDs
         4. Uncomment:
 
         const stripe = Stripe('pk_test_PLACEHOLDER');
         stripe.redirectToCheckout({
-            lineItems: cart.map(i => ({ price: i.priceId, quantity: i.quantity })),
+            lineItems: cart.map(i => ({ price: i.pid, quantity: i.qty })),
             mode: 'payment',
             successUrl: window.location.origin + '/success.html',
             cancelUrl: window.location.href,
         }).then(r => { if (r.error) showToast(r.error.message); });
-        ══════════════════════════════════════════════
+        ────────────────────────────────────────────────────
         */
         showToast('Stripe not yet configured');
     });
 
-    // ═══════════════════════════════════════════════
-    // SCROLL
-    // ═══════════════════════════════════════════════
-    let ticking   = false;
-    let hasScrolled = false;
+    // ── SCROLL ──
+    let tick = false;
+    window.addEventListener('scroll', () => { if (!tick) { requestAnimationFrame(onScroll); tick = true; } });
 
-    window.addEventListener('scroll', () => {
-        if (!ticking) { requestAnimationFrame(updateScroll); ticking = true; }
-    });
+    function onScroll() {
+        const y   = window.scrollY;
+        const max = track.offsetHeight - window.innerHeight;
+        const p   = Math.min(Math.max(y / max, 0), 1);
 
-    function updateScroll() {
-        const scrollY   = window.scrollY;
-        const maxScroll = track.offsetHeight - window.innerHeight;
-        const progress  = Math.min(Math.max(scrollY / maxScroll, 0), 1);
+        bg.style.transform = `translateY(${y * 0.2}px) scale(1.08)`;
+        bg.style.filter    = `brightness(${1 - p * 0.28})`;
 
-        // Hide scroll hint after first scroll
-        if (scrollY > 40 && !hasScrolled) {
-            hasScrolled = true;
-            scrollHint.classList.add('hidden');
+        const fi = Math.min(Math.floor(p * BG.length), BG.length - 1);
+        if (bg.dataset.f !== String(fi)) {
+            bg.style.backgroundImage = `url('${BG[fi]}')`;
+            bg.dataset.f = String(fi);
         }
 
-        // Parallax background
-        bgLayer.style.transform = `translateY(${scrollY * 0.22}px) scale(1.1)`;
-        bgLayer.style.filter    = `brightness(${1 - progress * 0.3})`;
-
-        // Frame swap
-        const frameIdx = Math.min(Math.floor(progress * BG_FRAMES.length), BG_FRAMES.length - 1);
-        if (bgLayer.dataset.currentFrame !== String(frameIdx)) {
-            bgLayer.style.backgroundImage = `url('${BG_FRAMES[frameIdx]}')`;
-            bgLayer.dataset.currentFrame  = String(frameIdx);
-        }
-
-        // Reveal chips past 55%
-        detailReveal.classList.toggle('visible', progress > 0.55);
-
-        // Subtle model lift
-        modelWrap.style.transform = `translateY(-${progress * 24}px)`;
-
-        ticking = false;
+        chips.classList.toggle('on', p > 0.5);
+        tick = false;
     }
 
-    // ═══════════════════════════════════════════════
-    // CAMERA RESET — 5s after last interaction
-    // ═══════════════════════════════════════════════
-    let resetTimer;
-    ['mouseup', 'touchend'].forEach(evt => {
-        shirt.addEventListener(evt, () => {
-            clearTimeout(resetTimer);
-            resetTimer = setTimeout(() => {
-                shirt.cameraOrbit = '0deg 75deg 105%';
-            }, 5000);
+    // ── CAMERA RESET ──
+    let camTimer;
+    [mvBlack, mvWhite].forEach(mv => {
+        ['mouseup','touchend'].forEach(e => {
+            mv.addEventListener(e, () => {
+                clearTimeout(camTimer);
+                camTimer = setTimeout(() => {
+                    mvBlack.cameraOrbit = '0deg 75deg 105%';
+                    mvWhite.cameraOrbit = '0deg 75deg 105%';
+                }, 5000);
+            });
         });
     });
 
-    // ═══════════════════════════════════════════════
-    // TOAST
-    // ═══════════════════════════════════════════════
+    // ── TOAST ──
     let toastTimer;
     function showToast(msg) {
         toastEl.textContent = msg;
-        toastEl.classList.add('show');
+        toastEl.classList.add('on');
         clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2600);
+        toastTimer = setTimeout(() => toastEl.classList.remove('on'), 2400);
     }
 </script>
 </body>
 </html>
-
 
 
 

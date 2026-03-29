@@ -23,7 +23,6 @@
             overflow-x: hidden; -webkit-font-smoothing: antialiased;
         }
 
-        /* ── NAV ── */
         nav {
             position: fixed; top: 0; left: 0; right: 0; height: 60px;
             display: flex; align-items: center; justify-content: space-between;
@@ -33,15 +32,12 @@
             border-bottom: 1px solid var(--border);
         }
         .logo { font-family: "Bebas Neue", sans-serif; font-size: 1.2rem; letter-spacing: 0.28em; }
-        .logo span { color: var(--accent); }
         .nav-item {
             font-family: "Space Mono", monospace; font-size: 8px;
             text-transform: uppercase; letter-spacing: 0.2em;
             color: var(--dim); cursor: pointer;
             display: flex; align-items: center; gap: 7px;
-            transition: color 0.2s;
         }
-        .nav-item:hover { color: var(--text); }
         .cart-dot {
             background: var(--accent); color: #000;
             font-size: 8px; font-weight: 700;
@@ -52,7 +48,6 @@
         }
         .cart-dot.on { opacity: 1; transform: scale(1); }
 
-        /* ── SCROLL TRACK ── */
         .track { height: 300vh; position: relative; }
         .sticky { position: sticky; top: 0; height: 100vh; overflow: hidden; }
 
@@ -72,7 +67,6 @@
             );
         }
 
-        /* ── STAGE ── */
         .stage {
             position: relative; z-index: 10;
             height: 100vh;
@@ -90,7 +84,6 @@
         }
         .model-box model-viewer.hidden { opacity: 0; pointer-events: none; }
 
-        /* ── PANEL ── */
         .panel {
             width: 100%; max-width: 390px;
             background: var(--glass);
@@ -107,7 +100,6 @@
         .rule { height: 1px; background: var(--border); margin-bottom: 16px; }
         .label { font-family: "Space Mono", monospace; font-size: 7.5px; text-transform: uppercase; letter-spacing: 0.28em; color: var(--dim); display: block; margin-bottom: 8px; }
 
-        /* ── SWATCHES ── */
         .swatches { display: flex; align-items: center; gap: 9px; margin-bottom: 16px; }
         .swatch { width: 22px; height: 22px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; transition: border-color 0.2s, transform 0.15s; }
         .swatch:hover { transform: scale(1.15); }
@@ -116,13 +108,11 @@
         .sw-white { background: #efefef; box-shadow: 0 0 0 1px rgba(255,255,255,0.3); }
         .swatch-name { font-family: "Space Mono", monospace; font-size: 8px; color: var(--dim); letter-spacing: 0.2em; text-transform: uppercase; }
 
-        /* ── SIZES ── */
         .sizes { display: grid; grid-template-columns: repeat(4,1fr); gap: 5px; margin-bottom: 16px; }
         .sz { background: transparent; border: 1px solid var(--border); color: var(--dim); padding: 10px 0; font-family: "Space Mono", monospace; font-size: 10px; cursor: pointer; transition: all 0.15s; letter-spacing: 0.05em; }
         .sz:hover { border-color: rgba(240,237,232,0.6); color: var(--text); }
         .sz.on { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); }
 
-        /* ── BUTTONS ── */
         .btns { display: flex; flex-direction: column; gap: 6px; }
         .btn { width: 100%; padding: 13px; font-family: "DM Sans", sans-serif; font-weight: 900; font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em; cursor: pointer; border: none; transition: all 0.2s; }
         .btn-outline { background: transparent; border: 1px solid rgba(240,237,232,0.6); color: var(--text); }
@@ -136,12 +126,11 @@
         @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
         .live-text { font-family: "Space Mono", monospace; font-size: 7.5px; color: var(--dim); letter-spacing: 0.2em; text-transform: uppercase; }
 
-        /* ── CHIPS ── */
+        /* Chips reveal early — at 20% scroll */
         .chips { position: absolute; bottom: 0; left: 0; right: 0; z-index: 20; padding: 0 20px 28px; display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; opacity: 0; transform: translateY(14px); transition: opacity 0.5s ease, transform 0.5s ease; pointer-events: none; }
         .chips.on { opacity: 1; transform: none; pointer-events: auto; }
         .chip { font-family: "Space Mono", monospace; font-size: 7.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); background: rgba(5,5,5,0.6); border: 1px solid var(--border); backdrop-filter: blur(8px); padding: 5px 10px; }
 
-        /* ── DESKTOP ── */
         @media (min-width: 1024px) {
             .stage { flex-direction: row; gap: 60px; padding: 0 8vw; }
             .model-box { width: 50%; height: 74vh; }
@@ -149,12 +138,10 @@
             .chips { padding: 0 8vw 40px; }
         }
 
-        /* ── FOOTER ── */
         footer { height: 36vh; background: #020202; border-top: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
         .footer-logo { font-family: "Bebas Neue", sans-serif; font-size: 1.8rem; letter-spacing: 0.3em; opacity: 0.1; }
         .footer-tag { font-family: "Space Mono", monospace; font-size: 7.5px; color: var(--dim); letter-spacing: 0.28em; text-transform: uppercase; }
 
-        /* ── MODAL ── */
         .overlay { position: fixed; inset: 0; z-index: 500; background: rgba(0,0,0,0.88); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
         .overlay.on { opacity: 1; pointer-events: auto; }
         .modal { width: min(440px, 92vw); background: #0a0a0a; border: 1px solid var(--border); border-radius: 2px; padding: 28px; transform: translateY(16px); transition: transform 0.28s ease; }
@@ -182,7 +169,7 @@
 
 <nav>
     <div class="nav-item">Collection 01</div>
-    <div class="logo">Cota <span>Lab</span></div>
+    <div class="logo">Cota Lab</div>
     <div class="nav-item" id="cart-nav">
         Cart <div class="cart-dot" id="cart-dot">0</div>
     </div>
@@ -294,6 +281,7 @@
     const PRICE   = 54.00;
     const TEXTURE = 'CLT4shirttrans.png';
 
+    // Street-view frames — all 6 complete in first 30% of scroll
     const FRAMES = [
         'street-view.jpg',
         'street-view 1.jpg',
@@ -303,7 +291,7 @@
         'street-view 5.jpg'
     ];
 
-    // Preload frames
+    // Preload all frames
     FRAMES.forEach(src => { const img = new Image(); img.src = src; });
 
     const bg          = document.getElementById('bg');
@@ -332,7 +320,9 @@
     bg.style.backgroundImage = `url('${FRAMES[0]}')`;
     bg.dataset.f = '0';
 
-    // ── APPLY CLT GRAPHIC ──
+    // ── APPLY CLT GRAPHIC TO A MODEL-VIEWER ──
+    // Targets the material that has a baseColorTexture slot
+    // and sets it to CLT4shirttrans.png
     async function applyGraphic(mv) {
         try {
             if (!mv.model) return;
@@ -341,16 +331,21 @@
                 if (pbr.baseColorTexture) {
                     const tex = await mv.createTexture(TEXTURE);
                     pbr.baseColorTexture.setTexture(tex);
+                    console.log(`[COTA] ✓ CLT4shirttrans.png applied to ${mat.name}`);
                     return;
                 }
             }
-        } catch(e) { console.warn('[COTA] Texture error:', e); }
+            console.warn('[COTA] No baseColorTexture slot found — check GLB export');
+        } catch(e) {
+            console.warn('[COTA] Texture error:', e);
+        }
     }
 
+    // Apply graphic to both shirts on load
     mvBlack.addEventListener('load', () => applyGraphic(mvBlack));
     mvWhite.addEventListener('load', () => applyGraphic(mvWhite));
 
-    // ── COLORWAY SWAP ──
+    // ── COLORWAY SWAP — opacity toggle only ──
     swatches.forEach(s => {
         s.addEventListener('click', () => {
             const c = s.dataset.color;
@@ -432,10 +427,25 @@
 
     // ── STRIPE ──
     stripeBtn.addEventListener('click', () => {
+        /*
+        1. Add to <head>: <script src="https://js.stripe.com/v3/"><\/script>
+        2. Replace 'pk_test_PLACEHOLDER' with your Stripe publishable key
+        3. Replace price_X_PLACEHOLDER on .sz buttons with real Stripe Price IDs
+        4. Uncomment:
+
+        const stripe = Stripe('pk_test_PLACEHOLDER');
+        stripe.redirectToCheckout({
+            lineItems: cart.map(i => ({ price: i.pid, quantity: i.qty })),
+            mode: 'payment',
+            successUrl: window.location.origin + '/success.html',
+            cancelUrl: window.location.href,
+        }).then(r => { if (r.error) showToast(r.error.message); });
+        */
         showToast('Stripe not yet configured');
     });
 
     // ── SCROLL ──
+    // Frames complete at 30% scroll. Chips reveal at 20%.
     let tick = false;
     window.addEventListener('scroll', () => {
         if (!tick) { requestAnimationFrame(onScroll); tick = true; }
@@ -446,6 +456,7 @@
         const max = track.offsetHeight - window.innerHeight;
         const p   = Math.min(Math.max(y / max, 0), 1);
 
+        // All 6 frames play within first 30% of scroll
         const frameProg = Math.min(p / 0.3, 1);
         const fi = Math.min(Math.floor(frameProg * FRAMES.length), FRAMES.length - 1);
         if (bg.dataset.f !== String(fi)) {
@@ -453,11 +464,13 @@
             bg.dataset.f = String(fi);
         }
 
+        // Chips reveal at 20% scroll
         chips.classList.toggle('on', p > 0.2);
+
         tick = false;
     }
 
-    // ── CAMERA RESET ──
+    // ── CAMERA RESET after 5s idle ──
     let camTimer;
     [mvBlack, mvWhite].forEach(mv => {
         ['mouseup','touchend'].forEach(e => {
@@ -479,4 +492,3 @@
 </script>
 </body>
 </html>
-

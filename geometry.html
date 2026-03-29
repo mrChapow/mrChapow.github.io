@@ -5,65 +5,238 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>COTA LAB // CLT 001</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&family=DM+Sans:wght@900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,700;9..40,900&display=swap" rel="stylesheet">
     <style>
+        /* ═══════════════════════════════════════════════
+           COTA LAB — Design System
+           ═══════════════════════════════════════════════ */
         :root {
             --bg: #050505;
+            --bg-deep: #020202;
             --text: #f0ede8;
             --dim: rgba(240,237,232,0.35);
-            --glass: rgba(240,237,232,0.04);
-            --border: rgba(240,237,232,0.1);
+            --dim-hover: rgba(240,237,232,0.6);
+            --glass: rgba(240,237,232,0.03);
+            --glass-heavy: rgba(240,237,232,0.06);
+            --border: rgba(240,237,232,0.08);
+            --border-hover: rgba(240,237,232,0.18);
             --accent: #c8ff00;
-            --accent-dim: rgba(200,255,0,0.12);
-        }
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        body, html {
-            background: var(--bg); color: var(--text);
-            font-family: "DM Sans", sans-serif;
-            overflow-x: hidden; -webkit-font-smoothing: antialiased;
+            --accent-dim: rgba(200,255,0,0.10);
+            --accent-glow: rgba(200,255,0,0.04);
+            --shadow: 0 30px 80px rgba(0,0,0,0.5);
         }
 
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: "DM Sans", sans-serif;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        ::selection {
+            background: var(--accent);
+            color: #000;
+        }
+
+        /* ═══════════════════════════════════════════════
+           PRELOADER
+           ═══════════════════════════════════════════════ */
+        .preloader {
+            position: fixed; inset: 0; z-index: 9999;
+            background: var(--bg);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 24px;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+        .preloader.done {
+            opacity: 0; visibility: hidden; pointer-events: none;
+        }
+        .preloader-logo {
+            font-family: "Bebas Neue", sans-serif;
+            font-size: 2.4rem;
+            letter-spacing: 0.35em;
+            opacity: 0;
+            animation: preloaderFade 0.8s ease 0.2s forwards;
+        }
+        .preloader-bar-track {
+            width: 180px; height: 1px;
+            background: var(--border);
+            overflow: hidden;
+            opacity: 0;
+            animation: preloaderFade 0.6s ease 0.5s forwards;
+        }
+        .preloader-bar {
+            height: 100%; width: 0%;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+        .preloader-status {
+            font-family: "Space Mono", monospace;
+            font-size: 8px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--dim);
+            opacity: 0;
+            animation: preloaderFade 0.6s ease 0.6s forwards;
+        }
+        @keyframes preloaderFade {
+            to { opacity: 1; }
+        }
+
+        /* ═══════════════════════════════════════════════
+           NAVIGATION
+           ═══════════════════════════════════════════════ */
         nav {
-            position: fixed; top: 0; left: 0; right: 0; height: 60px;
+            position: fixed; top: 0; left: 0; right: 0;
+            height: 56px;
             display: flex; align-items: center; justify-content: space-between;
-            padding: 0 24px; z-index: 100;
-            background: rgba(5,5,5,0.75);
-            backdrop-filter: blur(16px);
+            padding: 0 24px;
+            z-index: 100;
+            background: rgba(5,5,5,0.6);
+            backdrop-filter: blur(24px) saturate(1.4);
+            -webkit-backdrop-filter: blur(24px) saturate(1.4);
             border-bottom: 1px solid var(--border);
+            transform: translateY(-100%);
+            opacity: 0;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                        opacity 0.6s ease;
         }
-        .logo { font-family: "Bebas Neue", sans-serif; font-size: 1.2rem; letter-spacing: 0.28em; }
+        nav.reveal {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .logo {
+            font-family: "Bebas Neue", sans-serif;
+            font-size: 1.15rem;
+            letter-spacing: 0.3em;
+            user-select: none;
+        }
+        .logo span { color: var(--accent); }
         .nav-item {
-            font-family: "Space Mono", monospace; font-size: 8px;
-            text-transform: uppercase; letter-spacing: 0.2em;
-            color: var(--dim); cursor: pointer;
+            font-family: "Space Mono", monospace;
+            font-size: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--dim);
+            cursor: pointer;
             display: flex; align-items: center; gap: 7px;
+            transition: color 0.2s;
         }
+        .nav-item:hover { color: var(--text); }
         .cart-dot {
             background: var(--accent); color: #000;
             font-size: 8px; font-weight: 700;
             width: 16px; height: 16px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             opacity: 0; transform: scale(0);
-            transition: opacity 0.3s, transform 0.3s;
+            transition: opacity 0.35s cubic-bezier(0.34,1.56,0.64,1),
+                        transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
         }
         .cart-dot.on { opacity: 1; transform: scale(1); }
 
+        /* ═══════════════════════════════════════════════
+           HERO SECTION — COLLECTION INTRO
+           ═══════════════════════════════════════════════ */
+        .hero {
+            height: 100vh;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse 60% 50% at 50% 45%, var(--accent-glow) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .hero-collection {
+            font-family: "Space Mono", monospace;
+            font-size: 8px;
+            letter-spacing: 0.5em;
+            text-transform: uppercase;
+            color: var(--dim);
+            margin-bottom: 16px;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        .hero-title {
+            font-family: "Bebas Neue", sans-serif;
+            font-size: clamp(3.5rem, 12vw, 9rem);
+            letter-spacing: 0.08em;
+            line-height: 0.9;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        .hero-title .accent { color: var(--accent); }
+        .hero-sub {
+            font-family: "Space Mono", monospace;
+            font-size: 9px;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            color: var(--dim);
+            margin-top: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        .hero-scroll-cue {
+            position: absolute;
+            bottom: 32px;
+            display: flex; flex-direction: column;
+            align-items: center; gap: 8px;
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        .hero-scroll-cue span {
+            font-family: "Space Mono", monospace;
+            font-size: 7px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--dim);
+        }
+        .scroll-line {
+            width: 1px; height: 32px;
+            background: linear-gradient(to bottom, var(--accent), transparent);
+            animation: scrollPulse 2s ease-in-out infinite;
+        }
+        @keyframes scrollPulse {
+            0%, 100% { opacity: 0.3; transform: scaleY(0.6); }
+            50% { opacity: 1; transform: scaleY(1); }
+        }
+
+        .hero.entered .hero-collection { opacity: 1; transform: none; transition: all 0.8s cubic-bezier(0.16,1,0.3,1) 0.3s; }
+        .hero.entered .hero-title { opacity: 1; transform: none; transition: all 0.8s cubic-bezier(0.16,1,0.3,1) 0.5s; }
+        .hero.entered .hero-sub { opacity: 1; transform: none; transition: all 0.8s cubic-bezier(0.16,1,0.3,1) 0.7s; }
+        .hero.entered .hero-scroll-cue { opacity: 1; transform: none; transition: all 0.8s cubic-bezier(0.16,1,0.3,1) 1.0s; }
+
+        /* ═══════════════════════════════════════════════
+           SECTION 1 — CLT 001 (Street View BG)
+           ═══════════════════════════════════════════════ */
         .track { height: 300vh; position: relative; }
         .sticky { position: sticky; top: 0; height: 100vh; overflow: hidden; }
 
-        #bg {
+        .bg-layer {
             position: absolute; inset: 0;
             background-size: cover;
             background-position: center;
+            will-change: transform;
         }
-        #bg::after {
+        .bg-layer::after {
             content: '';
             position: absolute; inset: 0;
             background: linear-gradient(
-                150deg,
-                rgba(0,0,0,0.75) 0%,
-                rgba(0,0,0,0.25) 50%,
-                rgba(0,0,0,0.75) 100%
+                160deg,
+                rgba(0,0,0,0.78) 0%,
+                rgba(0,0,0,0.20) 48%,
+                rgba(0,0,0,0.78) 100%
             );
         }
 
@@ -72,117 +245,584 @@
             height: 100vh;
             display: flex; flex-direction: column;
             align-items: center; justify-content: center;
-            padding: 70px 20px 20px; gap: 16px;
+            padding: 66px 20px 20px; gap: 16px;
         }
 
-        .model-box { width: 100%; height: 44vh; position: relative; }
+        .model-box {
+            width: 100%; height: 44vh;
+            position: relative;
+        }
         .model-box model-viewer {
             position: absolute; inset: 0;
             width: 100%; height: 100%;
-            outline: none; --poster-color: transparent;
-            transition: opacity 0.25s ease;
+            outline: none;
+            --poster-color: transparent;
+            transition: opacity 0.3s ease;
         }
-        .model-box model-viewer.hidden { opacity: 0; pointer-events: none; }
+        .model-box model-viewer.hidden {
+            opacity: 0; pointer-events: none;
+        }
 
+        /* ═══════════════════════════════════════════════
+           PRODUCT PANEL
+           ═══════════════════════════════════════════════ */
         .panel {
             width: 100%; max-width: 390px;
             background: var(--glass);
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(24px) saturate(1.3);
+            -webkit-backdrop-filter: blur(24px) saturate(1.3);
             border: 1px solid var(--border);
+            border-radius: 3px;
+            padding: 24px 26px;
+            box-shadow: var(--shadow);
+        }
+        .eyebrow {
+            font-family: "Space Mono", monospace;
+            font-size: 7.5px;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            color: var(--dim);
+            margin-bottom: 6px;
+        }
+        .title {
+            font-family: "Bebas Neue", sans-serif;
+            font-size: 2.1rem;
+            letter-spacing: 0.1em;
+            line-height: 1;
+        }
+        .price-row {
+            display: flex; align-items: center;
+            gap: 10px; margin: 8px 0 20px;
+        }
+        .price {
+            font-family: "Space Mono", monospace;
+            font-size: 12px;
+        }
+        .badge {
+            font-family: "Space Mono", monospace;
+            font-size: 7px;
+            background: var(--accent);
+            color: #000;
+            padding: 3px 8px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+        .rule {
+            height: 1px;
+            background: var(--border);
+            margin-bottom: 18px;
+        }
+        .label {
+            font-family: "Space Mono", monospace;
+            font-size: 7.5px;
+            text-transform: uppercase;
+            letter-spacing: 0.28em;
+            color: var(--dim);
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        /* Swatches */
+        .swatches {
+            display: flex; align-items: center;
+            gap: 10px; margin-bottom: 18px;
+        }
+        .swatch {
+            width: 24px; height: 24px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: border-color 0.25s, transform 0.2s, box-shadow 0.25s;
+            position: relative;
+        }
+        .swatch:hover { transform: scale(1.18); }
+        .swatch.on {
+            border-color: var(--accent);
+            box-shadow: 0 0 12px var(--accent-dim);
+        }
+        .sw-black {
+            background: radial-gradient(circle at 35% 35%, #333, #0a0a0a);
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.12);
+        }
+        .sw-white {
+            background: radial-gradient(circle at 35% 35%, #fff, #ccc);
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.25);
+        }
+        .swatch-name {
+            font-family: "Space Mono", monospace;
+            font-size: 8px;
+            color: var(--dim);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            transition: color 0.2s;
+        }
+
+        /* Sizes */
+        .sizes {
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 6px; margin-bottom: 18px;
+        }
+        .sz {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--dim);
+            padding: 11px 0;
+            font-family: "Space Mono", monospace;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.16,1,0.3,1);
+            letter-spacing: 0.08em;
             border-radius: 2px;
-            padding: 22px 24px;
         }
-        .eyebrow { font-family: "Space Mono", monospace; font-size: 7.5px; letter-spacing: 0.35em; text-transform: uppercase; color: var(--dim); margin-bottom: 6px; }
-        .title { font-family: "Bebas Neue", sans-serif; font-size: 2rem; letter-spacing: 0.1em; line-height: 1; }
-        .price-row { display: flex; align-items: center; gap: 10px; margin: 6px 0 18px; }
-        .price { font-family: "Space Mono", monospace; font-size: 12px; }
-        .badge { font-family: "Space Mono", monospace; font-size: 7px; background: var(--accent); color: #000; padding: 2px 7px; letter-spacing: 0.15em; text-transform: uppercase; }
-        .rule { height: 1px; background: var(--border); margin-bottom: 16px; }
-        .label { font-family: "Space Mono", monospace; font-size: 7.5px; text-transform: uppercase; letter-spacing: 0.28em; color: var(--dim); display: block; margin-bottom: 8px; }
+        .sz:hover {
+            border-color: var(--dim-hover);
+            color: var(--text);
+            background: rgba(255,255,255,0.02);
+        }
+        .sz.on {
+            border-color: var(--accent);
+            background: var(--accent-dim);
+            color: var(--accent);
+            box-shadow: 0 0 16px rgba(200,255,0,0.06);
+        }
 
-        .swatches { display: flex; align-items: center; gap: 9px; margin-bottom: 16px; }
-        .swatch { width: 22px; height: 22px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; transition: border-color 0.2s, transform 0.15s; }
-        .swatch:hover { transform: scale(1.15); }
-        .swatch.on { border-color: var(--accent); }
-        .sw-black { background: #111; box-shadow: 0 0 0 1px rgba(255,255,255,0.15); }
-        .sw-white { background: #efefef; box-shadow: 0 0 0 1px rgba(255,255,255,0.3); }
-        .swatch-name { font-family: "Space Mono", monospace; font-size: 8px; color: var(--dim); letter-spacing: 0.2em; text-transform: uppercase; }
+        /* Buttons */
+        .btns { display: flex; flex-direction: column; gap: 7px; }
+        .btn {
+            width: 100%; padding: 14px;
+            font-family: "DM Sans", sans-serif;
+            font-weight: 900; font-size: 10px;
+            text-transform: uppercase; letter-spacing: 0.2em;
+            cursor: pointer; border: none;
+            transition: all 0.25s cubic-bezier(0.16,1,0.3,1);
+            border-radius: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.5s;
+        }
+        .btn:hover::after { transform: translateX(100%); }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--dim-hover);
+            color: var(--text);
+        }
+        .btn-outline:hover {
+            background: var(--text);
+            color: var(--bg);
+            border-color: var(--text);
+        }
+        .btn-outline.ok {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+        .btn-fill {
+            background: var(--accent);
+            color: #000;
+            display: none;
+            font-weight: 900;
+        }
+        .btn-fill:hover {
+            background: #d8ff20;
+            box-shadow: 0 0 30px rgba(200,255,0,0.15);
+        }
 
-        .sizes { display: grid; grid-template-columns: repeat(4,1fr); gap: 5px; margin-bottom: 16px; }
-        .sz { background: transparent; border: 1px solid var(--border); color: var(--dim); padding: 10px 0; font-family: "Space Mono", monospace; font-size: 10px; cursor: pointer; transition: all 0.15s; letter-spacing: 0.05em; }
-        .sz:hover { border-color: rgba(240,237,232,0.6); color: var(--text); }
-        .sz.on { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); }
+        .live {
+            display: flex; align-items: center;
+            gap: 7px; margin-top: 18px;
+        }
+        .live-dot {
+            width: 5px; height: 5px; border-radius: 50%;
+            background: var(--accent);
+            animation: blink 2.2s ease-in-out infinite;
+            flex-shrink: 0;
+        }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.15} }
+        .live-text {
+            font-family: "Space Mono", monospace;
+            font-size: 7.5px;
+            color: var(--dim);
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+        }
 
-        .btns { display: flex; flex-direction: column; gap: 6px; }
-        .btn { width: 100%; padding: 13px; font-family: "DM Sans", sans-serif; font-weight: 900; font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em; cursor: pointer; border: none; transition: all 0.2s; }
-        .btn-outline { background: transparent; border: 1px solid rgba(240,237,232,0.6); color: var(--text); }
-        .btn-outline:hover { background: var(--text); color: var(--bg); }
-        .btn-outline.ok { border-color: var(--accent); color: var(--accent); }
-        .btn-fill { background: var(--accent); color: #000; display: none; }
-        .btn-fill:hover { background: #d8ff20; }
-
-        .live { display: flex; align-items: center; gap: 6px; margin-top: 16px; }
-        .live-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); animation: blink 2s ease-in-out infinite; flex-shrink: 0; }
-        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
-        .live-text { font-family: "Space Mono", monospace; font-size: 7.5px; color: var(--dim); letter-spacing: 0.2em; text-transform: uppercase; }
-
-        /* Chips reveal early — at 20% scroll */
-        .chips { position: absolute; bottom: 0; left: 0; right: 0; z-index: 20; padding: 0 20px 28px; display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; opacity: 0; transform: translateY(14px); transition: opacity 0.5s ease, transform 0.5s ease; pointer-events: none; }
+        /* ═══════════════════════════════════════════════
+           CHIPS — Product Details
+           ═══════════════════════════════════════════════ */
+        .chips {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            z-index: 20;
+            padding: 0 20px 28px;
+            display: flex; flex-wrap: wrap;
+            gap: 5px; justify-content: center;
+            opacity: 0; transform: translateY(14px);
+            transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16,1,0.3,1);
+            pointer-events: none;
+        }
         .chips.on { opacity: 1; transform: none; pointer-events: auto; }
-        .chip { font-family: "Space Mono", monospace; font-size: 7.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); background: rgba(5,5,5,0.6); border: 1px solid var(--border); backdrop-filter: blur(8px); padding: 5px 10px; }
-
-        @media (min-width: 1024px) {
-            .stage { flex-direction: row; gap: 60px; padding: 0 8vw; }
-            .model-box { width: 50%; height: 74vh; }
-            .panel { width: 340px; flex-shrink: 0; }
-            .chips { padding: 0 8vw 40px; }
+        .chip {
+            font-family: "Space Mono", monospace;
+            font-size: 7.5px;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--dim);
+            background: rgba(5,5,5,0.55);
+            border: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+            padding: 6px 12px;
+            transition: border-color 0.3s, color 0.3s;
+        }
+        .chip:hover {
+            border-color: var(--border-hover);
+            color: var(--text);
         }
 
-        footer { height: 36vh; background: #020202; border-top: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
-        .footer-logo { font-family: "Bebas Neue", sans-serif; font-size: 1.8rem; letter-spacing: 0.3em; opacity: 0.1; }
-        .footer-tag { font-family: "Space Mono", monospace; font-size: 7.5px; color: var(--dim); letter-spacing: 0.28em; text-transform: uppercase; }
+        /* ═══════════════════════════════════════════════
+           DIVIDER — Between Sections
+           ═══════════════════════════════════════════════ */
+        .section-divider {
+            height: 30vh;
+            display: flex; align-items: center; justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .section-divider::before {
+            content: '';
+            position: absolute;
+            width: 200px; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border-hover), transparent);
+        }
+        .divider-text {
+            font-family: "Space Mono", monospace;
+            font-size: 7.5px;
+            letter-spacing: 0.5em;
+            text-transform: uppercase;
+            color: var(--dim);
+            background: var(--bg);
+            padding: 0 20px;
+            position: relative; z-index: 1;
+        }
 
-        .overlay { position: fixed; inset: 0; z-index: 500; background: rgba(0,0,0,0.88); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+        /* ═══════════════════════════════════════════════
+           SECTION 2 — BURST SCENE (Placeholder)
+           ═══════════════════════════════════════════════ */
+        .track-burst { height: 300vh; position: relative; }
+        .burst-bg {
+            position: absolute; inset: 0;
+            background-size: cover;
+            background-position: center;
+            will-change: transform;
+        }
+        .burst-bg::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(
+                180deg,
+                rgba(0,0,0,0.8) 0%,
+                rgba(0,0,0,0.15) 40%,
+                rgba(0,0,0,0.15) 60%,
+                rgba(0,0,0,0.8) 100%
+            );
+        }
+        .burst-content {
+            position: relative; z-index: 10;
+            height: 100vh;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .burst-eyebrow {
+            font-family: "Space Mono", monospace;
+            font-size: 8px;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 12px;
+            opacity: 0; transform: translateY(16px);
+            transition: all 0.7s ease;
+        }
+        .burst-title {
+            font-family: "Bebas Neue", sans-serif;
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            letter-spacing: 0.06em;
+            line-height: 0.95;
+            opacity: 0; transform: translateY(24px);
+            transition: all 0.7s ease 0.1s;
+        }
+        .burst-sub {
+            font-family: "Space Mono", monospace;
+            font-size: 9px;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--dim);
+            margin-top: 16px;
+            opacity: 0; transform: translateY(16px);
+            transition: all 0.7s ease 0.2s;
+        }
+        .burst-content.reveal .burst-eyebrow,
+        .burst-content.reveal .burst-title,
+        .burst-content.reveal .burst-sub {
+            opacity: 1; transform: none;
+        }
+
+        /* ═══════════════════════════════════════════════
+           FOOTER
+           ═══════════════════════════════════════════════ */
+        footer {
+            height: 40vh;
+            background: var(--bg-deep);
+            border-top: 1px solid var(--border);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        footer::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            width: 120px; height: 1px;
+            background: var(--accent);
+            opacity: 0.3;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .footer-logo {
+            font-family: "Bebas Neue", sans-serif;
+            font-size: 2rem;
+            letter-spacing: 0.35em;
+            opacity: 0.07;
+        }
+        .footer-tag {
+            font-family: "Space Mono", monospace;
+            font-size: 7.5px;
+            color: var(--dim);
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+        }
+        .footer-links {
+            display: flex; gap: 20px; margin-top: 8px;
+        }
+        .footer-links a {
+            font-family: "Space Mono", monospace;
+            font-size: 7.5px;
+            color: var(--dim);
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .footer-links a:hover { color: var(--accent); }
+
+        /* ═══════════════════════════════════════════════
+           MODAL — Cart Overlay
+           ═══════════════════════════════════════════════ */
+        .overlay {
+            position: fixed; inset: 0; z-index: 500;
+            background: rgba(0,0,0,0.88);
+            backdrop-filter: blur(12px);
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s;
+        }
         .overlay.on { opacity: 1; pointer-events: auto; }
-        .modal { width: min(440px, 92vw); background: #0a0a0a; border: 1px solid var(--border); border-radius: 2px; padding: 28px; transform: translateY(16px); transition: transform 0.28s ease; }
+        .modal {
+            width: min(440px, 92vw);
+            background: #0a0a0a;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            padding: 30px;
+            transform: translateY(20px) scale(0.97);
+            transition: transform 0.35s cubic-bezier(0.16,1,0.3,1);
+            box-shadow: 0 60px 120px rgba(0,0,0,0.6);
+        }
         .overlay.on .modal { transform: none; }
-        .modal-title { font-family: "Bebas Neue", sans-serif; font-size: 1.6rem; letter-spacing: 0.12em; margin-bottom: 20px; }
-        .cart-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
-        .cart-name { font-size: 12px; font-weight: 600; }
-        .cart-sub { font-family: "Space Mono", monospace; font-size: 7.5px; color: var(--dim); margin-top: 2px; letter-spacing: 0.1em; text-transform: uppercase; }
-        .cart-price { font-family: "Space Mono", monospace; font-size: 11px; flex-shrink: 0; margin-left: 10px; }
-        .total-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 0 20px; }
-        .total-label { font-family: "Space Mono", monospace; font-size: 8px; color: var(--dim); letter-spacing: 0.22em; text-transform: uppercase; }
-        .total-price { font-family: "Space Mono", monospace; font-size: 13px; }
-        .modal-btns { display: flex; flex-direction: column; gap: 6px; }
-        .modal-back { background: none; border: none; font-family: "Space Mono", monospace; font-size: 7.5px; color: var(--dim); letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; padding: 9px; text-align: center; transition: color 0.2s; }
+        .modal-title {
+            font-family: "Bebas Neue", sans-serif;
+            font-size: 1.6rem;
+            letter-spacing: 0.12em;
+            margin-bottom: 22px;
+        }
+        .cart-row {
+            display: flex; justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .cart-name { font-size: 12px; font-weight: 700; }
+        .cart-sub {
+            font-family: "Space Mono", monospace;
+            font-size: 7.5px;
+            color: var(--dim);
+            margin-top: 3px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+        .cart-price {
+            font-family: "Space Mono", monospace;
+            font-size: 11px;
+            flex-shrink: 0;
+            margin-left: 12px;
+        }
+        .total-row {
+            display: flex; justify-content: space-between;
+            align-items: center;
+            padding: 16px 0 22px;
+        }
+        .total-label {
+            font-family: "Space Mono", monospace;
+            font-size: 8px;
+            color: var(--dim);
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+        }
+        .total-price {
+            font-family: "Space Mono", monospace;
+            font-size: 14px;
+            font-weight: 700;
+        }
+        .modal-btns { display: flex; flex-direction: column; gap: 7px; }
+        .modal-back {
+            background: none; border: none;
+            font-family: "Space Mono", monospace;
+            font-size: 7.5px;
+            color: var(--dim);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            cursor: pointer;
+            padding: 10px;
+            text-align: center;
+            transition: color 0.2s;
+        }
         .modal-back:hover { color: var(--text); }
-        .stripe-note { font-family: "Space Mono", monospace; font-size: 7px; color: var(--dim); text-align: center; margin-top: 10px; letter-spacing: 0.15em; text-transform: uppercase; }
+        .stripe-note {
+            font-family: "Space Mono", monospace;
+            font-size: 7px;
+            color: var(--dim);
+            text-align: center;
+            margin-top: 12px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
 
-        .toast { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%) translateY(60px); background: var(--text); color: var(--bg); font-family: "Space Mono", monospace; font-size: 8px; letter-spacing: 0.2em; text-transform: uppercase; padding: 10px 16px; border-radius: 2px; z-index: 999; transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1); white-space: nowrap; pointer-events: none; }
+        /* ═══════════════════════════════════════════════
+           TOAST
+           ═══════════════════════════════════════════════ */
+        .toast {
+            position: fixed; bottom: 24px; left: 50%;
+            transform: translateX(-50%) translateY(60px);
+            background: var(--text);
+            color: var(--bg);
+            font-family: "Space Mono", monospace;
+            font-size: 8px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            padding: 11px 18px;
+            border-radius: 2px;
+            z-index: 999;
+            transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+            white-space: nowrap;
+            pointer-events: none;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+        }
         .toast.on { transform: translateX(-50%) translateY(0); }
 
         @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+
+        /* ═══════════════════════════════════════════════
+           NOISE TEXTURE OVERLAY
+           ═══════════════════════════════════════════════ */
+        .grain {
+            position: fixed; inset: 0; z-index: 9000;
+            pointer-events: none;
+            opacity: 0.025;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 180px;
+        }
+
+        /* ═══════════════════════════════════════════════
+           DESKTOP LAYOUT
+           ═══════════════════════════════════════════════ */
+        @media (min-width: 1024px) {
+            .stage {
+                flex-direction: row;
+                gap: 60px;
+                padding: 0 8vw;
+            }
+            .model-box {
+                width: 52%; height: 76vh;
+            }
+            .panel {
+                width: 360px; flex-shrink: 0;
+            }
+            .chips { padding: 0 8vw 40px; }
+        }
+
+        /* ═══════════════════════════════════════════════
+           SMOOTH SCROLL FOR REDUCED MOTION
+           ═══════════════════════════════════════════════ */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
     </style>
 </head>
 <body>
 
-<nav>
+<!-- ─── GRAIN OVERLAY ─── -->
+<div class="grain"></div>
+
+<!-- ─── PRELOADER ─── -->
+<div class="preloader" id="preloader">
+    <div class="preloader-logo">Cota Lab</div>
+    <div class="preloader-bar-track">
+        <div class="preloader-bar" id="preloader-bar"></div>
+    </div>
+    <div class="preloader-status" id="preloader-status">Loading assets…</div>
+</div>
+
+<!-- ─── NAV ─── -->
+<nav id="navbar">
     <div class="nav-item">Collection 01</div>
-    <div class="logo">Cota Lab</div>
+    <div class="logo">Cota <span>Lab</span></div>
     <div class="nav-item" id="cart-nav">
         Cart <div class="cart-dot" id="cart-dot">0</div>
     </div>
 </nav>
 
+<!-- ─── HERO ─── -->
+<section class="hero" id="hero">
+    <div class="hero-collection">Collection 001 — Limited Run</div>
+    <div class="hero-title">Cota <span class="accent">Lab</span></div>
+    <div class="hero-sub">Charlotte, NC — Designed for the culture</div>
+    <div class="hero-scroll-cue">
+        <span>Scroll to explore</span>
+        <div class="scroll-line"></div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     SECTION 1 — CLT 001 / Street-View Scroll
+     ═══════════════════════════════════════════════ -->
 <div class="track" id="track">
     <div class="sticky">
-        <div id="bg"></div>
+        <div class="bg-layer" id="bg"></div>
 
         <div class="stage">
             <div class="model-box">
                 <model-viewer id="mv-black"
-                    src="tshirtblack.glb"
+                    src="https://mrchapow.github.io/tshirtblack.glb"
                     camera-orbit="0deg 75deg 105%"
                     auto-rotate rotation-per-second="12deg"
                     camera-controls touch-action="none" disable-zoom
@@ -190,11 +830,11 @@
                     min-camera-orbit="auto 60deg 80%"
                     max-camera-orbit="auto 100deg 130%"
                     interpolation-decay="200"
-                    shadow-intensity="1" shadow-softness="0.8">
+                    shadow-intensity="1.2" shadow-softness="0.9">
                 </model-viewer>
 
                 <model-viewer id="mv-white"
-                    src="tshirtwhite.glb"
+                    src="https://mrchapow.github.io/tshirtwhite.glb"
                     camera-orbit="0deg 75deg 105%"
                     auto-rotate rotation-per-second="12deg"
                     camera-controls touch-action="none" disable-zoom
@@ -202,7 +842,7 @@
                     min-camera-orbit="auto 60deg 80%"
                     max-camera-orbit="auto 100deg 130%"
                     interpolation-decay="200"
-                    shadow-intensity="1" shadow-softness="0.8"
+                    shadow-intensity="1.2" shadow-softness="0.9"
                     class="hidden">
                 </model-viewer>
             </div>
@@ -254,11 +894,37 @@
     </div>
 </div>
 
+<!-- ─── DIVIDER ─── -->
+<div class="section-divider">
+    <div class="divider-text">Next Drop</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SECTION 2 — BURST SCENE
+     ═══════════════════════════════════════════════ -->
+<div class="track-burst" id="track-burst">
+    <div class="sticky">
+        <div class="burst-bg" id="burst-bg"></div>
+        <div class="burst-content" id="burst-content">
+            <div class="burst-eyebrow">Coming Soon</div>
+            <div class="burst-title">CLT // 002</div>
+            <div class="burst-sub">Drop 002 — Loading…</div>
+        </div>
+    </div>
+</div>
+
+<!-- ─── FOOTER ─── -->
 <footer>
     <div class="footer-logo">Cota Lab</div>
     <div class="footer-tag">© 2026 Cota Lab // All Rights Reserved</div>
+    <div class="footer-links">
+        <a href="#">Instagram</a>
+        <a href="#">Contact</a>
+        <a href="#">Terms</a>
+    </div>
 </footer>
 
+<!-- ─── CART MODAL ─── -->
 <div class="overlay" id="overlay">
     <div class="modal">
         <div class="modal-title">Your Cart</div>
@@ -275,13 +941,17 @@
     </div>
 </div>
 
+<!-- ─── TOAST ─── -->
 <div class="toast" id="toast"></div>
 
 <script>
-    const PRICE   = 54.00;
-    const TEXTURE = 'CLT4shirttrans.png';
+    /* ═══════════════════════════════════════════════
+       CONFIG
+       ═══════════════════════════════════════════════ */
+    const BASE     = 'https://mrchapow.github.io/';
+    const PRICE    = 54.00;
+    const TEXTURE  = BASE + 'CLT4shirttrans.png';
 
-    // Street-view frames — all 6 complete in first 30% of scroll
     const FRAMES = [
         'street-view.jpg',
         'street-view 1.jpg',
@@ -289,11 +959,57 @@
         'street-view 3.jpg',
         'street-view 4.jpg',
         'street-view 5.jpg'
-    ];
+    ].map(f => BASE + encodeURIComponent(f));
 
-    // Preload all frames
-    FRAMES.forEach(src => { const img = new Image(); img.src = src; });
+    const BURST_FRAMES = Array.from({length: 11}, (_, i) =>
+        BASE + encodeURIComponent(`burstscene${i + 1}.png`)
+    );
 
+    /* ═══════════════════════════════════════════════
+       PRELOADER
+       ═══════════════════════════════════════════════ */
+    const preloader    = document.getElementById('preloader');
+    const preloaderBar = document.getElementById('preloader-bar');
+    const preloaderSts = document.getElementById('preloader-status');
+
+    let loaded = 0;
+    const allImages = [...FRAMES, ...BURST_FRAMES];
+    const total = allImages.length;
+
+    function tickLoader() {
+        loaded++;
+        const pct = Math.round((loaded / total) * 100);
+        preloaderBar.style.width = pct + '%';
+        preloaderSts.textContent = `Loading assets… ${pct}%`;
+        if (loaded >= total) finishLoad();
+    }
+
+    allImages.forEach(src => {
+        const img = new Image();
+        img.onload = tickLoader;
+        img.onerror = tickLoader;
+        img.src = src;
+    });
+
+    // Safety timeout
+    setTimeout(finishLoad, 6000);
+
+    let loadDone = false;
+    function finishLoad() {
+        if (loadDone) return;
+        loadDone = true;
+        preloaderBar.style.width = '100%';
+        preloaderSts.textContent = 'Ready';
+        setTimeout(() => {
+            preloader.classList.add('done');
+            document.getElementById('navbar').classList.add('reveal');
+            document.getElementById('hero').classList.add('entered');
+        }, 400);
+    }
+
+    /* ═══════════════════════════════════════════════
+       DOM REFS
+       ═══════════════════════════════════════════════ */
     const bg          = document.getElementById('bg');
     const track       = document.getElementById('track');
     const mvBlack     = document.getElementById('mv-black');
@@ -312,17 +1028,22 @@
     const swatches    = document.querySelectorAll('.swatch');
     const swatchName  = document.getElementById('swatch-name');
     const sizeBtns    = document.querySelectorAll('.sz');
+    const trackBurst  = document.getElementById('track-burst');
+    const burstBg     = document.getElementById('burst-bg');
+    const burstContent= document.getElementById('burst-content');
 
     let cart        = [];
     let activeColor = 'black';
 
-    // Set first frame
+    // Set first frames
     bg.style.backgroundImage = `url('${FRAMES[0]}')`;
     bg.dataset.f = '0';
+    burstBg.style.backgroundImage = `url('${BURST_FRAMES[0]}')`;
+    burstBg.dataset.f = '0';
 
-    // ── APPLY CLT GRAPHIC TO A MODEL-VIEWER ──
-    // Targets the material that has a baseColorTexture slot
-    // and sets it to CLT4shirttrans.png
+    /* ═══════════════════════════════════════════════
+       APPLY CLT GRAPHIC TO MODEL-VIEWER
+       ═══════════════════════════════════════════════ */
     async function applyGraphic(mv) {
         try {
             if (!mv.model) return;
@@ -331,21 +1052,22 @@
                 if (pbr.baseColorTexture) {
                     const tex = await mv.createTexture(TEXTURE);
                     pbr.baseColorTexture.setTexture(tex);
-                    console.log(`[COTA] ✓ CLT4shirttrans.png applied to ${mat.name}`);
+                    console.log(`[COTA] ✓ Graphic applied to ${mat.name}`);
                     return;
                 }
             }
-            console.warn('[COTA] No baseColorTexture slot found — check GLB export');
+            console.warn('[COTA] No baseColorTexture slot found');
         } catch(e) {
             console.warn('[COTA] Texture error:', e);
         }
     }
 
-    // Apply graphic to both shirts on load
     mvBlack.addEventListener('load', () => applyGraphic(mvBlack));
     mvWhite.addEventListener('load', () => applyGraphic(mvWhite));
 
-    // ── COLORWAY SWAP — opacity toggle only ──
+    /* ═══════════════════════════════════════════════
+       COLORWAY TOGGLE
+       ═══════════════════════════════════════════════ */
     swatches.forEach(s => {
         s.addEventListener('click', () => {
             const c = s.dataset.color;
@@ -359,7 +1081,9 @@
         });
     });
 
-    // ── SIZES ──
+    /* ═══════════════════════════════════════════════
+       SIZE SELECTOR
+       ═══════════════════════════════════════════════ */
     sizeBtns.forEach(b => {
         b.addEventListener('click', () => {
             sizeBtns.forEach(x => x.classList.remove('on'));
@@ -367,7 +1091,9 @@
         });
     });
 
-    // ── CART ──
+    /* ═══════════════════════════════════════════════
+       CART LOGIC
+       ═══════════════════════════════════════════════ */
     addBtn.addEventListener('click', () => {
         const active = document.querySelector('.sz.on');
         if (!active) {
@@ -396,7 +1122,9 @@
         checkoutBtn.style.display = n > 0 ? 'block' : 'none';
     }
 
-    // ── MODAL ──
+    /* ═══════════════════════════════════════════════
+       CART MODAL
+       ═══════════════════════════════════════════════ */
     function openModal() {
         cartLines.innerHTML = '';
         let total = 0;
@@ -425,10 +1153,12 @@
     modalBack.addEventListener('click', closeModal);
     overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
 
-    // ── STRIPE ──
+    /* ═══════════════════════════════════════════════
+       STRIPE CHECKOUT
+       ═══════════════════════════════════════════════ */
     stripeBtn.addEventListener('click', () => {
         /*
-        1. Add to <head>: <script src="https://js.stripe.com/v3/"><\/script>
+        1. Add <script src="https://js.stripe.com/v3/"></script> to <head>
         2. Replace 'pk_test_PLACEHOLDER' with your Stripe publishable key
         3. Replace price_X_PLACEHOLDER on .sz buttons with real Stripe Price IDs
         4. Uncomment:
@@ -444,44 +1174,66 @@
         showToast('Stripe not yet configured');
     });
 
-    // ── SCROLL ──
-    // Frames complete at 30% scroll. Chips reveal at 20%.
+    /* ═══════════════════════════════════════════════
+       SCROLL ENGINE
+       ═══════════════════════════════════════════════ */
     let tick = false;
     window.addEventListener('scroll', () => {
         if (!tick) { requestAnimationFrame(onScroll); tick = true; }
     });
 
     function onScroll() {
-        const y   = window.scrollY;
-        const max = track.offsetHeight - window.innerHeight;
-        const p   = Math.min(Math.max(y / max, 0), 1);
+        const y = window.scrollY;
 
-        // All 6 frames play within first 30% of scroll
-        const frameProg = Math.min(p / 0.3, 1);
+        // ── Section 1: Street-view frames ──
+        const trackTop = track.offsetTop;
+        const trackH   = track.offsetHeight - window.innerHeight;
+        const p1 = Math.min(Math.max((y - trackTop) / trackH, 0), 1);
+
+        const frameProg = Math.min(p1 / 0.3, 1);
         const fi = Math.min(Math.floor(frameProg * FRAMES.length), FRAMES.length - 1);
         if (bg.dataset.f !== String(fi)) {
             bg.style.backgroundImage = `url('${FRAMES[fi]}')`;
             bg.dataset.f = String(fi);
         }
+        chips.classList.toggle('on', p1 > 0.2);
 
-        // Chips reveal at 20% scroll
-        chips.classList.toggle('on', p > 0.2);
+        // ── Section 2: Burst frames ──
+        const burstTop = trackBurst.offsetTop;
+        const burstH   = trackBurst.offsetHeight - window.innerHeight;
+        const p2 = Math.min(Math.max((y - burstTop) / burstH, 0), 1);
+
+        const burstProg = Math.min(p2 / 0.4, 1);
+        const bi = Math.min(Math.floor(burstProg * BURST_FRAMES.length), BURST_FRAMES.length - 1);
+        if (burstBg.dataset.f !== String(bi)) {
+            burstBg.style.backgroundImage = `url('${BURST_FRAMES[bi]}')`;
+            burstBg.dataset.f = String(bi);
+        }
+
+        // Reveal burst text
+        burstContent.classList.toggle('reveal', p2 > 0.08);
 
         tick = false;
     }
 
-    // ── CAMERA RESET after 5s idle ──
+    /* ═══════════════════════════════════════════════
+       CAMERA RESET AFTER IDLE
+       ═══════════════════════════════════════════════ */
     let camTimer;
     [mvBlack, mvWhite].forEach(mv => {
         ['mouseup','touchend'].forEach(e => {
             mv.addEventListener(e, () => {
                 clearTimeout(camTimer);
-                camTimer = setTimeout(() => { mv.cameraOrbit = '0deg 75deg 105%'; }, 5000);
+                camTimer = setTimeout(() => {
+                    mv.cameraOrbit = '0deg 75deg 105%';
+                }, 5000);
             });
         });
     });
 
-    // ── TOAST ──
+    /* ═══════════════════════════════════════════════
+       TOAST
+       ═══════════════════════════════════════════════ */
     let toastTimer;
     function showToast(msg) {
         toastEl.textContent = msg;

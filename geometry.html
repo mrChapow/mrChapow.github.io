@@ -965,46 +965,34 @@
     );
 
     /* ═══════════════════════════════════════════════
-       PRELOADER
+       PRELOADER — timed reveal, never blocks
        ═══════════════════════════════════════════════ */
     const preloader    = document.getElementById('preloader');
     const preloaderBar = document.getElementById('preloader-bar');
     const preloaderSts = document.getElementById('preloader-status');
 
-    let loaded = 0;
-    const allImages = [...FRAMES, ...BURST_FRAMES];
-    const total = allImages.length;
-
-    function tickLoader() {
-        loaded++;
-        const pct = Math.round((loaded / total) * 100);
-        preloaderBar.style.width = pct + '%';
-        preloaderSts.textContent = `Loading assets… ${pct}%`;
-        if (loaded >= total) finishLoad();
-    }
-
-    allImages.forEach(src => {
-        const img = new Image();
-        img.onload = tickLoader;
-        img.onerror = tickLoader;
-        img.src = src;
+    // Animate the bar over 1.5s, then reveal
+    preloaderBar.style.transition = 'width 1.4s cubic-bezier(0.16,1,0.3,1)';
+    requestAnimationFrame(() => {
+        preloaderBar.style.width = '100%';
+        preloaderSts.textContent = 'Loading assets…';
     });
 
-    // Safety timeout — never wait more than 3s
-    setTimeout(finishLoad, 3000);
-
-    let loadDone = false;
-    function finishLoad() {
-        if (loadDone) return;
-        loadDone = true;
-        preloaderBar.style.width = '100%';
+    setTimeout(() => {
         preloaderSts.textContent = 'Ready';
-        setTimeout(() => {
-            preloader.classList.add('done');
-            document.getElementById('navbar').classList.add('reveal');
-            document.getElementById('hero').classList.add('entered');
-        }, 400);
-    }
+    }, 1200);
+
+    setTimeout(() => {
+        preloader.classList.add('done');
+        document.getElementById('navbar').classList.add('reveal');
+        document.getElementById('hero').classList.add('entered');
+    }, 1800);
+
+    // Preload images in background (non-blocking)
+    [...FRAMES, ...BURST_FRAMES].forEach(src => {
+        const img = new Image();
+        img.src = src;
+    });
 
     /* ═══════════════════════════════════════════════
        DOM REFS

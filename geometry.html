@@ -822,7 +822,7 @@
         <div class="stage">
             <div class="model-box">
                 <model-viewer id="mv-black"
-                    src="https://mrchapow.github.io/tshirtblack.glb"
+                    src="tshirtblack.glb"
                     camera-orbit="0deg 75deg 105%"
                     auto-rotate rotation-per-second="12deg"
                     camera-controls touch-action="none" disable-zoom
@@ -834,7 +834,7 @@
                 </model-viewer>
 
                 <model-viewer id="mv-white"
-                    src="https://mrchapow.github.io/tshirtwhite.glb"
+                    src="tshirtwhite.glb"
                     camera-orbit="0deg 75deg 105%"
                     auto-rotate rotation-per-second="12deg"
                     camera-controls touch-action="none" disable-zoom
@@ -948,9 +948,8 @@
     /* ═══════════════════════════════════════════════
        CONFIG
        ═══════════════════════════════════════════════ */
-    const BASE     = 'https://mrchapow.github.io/';
     const PRICE    = 54.00;
-    const TEXTURE  = BASE + 'CLT4shirttrans.png';
+    const TEXTURE  = 'CLT4shirttrans.png';
 
     const FRAMES = [
         'street-view.jpg',
@@ -959,10 +958,10 @@
         'street-view 3.jpg',
         'street-view 4.jpg',
         'street-view 5.jpg'
-    ].map(f => BASE + encodeURIComponent(f));
+    ];
 
     const BURST_FRAMES = Array.from({length: 11}, (_, i) =>
-        BASE + encodeURIComponent(`burstscene${i + 1}.png`)
+        `burstscene${i + 1}.png`
     );
 
     /* ═══════════════════════════════════════════════
@@ -991,8 +990,8 @@
         img.src = src;
     });
 
-    // Safety timeout
-    setTimeout(finishLoad, 6000);
+    // Safety timeout — never wait more than 3s
+    setTimeout(finishLoad, 3000);
 
     let loadDone = false;
     function finishLoad() {

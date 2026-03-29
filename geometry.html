@@ -126,6 +126,7 @@
         @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
         .live-text { font-family: "Space Mono", monospace; font-size: 7.5px; color: var(--dim); letter-spacing: 0.2em; text-transform: uppercase; }
 
+        /* Chips reveal early — at 20% scroll */
         .chips { position: absolute; bottom: 0; left: 0; right: 0; z-index: 20; padding: 0 20px 28px; display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; opacity: 0; transform: translateY(14px); transition: opacity 0.5s ease, transform 0.5s ease; pointer-events: none; }
         .chips.on { opacity: 1; transform: none; pointer-events: auto; }
         .chip { font-family: "Space Mono", monospace; font-size: 7.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); background: rgba(5,5,5,0.6); border: 1px solid var(--border); backdrop-filter: blur(8px); padding: 5px 10px; }
@@ -180,7 +181,6 @@
 
         <div class="stage">
             <div class="model-box">
-                <!-- Black shirt — visible by default -->
                 <model-viewer id="mv-black"
                     src="tshirtblack.glb"
                     camera-orbit="0deg 75deg 105%"
@@ -193,7 +193,6 @@
                     shadow-intensity="1" shadow-softness="0.8">
                 </model-viewer>
 
-                <!-- White shirt — hidden by default -->
                 <model-viewer id="mv-white"
                     src="tshirtwhite.glb"
                     camera-orbit="0deg 75deg 105%"
@@ -279,9 +278,10 @@
 <div class="toast" id="toast"></div>
 
 <script>
-    const PRICE = 54.00;
+    const PRICE   = 54.00;
+    const TEXTURE = 'CLT4shirttrans.png';
 
-    // Street-view zoom sequence — all 6 frames play in first 30% of scroll
+    // Street-view frames — all 6 complete in first 30% of scroll
     const FRAMES = [
         'street-view.jpg',
         'street-view 1.jpg',
@@ -291,7 +291,7 @@
         'street-view 5.jpg'
     ];
 
-    // Preload all frames immediately so swaps are instant
+    // Preload all frames
     FRAMES.forEach(src => { const img = new Image(); img.src = src; });
 
     const bg          = document.getElementById('bg');
@@ -316,11 +316,36 @@
     let cart        = [];
     let activeColor = 'black';
 
-    // Set first frame immediately
+    // Set first frame
     bg.style.backgroundImage = `url('${FRAMES[0]}')`;
     bg.dataset.f = '0';
 
-    // ── COLORWAY SWAP — opacity toggle only, no reload ──
+    // ── APPLY CLT GRAPHIC TO A MODEL-VIEWER ──
+    // Targets the material that has a baseColorTexture slot
+    // and sets it to CLT4shirttrans.png
+    async function applyGraphic(mv) {
+        try {
+            if (!mv.model) return;
+            for (const mat of mv.model.materials) {
+                const pbr = mat.pbrMetallicRoughness;
+                if (pbr.baseColorTexture) {
+                    const tex = await mv.createTexture(TEXTURE);
+                    pbr.baseColorTexture.setTexture(tex);
+                    console.log(`[COTA] ✓ CLT4shirttrans.png applied to ${mat.name}`);
+                    return;
+                }
+            }
+            console.warn('[COTA] No baseColorTexture slot found — check GLB export');
+        } catch(e) {
+            console.warn('[COTA] Texture error:', e);
+        }
+    }
+
+    // Apply graphic to both shirts on load
+    mvBlack.addEventListener('load', () => applyGraphic(mvBlack));
+    mvWhite.addEventListener('load', () => applyGraphic(mvWhite));
+
+    // ── COLORWAY SWAP — opacity toggle only ──
     swatches.forEach(s => {
         s.addEventListener('click', () => {
             const c = s.dataset.color;
@@ -420,8 +445,7 @@
     });
 
     // ── SCROLL ──
-    // All 6 frames play in the first 30% of scroll.
-    // After that the last frame holds and chips reveal.
+    // Frames complete at 30% scroll. Chips reveal at 20%.
     let tick = false;
     window.addEventListener('scroll', () => {
         if (!tick) { requestAnimationFrame(onScroll); tick = true; }
@@ -432,17 +456,16 @@
         const max = track.offsetHeight - window.innerHeight;
         const p   = Math.min(Math.max(y / max, 0), 1);
 
-        // Frames complete at 30% scroll — remap progress into that window
+        // All 6 frames play within first 30% of scroll
         const frameProg = Math.min(p / 0.3, 1);
         const fi = Math.min(Math.floor(frameProg * FRAMES.length), FRAMES.length - 1);
-
         if (bg.dataset.f !== String(fi)) {
             bg.style.backgroundImage = `url('${FRAMES[fi]}')`;
             bg.dataset.f = String(fi);
         }
 
-        // Chips reveal after frames finish
-        chips.classList.toggle('on', p > 0.35);
+        // Chips reveal at 20% scroll
+        chips.classList.toggle('on', p > 0.2);
 
         tick = false;
     }

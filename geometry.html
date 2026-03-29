@@ -16,7 +16,6 @@
             --accent: #c8ff00;
             --accent-dim: rgba(200,255,0,0.12);
         }
-
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         body, html {
             background: var(--bg); color: var(--text);
@@ -24,6 +23,7 @@
             overflow-x: hidden; -webkit-font-smoothing: antialiased;
         }
 
+        /* NAV */
         nav {
             position: fixed; top: 0; left: 0; right: 0; height: 60px;
             display: flex; align-items: center; justify-content: space-between;
@@ -41,7 +41,7 @@
         }
         .cart-dot {
             background: var(--accent); color: #000;
-            font-size: 8px; font-weight: 700; font-family: "Space Mono", monospace;
+            font-size: 8px; font-weight: 700;
             width: 16px; height: 16px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             opacity: 0; transform: scale(0);
@@ -49,20 +49,29 @@
         }
         .cart-dot.on { opacity: 1; transform: scale(1); }
 
-        .track { height: 260vh; position: relative; }
+        /* SCROLL TRACK — tall enough to animate background */
+        .track { height: 300vh; position: relative; }
         .sticky { position: sticky; top: 0; height: 100vh; overflow: hidden; }
 
+        /* BACKGROUND — street view zoom sequence */
         #bg {
             position: absolute; inset: 0;
-            background-size: cover; background-position: center;
-            will-change: transform;
+            background-size: cover;
+            background-position: center;
+            /* No CSS transition — JS swaps frames on scroll, instant feels intentional */
         }
         #bg::after {
             content: '';
             position: absolute; inset: 0;
-            background: linear-gradient(150deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.8) 100%);
+            background: linear-gradient(
+                150deg,
+                rgba(0,0,0,0.82) 0%,
+                rgba(0,0,0,0.28) 50%,
+                rgba(0,0,0,0.82) 100%
+            );
         }
 
+        /* STAGE */
         .stage {
             position: relative; z-index: 10;
             height: 100vh;
@@ -71,18 +80,14 @@
             padding: 70px 20px 20px; gap: 16px;
         }
 
-        .model-box {
-            width: 100%; height: 42vh;
-            position: relative;
-        }
-        .model-box model-viewer {
-            position: absolute; inset: 0;
+        /* MODEL */
+        .model-box { width: 100%; height: 44vh; }
+        model-viewer {
             width: 100%; height: 100%;
             outline: none; --poster-color: transparent;
-            transition: opacity 0.3s ease;
         }
-        .model-box model-viewer.hidden { opacity: 0; pointer-events: none; }
 
+        /* PANEL */
         .panel {
             width: 100%; max-width: 390px;
             background: var(--glass);
@@ -103,21 +108,38 @@
         .rule { height: 1px; background: var(--border); margin-bottom: 16px; }
         .label { font-family: "Space Mono", monospace; font-size: 7.5px; text-transform: uppercase; letter-spacing: 0.28em; color: var(--dim); display: block; margin-bottom: 8px; }
 
+        /* SWATCHES */
         .swatches { display: flex; align-items: center; gap: 9px; margin-bottom: 16px; }
-        .swatch { width: 22px; height: 22px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; transition: border-color 0.2s, transform 0.15s; }
+        .swatch {
+            width: 22px; height: 22px; border-radius: 50%;
+            border: 2px solid transparent; cursor: pointer;
+            transition: border-color 0.2s, transform 0.15s;
+        }
         .swatch:hover { transform: scale(1.15); }
         .swatch.on { border-color: var(--accent); }
         .sw-black { background: #111; box-shadow: 0 0 0 1px rgba(255,255,255,0.15); }
         .sw-white { background: #efefef; box-shadow: 0 0 0 1px rgba(255,255,255,0.3); }
         .swatch-name { font-family: "Space Mono", monospace; font-size: 8px; color: var(--dim); letter-spacing: 0.2em; text-transform: uppercase; }
 
+        /* SIZES */
         .sizes { display: grid; grid-template-columns: repeat(4,1fr); gap: 5px; margin-bottom: 16px; }
-        .sz { background: transparent; border: 1px solid var(--border); color: var(--dim); padding: 10px 0; font-family: "Space Mono", monospace; font-size: 10px; cursor: pointer; transition: all 0.15s; letter-spacing: 0.05em; }
+        .sz {
+            background: transparent; border: 1px solid var(--border);
+            color: var(--dim); padding: 10px 0;
+            font-family: "Space Mono", monospace; font-size: 10px;
+            cursor: pointer; transition: all 0.15s; letter-spacing: 0.05em;
+        }
         .sz:hover { border-color: rgba(240,237,232,0.6); color: var(--text); }
         .sz.on { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); }
 
+        /* BUTTONS */
         .btns { display: flex; flex-direction: column; gap: 6px; }
-        .btn { width: 100%; padding: 13px; font-family: "DM Sans", sans-serif; font-weight: 900; font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em; cursor: pointer; border: none; transition: all 0.2s; }
+        .btn {
+            width: 100%; padding: 13px;
+            font-family: "DM Sans", sans-serif; font-weight: 900;
+            font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em;
+            cursor: pointer; border: none; transition: all 0.2s;
+        }
         .btn-outline { background: transparent; border: 1px solid rgba(240,237,232,0.6); color: var(--text); }
         .btn-outline:hover { background: var(--text); color: var(--bg); }
         .btn-outline.ok { border-color: var(--accent); color: var(--accent); }
@@ -129,10 +151,24 @@
         @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
         .live-text { font-family: "Space Mono", monospace; font-size: 7.5px; color: var(--dim); letter-spacing: 0.2em; text-transform: uppercase; }
 
-        .chips { position: absolute; bottom: 0; left: 0; right: 0; z-index: 20; padding: 0 20px 28px; display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; opacity: 0; transform: translateY(14px); transition: opacity 0.5s ease, transform 0.5s ease; pointer-events: none; }
+        /* DETAIL CHIPS */
+        .chips {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            z-index: 20; padding: 0 20px 28px;
+            display: flex; flex-wrap: wrap; gap: 4px; justify-content: center;
+            opacity: 0; transform: translateY(14px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            pointer-events: none;
+        }
         .chips.on { opacity: 1; transform: none; pointer-events: auto; }
-        .chip { font-family: "Space Mono", monospace; font-size: 7.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); background: rgba(5,5,5,0.6); border: 1px solid var(--border); backdrop-filter: blur(8px); padding: 5px 10px; }
+        .chip {
+            font-family: "Space Mono", monospace; font-size: 7.5px;
+            letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim);
+            background: rgba(5,5,5,0.6); border: 1px solid var(--border);
+            backdrop-filter: blur(8px); padding: 5px 10px;
+        }
 
+        /* DESKTOP */
         @media (min-width: 1024px) {
             .stage { flex-direction: row; gap: 60px; padding: 0 8vw; }
             .model-box { width: 50%; height: 74vh; }
@@ -140,13 +176,29 @@
             .chips { padding: 0 8vw 40px; }
         }
 
-        footer { height: 36vh; background: #020202; border-top: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+        /* FOOTER */
+        footer {
+            height: 36vh; background: #020202;
+            border-top: 1px solid var(--border);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 8px;
+        }
         .footer-logo { font-family: "Bebas Neue", sans-serif; font-size: 1.8rem; letter-spacing: 0.3em; opacity: 0.1; }
         .footer-tag { font-family: "Space Mono", monospace; font-size: 7.5px; color: var(--dim); letter-spacing: 0.28em; text-transform: uppercase; }
 
-        .overlay { position: fixed; inset: 0; z-index: 500; background: rgba(0,0,0,0.88); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+        /* MODAL */
+        .overlay {
+            position: fixed; inset: 0; z-index: 500;
+            background: rgba(0,0,0,0.88); backdrop-filter: blur(10px);
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.25s;
+        }
         .overlay.on { opacity: 1; pointer-events: auto; }
-        .modal { width: min(440px, 92vw); background: #0a0a0a; border: 1px solid var(--border); border-radius: 2px; padding: 28px; transform: translateY(16px); transition: transform 0.28s ease; }
+        .modal {
+            width: min(440px, 92vw); background: #0a0a0a;
+            border: 1px solid var(--border); border-radius: 2px; padding: 28px;
+            transform: translateY(16px); transition: transform 0.28s ease;
+        }
         .overlay.on .modal { transform: none; }
         .modal-title { font-family: "Bebas Neue", sans-serif; font-size: 1.6rem; letter-spacing: 0.12em; margin-bottom: 20px; }
         .cart-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
@@ -161,7 +213,17 @@
         .modal-back:hover { color: var(--text); }
         .stripe-note { font-family: "Space Mono", monospace; font-size: 7px; color: var(--dim); text-align: center; margin-top: 10px; letter-spacing: 0.15em; text-transform: uppercase; }
 
-        .toast { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%) translateY(60px); background: var(--text); color: var(--bg); font-family: "Space Mono", monospace; font-size: 8px; letter-spacing: 0.2em; text-transform: uppercase; padding: 10px 16px; border-radius: 2px; z-index: 999; transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1); white-space: nowrap; pointer-events: none; }
+        /* TOAST */
+        .toast {
+            position: fixed; bottom: 22px; left: 50%;
+            transform: translateX(-50%) translateY(60px);
+            background: var(--text); color: var(--bg);
+            font-family: "Space Mono", monospace; font-size: 8px;
+            letter-spacing: 0.2em; text-transform: uppercase;
+            padding: 10px 16px; border-radius: 2px; z-index: 999;
+            transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+            white-space: nowrap; pointer-events: none;
+        }
         .toast.on { transform: translateX(-50%) translateY(0); }
 
         @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
@@ -180,19 +242,11 @@
 <div class="track" id="track">
     <div class="sticky">
         <div id="bg"></div>
+
         <div class="stage">
             <div class="model-box">
-                <!--
-                    Both viewers load in parallel.
-                    On load, JS applies the correct texture to each.
-                    Swap = opacity toggle only. Zero reload, zero lag.
-
-                    TEXTURE MAP:
-                    - blackshirt.glb  → BlackTshirt.png
-                    - whiteshirt.glb  → CLT4shirttrans.png
-                -->
-                <model-viewer id="mv-black"
-                    src="blackshirt.glb"
+                <model-viewer id="mv"
+                    src="Tshirt.glb"
                     camera-orbit="0deg 75deg 105%"
                     auto-rotate rotation-per-second="12deg"
                     camera-controls touch-action="none" disable-zoom
@@ -202,20 +256,6 @@
                     interpolation-decay="200"
                     shadow-intensity="1" shadow-softness="0.8"
                     exposure="1.0">
-                </model-viewer>
-
-                <model-viewer id="mv-white"
-                    src="whiteshirt.glb"
-                    camera-orbit="0deg 75deg 105%"
-                    auto-rotate rotation-per-second="12deg"
-                    camera-controls touch-action="none" disable-zoom
-                    interaction-prompt="none" enable-pan="false"
-                    min-camera-orbit="auto 60deg 80%"
-                    max-camera-orbit="auto 100deg 130%"
-                    interpolation-decay="200"
-                    shadow-intensity="1" shadow-softness="0.8"
-                    exposure="1.0"
-                    class="hidden">
                 </model-viewer>
             </div>
 
@@ -245,7 +285,7 @@
 
                 <div class="btns">
                     <button class="btn btn-outline" id="add-btn">Add to Cart</button>
-                    <button class="btn btn-fill"    id="checkout-btn">Review & Checkout →</button>
+                    <button class="btn btn-fill" id="checkout-btn">Review & Checkout →</button>
                 </div>
 
                 <div class="live">
@@ -291,20 +331,30 @@
 
 <script>
     const PRICE = 54.00;
-    const BG = ['street-view.jpg','street-view 1.jpg','street-view 2.jpg','street-view 3.jpg','street-view 4.jpg','street-view 5.jpg'];
 
-    // ── TEXTURE CONFIG ──
-    // This is what gets applied to each GLB on load via JS.
-    // Change these filenames to update the graphic on either shirt.
-    const TEXTURES = {
-        black: 'BlackTshirt.png',
-        white: 'CLT4shirttrans.png'
+    // Street view frames — scroll through these as user scrolls
+    // Ordered from widest shot → closest zoom
+    const FRAMES = [
+        'street-view.jpg',
+        'street-view 1.jpg',
+        'street-view 2.jpg',
+        'street-view 3.jpg',
+        'street-view 4.jpg',
+        'street-view 5.jpg'
+    ];
+
+    // Texture to apply on the shirt — the CLT graphic
+    const TEXTURE = 'CLT4shirttrans.png';
+
+    // Base color per colorway [r, g, b] 0-1 range
+    const COLORS = {
+        black: [0.02, 0.02, 0.02],
+        white: [0.95, 0.95, 0.95]
     };
 
     const bg         = document.getElementById('bg');
     const track      = document.getElementById('track');
-    const mvBlack    = document.getElementById('mv-black');
-    const mvWhite    = document.getElementById('mv-white');
+    const mv         = document.getElementById('mv');
     const chips      = document.getElementById('chips');
     const cartDot    = document.getElementById('cart-dot');
     const cartNav    = document.getElementById('cart-nav');
@@ -320,52 +370,45 @@
     const swatchName = document.getElementById('swatch-name');
     const sizeBtns   = document.querySelectorAll('.sz');
 
-    let cart = [];
+    let cart        = [];
     let activeColor = 'black';
+    let material    = null;
 
-    // ── BG ──
-    bg.style.backgroundImage = `url('${BG[0]}')`;
+    // ── BACKGROUND: set first frame immediately ──
+    bg.style.backgroundImage = `url('${FRAMES[0]}')`;
     bg.dataset.f = '0';
 
-    // ── APPLY TEXTURE TO A MODEL-VIEWER ──
-    async function applyTexture(mv, textureFile) {
+    // Preload all frames so scroll is instant
+    FRAMES.forEach(f => { const i = new Image(); i.src = f; });
+
+    // ── MODEL LOAD: apply texture + default black color ──
+    mv.addEventListener('load', async () => {
+        material = mv.model?.materials?.[0];
+        if (!material) return;
+
+        // Apply the CLT graphic texture
         try {
-            const model = mv.model;
-            if (!model) return;
-
-            // Try every material until one accepts the texture
-            for (const mat of model.materials) {
-                const pbr = mat.pbrMetallicRoughness;
-                const tex = await mv.createTexture(textureFile);
-
-                if (pbr.baseColorTexture) {
-                    // Slot exists — set it directly
-                    pbr.baseColorTexture.setTexture(tex);
-                    console.log(`[COTA] ✓ ${textureFile} → ${mat.name} (baseColorTexture)`);
-                    return; // done
-                } else {
-                    // No slot — set base color factor to white so texture shows,
-                    // then assign texture. Works on most Principled BSDF exports.
-                    pbr.setBaseColorFactor([1, 1, 1, 1]);
-                    // Attempt direct texture assignment via model-viewer internal API
-                    if (typeof pbr.baseColorTexture !== 'undefined') {
-                        pbr.baseColorTexture.setTexture(tex);
-                        console.log(`[COTA] ✓ ${textureFile} → forced onto ${mat.name}`);
-                        return;
-                    }
-                }
+            const tex = await mv.createTexture(TEXTURE);
+            const pbr = material.pbrMetallicRoughness;
+            if (pbr.baseColorTexture) {
+                pbr.baseColorTexture.setTexture(tex);
             }
-            console.warn(`[COTA] Could not apply ${textureFile} — no compatible texture slot found.`);
         } catch(e) {
             console.warn('[COTA] Texture error:', e);
         }
+
+        // Apply default colorway (black)
+        applyColor('black');
+    });
+
+    // ── COLOR: tint the base color factor ──
+    function applyColor(color) {
+        if (!material) return;
+        const [r, g, b] = COLORS[color];
+        material.pbrMetallicRoughness.setBaseColorFactor([r, g, b, 1]);
     }
 
-    // ── ON LOAD: apply textures to both ──
-    mvBlack.addEventListener('load', () => applyTexture(mvBlack, TEXTURES.black));
-    mvWhite.addEventListener('load', () => applyTexture(mvWhite, TEXTURES.white));
-
-    // ── COLORWAY SWAP (opacity only, no reload) ──
+    // ── SWATCHES ──
     swatches.forEach(s => {
         s.addEventListener('click', () => {
             const c = s.dataset.color;
@@ -374,14 +417,16 @@
             swatches.forEach(x => x.classList.remove('on'));
             s.classList.add('on');
             swatchName.textContent = c.charAt(0).toUpperCase() + c.slice(1);
-            mvBlack.classList.toggle('hidden', c !== 'black');
-            mvWhite.classList.toggle('hidden', c !== 'white');
+            applyColor(c);
         });
     });
 
-    // ── SIZE ──
+    // ── SIZES ──
     sizeBtns.forEach(b => {
-        b.addEventListener('click', () => { sizeBtns.forEach(x => x.classList.remove('on')); b.classList.add('on'); });
+        b.addEventListener('click', () => {
+            sizeBtns.forEach(x => x.classList.remove('on'));
+            b.classList.add('on');
+        });
     });
 
     // ── CART ──
@@ -390,13 +435,17 @@
         if (!active) {
             showToast('Select a size first');
             const g = document.querySelector('.sizes');
-            g.style.animation = 'none'; g.offsetHeight; g.style.animation = 'shake 0.35s ease';
+            g.style.animation = 'none'; g.offsetHeight;
+            g.style.animation = 'shake 0.35s ease';
             return;
         }
-        const size = active.dataset.size, pid = active.dataset.pid;
-        const key = `${size}-${activeColor}`;
+        const size = active.dataset.size;
+        const pid  = active.dataset.pid;
+        const key  = `${size}-${activeColor}`;
         const item = cart.find(i => i.key === key);
-        if (item) item.qty++; else cart.push({ key, size, color: activeColor, pid, qty: 1 });
+        if (item) item.qty++;
+        else cart.push({ key, size, color: activeColor, pid, qty: 1 });
+
         updateCart();
         addBtn.textContent = '✓ Added'; addBtn.classList.add('ok');
         setTimeout(() => { addBtn.textContent = 'Add to Cart'; addBtn.classList.remove('ok'); }, 1200);
@@ -405,7 +454,8 @@
 
     function updateCart() {
         const n = cart.reduce((s,i) => s+i.qty, 0);
-        cartDot.textContent = n; cartDot.classList.toggle('on', n > 0);
+        cartDot.textContent = n;
+        cartDot.classList.toggle('on', n > 0);
         checkoutBtn.style.display = n > 0 ? 'block' : 'none';
     }
 
@@ -415,14 +465,24 @@
         let total = 0;
         cart.forEach(item => {
             const cost = item.qty * PRICE; total += cost;
-            const row = document.createElement('div'); row.className = 'cart-row';
-            row.innerHTML = `<div><div class="cart-name">CLT // 001</div><div class="cart-sub">${item.color} · Size ${item.size} · Qty ${item.qty}</div></div><div class="cart-price">$${cost.toFixed(2)}</div>`;
+            const row = document.createElement('div');
+            row.className = 'cart-row';
+            row.innerHTML = `
+                <div>
+                    <div class="cart-name">CLT // 001</div>
+                    <div class="cart-sub">${item.color} · Size ${item.size} · Qty ${item.qty}</div>
+                </div>
+                <div class="cart-price">$${cost.toFixed(2)}</div>`;
             cartLines.appendChild(row);
         });
         totalPrice.textContent = `$${total.toFixed(2)}`;
-        overlay.classList.add('on'); document.body.style.overflow = 'hidden';
+        overlay.classList.add('on');
+        document.body.style.overflow = 'hidden';
     }
-    function closeModal() { overlay.classList.remove('on'); document.body.style.overflow = ''; }
+    function closeModal() {
+        overlay.classList.remove('on');
+        document.body.style.overflow = '';
+    }
     checkoutBtn.addEventListener('click', openModal);
     cartNav.addEventListener('click', () => { if (cart.length) openModal(); });
     modalBack.addEventListener('click', closeModal);
@@ -432,8 +492,8 @@
     stripeBtn.addEventListener('click', () => {
         /*
         1. Add to <head>: <script src="https://js.stripe.com/v3/"><\/script>
-        2. Replace 'pk_test_PLACEHOLDER' with your publishable key
-        3. Replace price_X_PLACEHOLDER on .sz buttons with real Price IDs
+        2. Replace 'pk_test_PLACEHOLDER' with your Stripe publishable key
+        3. Replace price_X_PLACEHOLDER on .sz buttons with real Stripe Price IDs
         4. Uncomment:
 
         const stripe = Stripe('pk_test_PLACEHOLDER');
@@ -447,35 +507,47 @@
         showToast('Stripe not yet configured');
     });
 
-    // ── SCROLL ──
+    // ── SCROLL: step through street-view frames as user scrolls ──
     let tick = false;
-    window.addEventListener('scroll', () => { if (!tick) { requestAnimationFrame(onScroll); tick = true; } });
+    window.addEventListener('scroll', () => {
+        if (!tick) { requestAnimationFrame(onScroll); tick = true; }
+    });
+
     function onScroll() {
-        const y = window.scrollY, max = track.offsetHeight - window.innerHeight;
-        const p = Math.min(Math.max(y / max, 0), 1);
-        bg.style.transform = `translateY(${y * 0.2}px) scale(1.08)`;
-        bg.style.filter = `brightness(${1 - p * 0.28})`;
-        const fi = Math.min(Math.floor(p * BG.length), BG.length - 1);
-        if (bg.dataset.f !== String(fi)) { bg.style.backgroundImage = `url('${BG[fi]}')`; bg.dataset.f = String(fi); }
+        const y   = window.scrollY;
+        const max = track.offsetHeight - window.innerHeight;
+        const p   = Math.min(Math.max(y / max, 0), 1);
+
+        // Step through frames — divides scroll into equal segments per frame
+        const fi = Math.min(Math.floor(p * FRAMES.length), FRAMES.length - 1);
+        if (bg.dataset.f !== String(fi)) {
+            bg.style.backgroundImage = `url('${FRAMES[fi]}')`;
+            bg.dataset.f = String(fi);
+        }
+
+        // Subtle parallax on bg
+        bg.style.transform = `scale(1.06) translateY(${p * -3}%)`;
+
+        // Reveal detail chips in lower half of scroll
         chips.classList.toggle('on', p > 0.5);
+
         tick = false;
     }
 
-    // ── CAMERA RESET ──
+    // ── CAMERA RESET after 5s idle ──
     let camTimer;
-    [mvBlack, mvWhite].forEach(mv => {
-        ['mouseup','touchend'].forEach(e => {
-            mv.addEventListener(e, () => {
-                clearTimeout(camTimer);
-                camTimer = setTimeout(() => { mv.cameraOrbit = '0deg 75deg 105%'; }, 5000);
-            });
+    ['mouseup','touchend'].forEach(e => {
+        mv.addEventListener(e, () => {
+            clearTimeout(camTimer);
+            camTimer = setTimeout(() => { mv.cameraOrbit = '0deg 75deg 105%'; }, 5000);
         });
     });
 
     // ── TOAST ──
     let toastTimer;
     function showToast(msg) {
-        toastEl.textContent = msg; toastEl.classList.add('on');
+        toastEl.textContent = msg;
+        toastEl.classList.add('on');
         clearTimeout(toastTimer);
         toastTimer = setTimeout(() => toastEl.classList.remove('on'), 2400);
     }

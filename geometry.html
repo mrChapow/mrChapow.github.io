@@ -86,9 +86,7 @@
             position: absolute; inset: 0;
             width: 100%; height: 100%;
             outline: none; --poster-color: transparent;
-            transition: opacity 0.25s ease;
         }
-        .model-box model-viewer.hidden { opacity: 0; pointer-events: none; }
 
         /* ── PANEL ── */
         .panel {
@@ -269,29 +267,16 @@
 
         <div class="stage">
             <div class="model-box">
-                <model-viewer id="mv-black"
+                <model-viewer id="mv-shirt"
                     src="tshirtblack.glb"
-                    camera-orbit="0deg 75deg 105%"
+                    camera-orbit="0deg 65deg 105%"
                     auto-rotate rotation-per-second="12deg"
                     camera-controls touch-action="none" disable-zoom
                     interaction-prompt="none" enable-pan="false"
-                    min-camera-orbit="auto 60deg 80%"
-                    max-camera-orbit="auto 100deg 130%"
+                    min-camera-orbit="auto 50deg 80%"
+                    max-camera-orbit="auto 90deg 130%"
                     interpolation-decay="200"
                     shadow-intensity="1" shadow-softness="0.8">
-                </model-viewer>
-
-                <model-viewer id="mv-white"
-                    src="tshirtwhite.glb"
-                    camera-orbit="0deg 75deg 105%"
-                    auto-rotate rotation-per-second="12deg"
-                    camera-controls touch-action="none" disable-zoom
-                    interaction-prompt="none" enable-pan="false"
-                    min-camera-orbit="auto 60deg 80%"
-                    max-camera-orbit="auto 100deg 130%"
-                    interpolation-decay="200"
-                    shadow-intensity="1" shadow-softness="0.8"
-                    class="hidden">
                 </model-viewer>
             </div>
 
@@ -383,8 +368,7 @@
 
     const bg          = document.getElementById('bg');
     const track       = document.getElementById('track');
-    const mvBlack     = document.getElementById('mv-black');
-    const mvWhite     = document.getElementById('mv-white');
+    const mv          = document.getElementById('mv-shirt');
     const chips       = document.getElementById('chips');
     const cartDot     = document.getElementById('cart-dot');
     const cartNav     = document.getElementById('cart-nav');
@@ -399,16 +383,18 @@
     const swatches    = document.querySelectorAll('.swatch');
     const swatchName  = document.getElementById('swatch-name');
     const sizeBtns    = document.querySelectorAll('.sz');
+    const hero        = document.querySelector('.hero');
 
     let cart        = [];
     let activeColor = 'black';
+    let shirtMaterial = null;
 
     // Set first frame
     bg.style.backgroundImage = `url('${FRAMES[0]}')`;
     bg.dataset.f = '0';
 
-    // ── APPLY CLT GRAPHIC ──
-    async function applyGraphic(mv) {
+    // ── APPLY CLT GRAPHIC + STORE MATERIAL REF ──
+    mv.addEventListener('load', async () => {
         try {
             if (!mv.model) return;
             for (const mat of mv.model.materials) {
@@ -416,16 +402,19 @@
                 if (pbr.baseColorTexture) {
                     const tex = await mv.createTexture(TEXTURE);
                     pbr.baseColorTexture.setTexture(tex);
+                    shirtMaterial = mat;
                     return;
                 }
             }
         } catch(e) { console.warn('[COTA] Texture error:', e); }
-    }
+    });
 
-    mvBlack.addEventListener('load', () => applyGraphic(mvBlack));
-    mvWhite.addEventListener('load', () => applyGraphic(mvWhite));
+    // ── COLORWAY SWAP — change material color, single GLB ──
+    const COLORS = {
+        black: [0.06, 0.06, 0.06],
+        white: [0.92, 0.92, 0.90]
+    };
 
-    // ── COLORWAY SWAP ──
     swatches.forEach(s => {
         s.addEventListener('click', () => {
             const c = s.dataset.color;
@@ -434,8 +423,11 @@
             swatches.forEach(x => x.classList.remove('on'));
             s.classList.add('on');
             swatchName.textContent = c.charAt(0).toUpperCase() + c.slice(1);
-            mvBlack.classList.toggle('hidden', c !== 'black');
-            mvWhite.classList.toggle('hidden', c !== 'white');
+
+            if (shirtMaterial) {
+                const rgb = COLORS[c];
+                shirtMaterial.pbrMetallicRoughness.setBaseColorFactor([rgb[0], rgb[1], rgb[2], 1]);
+            }
         });
     });
 
@@ -511,16 +503,19 @@
     });
 
     // ── SCROLL ──
+    // Background starts moving halfway through the hero section
     let tick = false;
     window.addEventListener('scroll', () => {
         if (!tick) { requestAnimationFrame(onScroll); tick = true; }
     });
 
     function onScroll() {
-        const y   = window.scrollY;
-        const trackTop = track.offsetTop;
-        const max = track.offsetHeight - window.innerHeight;
-        const p   = Math.min(Math.max((y - trackTop) / max, 0), 1);
+        const y = window.scrollY;
+        const heroH = hero.offsetHeight;
+        const scrollStart = heroH * 0.5; // start at half the hero
+        const trackEnd = track.offsetTop + track.offsetHeight - window.innerHeight;
+        const range = trackEnd - scrollStart;
+        const p = Math.min(Math.max((y - scrollStart) / range, 0), 1);
 
         const frameProg = Math.min(p / 0.3, 1);
         const fi = Math.min(Math.floor(frameProg * FRAMES.length), FRAMES.length - 1);
@@ -535,12 +530,10 @@
 
     // ── CAMERA RESET ──
     let camTimer;
-    [mvBlack, mvWhite].forEach(mv => {
-        ['mouseup','touchend'].forEach(e => {
-            mv.addEventListener(e, () => {
-                clearTimeout(camTimer);
-                camTimer = setTimeout(() => { mv.cameraOrbit = '0deg 75deg 105%'; }, 5000);
-            });
+    ['mouseup','touchend'].forEach(e => {
+        mv.addEventListener(e, () => {
+            clearTimeout(camTimer);
+            camTimer = setTimeout(() => { mv.cameraOrbit = '0deg 65deg 105%'; }, 5000);
         });
     });
 
@@ -555,4 +548,3 @@
 </script>
 </body>
 </html>
-

@@ -254,7 +254,7 @@
 <section class="hero">
     <div class="hero-eyebrow">Collection 001 — Limited Run</div>
     <div class="hero-title">Cota <span class="ha">Lab</span></div>
-    <div class="hero-sub">Charlotte, NC — Designed for the culture</div>
+    <div class="hero-sub">Designed for the culture</div>
     <div class="hero-scroll">
         <span>Scroll to explore</span>
         <div class="hero-line"></div>
@@ -269,12 +269,12 @@
             <div class="model-box">
                 <model-viewer id="mv-shirt"
                     src="tshirtblack.glb"
-                    camera-orbit="0deg 65deg 105%"
+                    camera-orbit="0deg 85deg 105%"
                     auto-rotate rotation-per-second="12deg"
                     camera-controls touch-action="none" disable-zoom
                     interaction-prompt="none" enable-pan="false"
-                    min-camera-orbit="auto 50deg 80%"
-                    max-camera-orbit="auto 90deg 130%"
+                    min-camera-orbit="auto 70deg 80%"
+                    max-camera-orbit="auto 100deg 130%"
                     interpolation-decay="200"
                     shadow-intensity="1" shadow-softness="0.8">
                 </model-viewer>
@@ -284,7 +284,7 @@
                 <div class="eyebrow">Cota Lab // Collection 01</div>
                 <div class="title">CLT // 001</div>
                 <div class="price-row">
-                    <span class="price">$54.00 USD</span>
+                    <span class="price">$25.00 USD</span>
                     <span class="badge">In Stock</span>
                 </div>
                 <div class="rule"></div>
@@ -351,8 +351,9 @@
 <div class="toast" id="toast"></div>
 
 <script>
-    const PRICE   = 54.00;
-    const TEXTURE = 'CLT4shirttrans.png';
+    const PRICE   = 25.00;
+    const TEX_BLACK = 'shirtclt4black.png';
+    const TEX_WHITE = 'shirtclt4white.png';
 
     const FRAMES = [
         'street-view.jpg',
@@ -387,34 +388,38 @@
 
     let cart        = [];
     let activeColor = 'black';
-    let shirtMaterial = null;
 
     // Set first frame
     bg.style.backgroundImage = `url('${FRAMES[0]}')`;
     bg.dataset.f = '0';
 
-    // ── APPLY CLT GRAPHIC + STORE MATERIAL REF ──
+    // ── APPLY TEXTURE + STORE MATERIAL REF ──
+    let shirtPBR = null;
+
+    async function applyTexture(texFile) {
+        if (!shirtPBR) return;
+        try {
+            const tex = await mv.createTexture(texFile);
+            shirtPBR.baseColorTexture.setTexture(tex);
+        } catch(e) { console.warn('[COTA] Texture swap error:', e); }
+    }
+
     mv.addEventListener('load', async () => {
         try {
             if (!mv.model) return;
             for (const mat of mv.model.materials) {
                 const pbr = mat.pbrMetallicRoughness;
                 if (pbr.baseColorTexture) {
-                    const tex = await mv.createTexture(TEXTURE);
+                    shirtPBR = pbr;
+                    const tex = await mv.createTexture(TEX_BLACK);
                     pbr.baseColorTexture.setTexture(tex);
-                    shirtMaterial = mat;
                     return;
                 }
             }
         } catch(e) { console.warn('[COTA] Texture error:', e); }
     });
 
-    // ── COLORWAY SWAP — change material color, single GLB ──
-    const COLORS = {
-        black: [0.06, 0.06, 0.06],
-        white: [0.92, 0.92, 0.90]
-    };
-
+    // ── COLORWAY SWAP — swap texture PNG ──
     swatches.forEach(s => {
         s.addEventListener('click', () => {
             const c = s.dataset.color;
@@ -423,11 +428,7 @@
             swatches.forEach(x => x.classList.remove('on'));
             s.classList.add('on');
             swatchName.textContent = c.charAt(0).toUpperCase() + c.slice(1);
-
-            if (shirtMaterial) {
-                const rgb = COLORS[c];
-                shirtMaterial.pbrMetallicRoughness.setBaseColorFactor([rgb[0], rgb[1], rgb[2], 1]);
-            }
+            applyTexture(c === 'white' ? TEX_WHITE : TEX_BLACK);
         });
     });
 
@@ -533,7 +534,7 @@
     ['mouseup','touchend'].forEach(e => {
         mv.addEventListener(e, () => {
             clearTimeout(camTimer);
-            camTimer = setTimeout(() => { mv.cameraOrbit = '0deg 65deg 105%'; }, 5000);
+            camTimer = setTimeout(() => { mv.cameraOrbit = '0deg 85deg 105%'; }, 5000);
         });
     });
 

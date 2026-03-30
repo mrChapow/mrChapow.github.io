@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>COTA LAB // CLT 001</title>
+    <script src="https://js.stripe.com/v3/"></script>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&family=DM+Sans:wght@900&display=swap" rel="stylesheet">
     <style>
@@ -298,10 +299,10 @@
 
                 <span class="label">Size</span>
                 <div class="sizes">
-                    <button class="sz" data-size="S"  data-pid="price_S_PLACEHOLDER">S</button>
-                    <button class="sz" data-size="M"  data-pid="price_M_PLACEHOLDER">M</button>
-                    <button class="sz" data-size="L"  data-pid="price_L_PLACEHOLDER">L</button>
-                    <button class="sz" data-size="XL" data-pid="price_XL_PLACEHOLDER">XL</button>
+                    <button class="sz" data-size="S">S</button>
+                    <button class="sz" data-size="M">M</button>
+                    <button class="sz" data-size="L">L</button>
+                    <button class="sz" data-size="XL">XL</button>
                 </div>
 
                 <div class="btns">
@@ -389,6 +390,19 @@
     let cart        = [];
     let activeColor = 'black';
 
+    // ── STRIPE PRICE MAP ──
+    const stripe = Stripe('pk_live_51NaKkkKnbzAulfJUwU8GE0VeMLA3UHcjGNQlpMFzymm7KFUhx5OKx8c7Eyml9GWRaPNvaKFhmjsTcqYFRd1gEp4K00SgAlUEce');
+    const PRICES = {
+        'black-S':  'price_1TGoaYKnbzAulfJUlbBFvWwn',
+        'black-M':  'price_1TGob5KnbzAulfJU6pLjGWs9',
+        'black-L':  'price_1TGobJKnbzAulfJU5BWYoMNF',
+        'black-XL': 'price_1TGobdKnbzAulfJUNzRRPq9R',
+        'white-S':  'price_1TGobpKnbzAulfJU4YQrgpCM',
+        'white-M':  'price_1TGoc2KnbzAulfJUI5bkigBB',
+        'white-L':  'price_1TGocEKnbzAulfJUvsOdsAQW',
+        'white-XL': 'price_1TGocPKnbzAulfJUSre2Ky3f',
+    };
+
     // Set first frame
     bg.style.backgroundImage = `url('${FRAMES[0]}')`;
     bg.dataset.f = '0';
@@ -451,8 +465,8 @@
             return;
         }
         const size = active.dataset.size;
-        const pid  = active.dataset.pid;
-        const key  = `${size}-${activeColor}`;
+        const pid  = PRICES[`${activeColor}-${size}`];
+        const key  = `${activeColor}-${size}`;
         const item = cart.find(i => i.key === key);
         if (item) item.qty++;
         else cart.push({ key, size, color: activeColor, pid, qty: 1 });
@@ -498,9 +512,14 @@
     modalBack.addEventListener('click', closeModal);
     overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
 
-    // ── STRIPE ──
+    // ── STRIPE CHECKOUT ──
     stripeBtn.addEventListener('click', () => {
-        showToast('Stripe not yet configured');
+        stripe.redirectToCheckout({
+            lineItems: cart.map(i => ({ price: i.pid, quantity: i.qty })),
+            mode: 'payment',
+            successUrl: window.location.origin + '/success.html',
+            cancelUrl: window.location.href,
+        }).then(r => { if (r.error) showToast(r.error.message); });
     });
 
     // ── SCROLL ──

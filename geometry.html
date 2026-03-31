@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>COTA LAB // CLT 001</title>
-    <script src="https://js.stripe.com/v3/"></script>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&family=DM+Sans:wght@900&display=swap" rel="stylesheet">
     <style>
@@ -390,8 +389,8 @@
     let cart        = [];
     let activeColor = 'black';
 
-    // ── STRIPE PRICE MAP ──
-    const stripe = Stripe('pk_live_51NaKkkKnbzAulfJUwU8GE0VeMLA3UHcjGNQlpMFzymm7KFUhx5OKx8c7Eyml9GWRaPNvaKFhmjsTcqYFRd1gEp4K00SgAlUEce');
+    // ── STRIPE CONFIG ──
+    const WORKER_URL = 'https://cota-checkout.mcvicker-allen.workers.dev';
     const PRICES = {
         'black-S':  'price_1TGoaYKnbzAulfJUlbBFvWwn',
         'black-M':  'price_1TGob5KnbzAulfJU6pLjGWs9',
@@ -512,14 +511,33 @@
     modalBack.addEventListener('click', closeModal);
     overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
 
-    // ── STRIPE CHECKOUT ──
-    stripeBtn.addEventListener('click', () => {
-        stripe.redirectToCheckout({
-            lineItems: cart.map(i => ({ price: i.pid, quantity: i.qty })),
-            mode: 'payment',
-            successUrl: window.location.origin + '/success.html',
-            cancelUrl: window.location.href,
-        }).then(r => { if (r.error) showToast(r.error.message); });
+    // ── STRIPE CHECKOUT VIA WORKER ──
+    stripeBtn.addEventListener('click', async () => {
+        stripeBtn.textContent = 'Processing…';
+        stripeBtn.disabled = true;
+        try {
+            const res = await fetch(WORKER_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    items: cart.map(i => ({ price_id: i.pid, quantity: i.qty })),
+                    success_url: window.location.origin + '/success.html',
+                    cancel_url: window.location.href,
+                }),
+            });
+            const data = await res.json();
+            if (data.url) {
+                window.location.href = data.url;
+            } else {
+                showToast(data.error || 'Checkout error');
+                stripeBtn.textContent = 'Proceed to Payment →';
+                stripeBtn.disabled = false;
+            }
+        } catch (err) {
+            showToast('Connection error — try again');
+            stripeBtn.textContent = 'Proceed to Payment →';
+            stripeBtn.disabled = false;
+        }
     });
 
     // ── SCROLL ──

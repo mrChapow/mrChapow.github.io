@@ -11,329 +11,773 @@
             --bg: #050505;
             --text: #f0ede8;
             --dim: rgba(240,237,232,0.35);
-            --glass: rgba(240,237,232,0.04);
-            --border: rgba(240,237,232,0.1);
+            --glass: rgba(240,237,232,0.06);
+            --glass-heavy: rgba(240,237,232,0.10);
+            --border: rgba(240,237,232,0.10);
             --accent: #c8ff00;
             --accent-dim: rgba(200,255,0,0.12);
-        }
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        body, html {
-            background: var(--bg); color: var(--text);
-            font-family: "DM Sans", sans-serif;
-            overflow-x: hidden; -webkit-font-smoothing: antialiased;
+            --frost: rgba(5,5,5,0.55);
         }
 
-        /* ── NAV ── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body, html {
+            background: var(--bg);
+            color: var(--text);
+            font-family: "DM Sans", sans-serif;
+            overflow: hidden;
+            height: 100%;
+            -webkit-font-smoothing: antialiased;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        /* ── VIEWPORT-LOCKED CONTAINER ── */
+        .viewport {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* ── BACKGROUND ── */
+        .viewport-bg {
+            position: absolute;
+            inset: 0;
+            background: var(--bg);
+            z-index: 0;
+        }
+        .viewport-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 60% 50% at 50% 45%, rgba(200,255,0,0.025) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        /* ── NAV — frosted top bar ── */
         nav {
-            position: fixed; top: 0; left: 0; right: 0; height: 60px;
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 24px; z-index: 100;
-            background: rgba(5,5,5,0.75);
-            backdrop-filter: blur(16px);
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 22px;
+            z-index: 200;
+            background: rgba(5,5,5,0.6);
+            backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border);
+            transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
         }
-        .logo { font-family: "Bebas Neue", sans-serif; font-size: 1.2rem; letter-spacing: 0.28em; }
+
+        .logo {
+            font-family: "Bebas Neue", sans-serif;
+            font-size: 1.15rem;
+            letter-spacing: 0.28em;
+        }
         .logo span { color: var(--accent); }
-        .nav-item {
-            font-family: "Space Mono", monospace; font-size: 8px;
-            text-transform: uppercase; letter-spacing: 0.2em;
-            color: var(--dim); cursor: pointer;
-            display: flex; align-items: center; gap: 7px;
+
+        .nav-icon {
+            font-family: "Space Mono", monospace;
+            font-size: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--dim);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 7px;
             transition: color 0.2s;
+            padding: 8px 4px;
         }
-        .nav-item:hover { color: var(--text); }
+        .nav-icon:hover { color: var(--text); }
+        .nav-icon svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.5; }
+
         .cart-dot {
-            background: var(--accent); color: #000;
-            font-size: 8px; font-weight: 700;
-            width: 16px; height: 16px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            opacity: 0; transform: scale(0);
+            background: var(--accent);
+            color: #000;
+            font-size: 8px;
+            font-weight: 700;
+            width: 16px; height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: scale(0);
             transition: opacity 0.3s, transform 0.3s;
         }
         .cart-dot.on { opacity: 1; transform: scale(1); }
 
-        /* ── SCROLL TRACK ── */
-        .track { height: 300vh; position: relative; }
-        .sticky { position: sticky; top: 0; height: 100vh; overflow: hidden; }
-
-        #bg {
-            position: absolute; inset: 0;
-            background-size: cover;
-            background-position: center;
-        }
-        #bg::after {
-            content: '';
-            position: absolute; inset: 0;
-            background: linear-gradient(
-                150deg,
-                rgba(0,0,0,0.75) 0%,
-                rgba(0,0,0,0.25) 50%,
-                rgba(0,0,0,0.75) 100%
-            );
+        /* ── MODEL CENTER STAGE ── */
+        .model-stage {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            height: 60vh;
+            max-width: 600px;
+            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
-        /* ── STAGE ── */
-        .stage {
-            position: relative; z-index: 10;
-            height: 100vh;
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            padding: 70px 20px 20px; gap: 16px;
+        .model-stage model-viewer {
+            width: 100%;
+            height: 100%;
+            outline: none;
+            --poster-color: transparent;
         }
 
-        .model-box { width: 100%; height: 44vh; position: relative; }
-        .model-box model-viewer {
-            position: absolute; inset: 0;
-            width: 100%; height: 100%;
-            outline: none; --poster-color: transparent;
+        /* ── PRODUCT INFO BAR — below model ── */
+        .product-bar {
+            position: relative;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: calc(100% - 40px);
+            max-width: 500px;
+            padding: 12px 0;
+            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s;
         }
 
-        /* ── PANEL ── */
-        .panel {
-            width: 100%; max-width: 390px;
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--border);
+        .product-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .product-eyebrow {
+            font-family: "Space Mono", monospace;
+            font-size: 7px;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            color: var(--dim);
+        }
+        .product-name {
+            font-family: "Bebas Neue", sans-serif;
+            font-size: 1.6rem;
+            letter-spacing: 0.1em;
+            line-height: 1;
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        .product-price {
+            font-family: "Space Mono", monospace;
+            font-size: 11px;
+            color: var(--dim);
+            margin-top: 2px;
+        }
+
+        /* ── ACTION BUTTONS — glassmorphic pills ── */
+        .action-row {
+            position: relative;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: calc(100% - 40px);
+            max-width: 500px;
+            margin-top: 6px;
+            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 14px 16px;
+            font-family: "DM Sans", sans-serif;
+            font-weight: 900;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            cursor: pointer;
+            border: none;
             border-radius: 2px;
-            padding: 22px 24px;
+            transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+            text-align: center;
         }
-        .eyebrow { font-family: "Space Mono", monospace; font-size: 7.5px; letter-spacing: 0.35em; text-transform: uppercase; color: var(--dim); margin-bottom: 6px; }
-        .title { font-family: "Bebas Neue", sans-serif; font-size: 2rem; letter-spacing: 0.1em; line-height: 1; }
-        .price-row { display: flex; align-items: center; gap: 10px; margin: 6px 0 18px; }
-        .price { font-family: "Space Mono", monospace; font-size: 12px; }
-        .badge { font-family: "Space Mono", monospace; font-size: 7px; background: var(--accent); color: #000; padding: 2px 7px; letter-spacing: 0.15em; text-transform: uppercase; }
-        .rule { height: 1px; background: var(--border); margin-bottom: 16px; }
-        .label { font-family: "Space Mono", monospace; font-size: 7.5px; text-transform: uppercase; letter-spacing: 0.28em; color: var(--dim); display: block; margin-bottom: 8px; }
 
-        /* ── SWATCHES ── */
-        .swatches { display: flex; align-items: center; gap: 9px; margin-bottom: 16px; }
-        .swatch { width: 22px; height: 22px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; transition: border-color 0.2s, transform 0.15s; }
+        .btn-add {
+            background: var(--accent);
+            color: #000;
+        }
+        .btn-add:hover { background: #d8ff20; transform: translateY(-1px); }
+        .btn-add:active { transform: scale(0.97); }
+        .btn-add.ok {
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-info {
+            background: var(--glass-heavy);
+            color: var(--text);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+        }
+        .btn-info:hover { background: rgba(240,237,232,0.14); transform: translateY(-1px); }
+        .btn-info:active { transform: scale(0.97); }
+
+        /* ── SCROLL INDICATOR — dots ── */
+        .scroll-dots {
+            position: fixed;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .scroll-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--dim);
+            transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+            cursor: pointer;
+        }
+        .scroll-dot.active {
+            background: var(--accent);
+            transform: scale(1.5);
+            box-shadow: 0 0 12px rgba(200,255,0,0.4);
+        }
+
+        /* ── ELASTIC SCROLL FEEDBACK ── */
+        .scroll-hint {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            opacity: 0.6;
+            transition: opacity 0.5s;
+            pointer-events: none;
+        }
+        .scroll-hint.hidden { opacity: 0; }
+        .scroll-hint span {
+            font-family: "Space Mono", monospace;
+            font-size: 7px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--dim);
+        }
+        .scroll-chevron {
+            width: 14px;
+            height: 14px;
+            border-right: 1px solid var(--dim);
+            border-bottom: 1px solid var(--dim);
+            transform: rotate(45deg);
+            animation: chevBounce 2s ease-in-out infinite;
+        }
+        @keyframes chevBounce {
+            0%, 100% { transform: rotate(45deg) translateY(0); opacity: 0.4; }
+            50% { transform: rotate(45deg) translateY(4px); opacity: 1; }
+        }
+
+        /* ── SQUISH BAR — elastic threshold indicator ── */
+        .squish-bar {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 3px;
+            background: var(--accent);
+            border-radius: 3px;
+            z-index: 150;
+            opacity: 0;
+            transition: opacity 0.15s, width 0.2s cubic-bezier(0.22, 1, 0.36, 1), height 0.2s;
+            pointer-events: none;
+        }
+        .squish-bar.visible {
+            opacity: 0.7;
+        }
+
+        /* ── INFO POPUP / DETAIL MODAL ── */
+        .detail-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 500;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(14px);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .detail-overlay.on {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .detail-sheet {
+            width: 100%;
+            max-width: 500px;
+            max-height: 85vh;
+            background: #0a0a0a;
+            border: 1px solid var(--border);
+            border-bottom: none;
+            border-radius: 14px 14px 0 0;
+            padding: 28px 24px 36px;
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+            overflow-y: auto;
+        }
+        .detail-overlay.on .detail-sheet {
+            transform: translateY(0);
+        }
+
+        .sheet-handle {
+            width: 36px;
+            height: 4px;
+            background: rgba(240,237,232,0.15);
+            border-radius: 4px;
+            margin: 0 auto 20px;
+        }
+
+        .sheet-title {
+            font-family: "Bebas Neue", sans-serif;
+            font-size: 1.8rem;
+            letter-spacing: 0.1em;
+            margin-bottom: 6px;
+        }
+        .sheet-subtitle {
+            font-family: "Space Mono", monospace;
+            font-size: 8px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--dim);
+            margin-bottom: 20px;
+        }
+
+        .sheet-section-label {
+            font-family: "Space Mono", monospace;
+            font-size: 7.5px;
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+            color: var(--dim);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        /* Swatches inside detail sheet */
+        .sheet-swatches {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin-bottom: 18px;
+        }
+        .swatch {
+            width: 24px; height: 24px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: border-color 0.2s, transform 0.15s;
+        }
         .swatch:hover { transform: scale(1.15); }
         .swatch.on { border-color: var(--accent); }
         .sw-black { background: #111; box-shadow: 0 0 0 1px rgba(255,255,255,0.15); }
         .sw-white { background: #efefef; box-shadow: 0 0 0 1px rgba(255,255,255,0.3); }
-        .swatch-name { font-family: "Space Mono", monospace; font-size: 8px; color: var(--dim); letter-spacing: 0.2em; text-transform: uppercase; }
+        .swatch-name {
+            font-family: "Space Mono", monospace;
+            font-size: 8px;
+            color: var(--dim);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
 
-        /* ── SIZES ── */
-        .sizes { display: grid; grid-template-columns: repeat(4,1fr); gap: 5px; margin-bottom: 16px; }
-        .sz { background: transparent; border: 1px solid var(--border); color: var(--dim); padding: 10px 0; font-family: "Space Mono", monospace; font-size: 10px; cursor: pointer; transition: all 0.15s; letter-spacing: 0.05em; }
+        /* Sizes inside detail sheet */
+        .sheet-sizes {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+        .sz {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--dim);
+            padding: 11px 0;
+            font-family: "Space Mono", monospace;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.15s;
+            letter-spacing: 0.05em;
+            border-radius: 2px;
+        }
         .sz:hover { border-color: rgba(240,237,232,0.6); color: var(--text); }
         .sz.on { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); }
 
-        /* ── BUTTONS ── */
-        .btns { display: flex; flex-direction: column; gap: 6px; }
-        .btn { width: 100%; padding: 13px; font-family: "DM Sans", sans-serif; font-weight: 900; font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em; cursor: pointer; border: none; transition: all 0.2s; }
-        .btn-outline { background: transparent; border: 1px solid rgba(240,237,232,0.6); color: var(--text); }
-        .btn-outline:hover { background: var(--text); color: var(--bg); }
-        .btn-outline.ok { border-color: var(--accent); color: var(--accent); }
-        .btn-fill { background: var(--accent); color: #000; display: none; }
-        .btn-fill:hover { background: #d8ff20; }
+        .sheet-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+        .chip {
+            font-family: "Space Mono", monospace;
+            font-size: 7px;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--dim);
+            background: rgba(240,237,232,0.04);
+            border: 1px solid var(--border);
+            padding: 5px 10px;
+            border-radius: 2px;
+        }
 
-        .live { display: flex; align-items: center; gap: 6px; margin-top: 16px; }
-        .live-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); animation: blink 2s ease-in-out infinite; flex-shrink: 0; }
-        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
-        .live-text { font-family: "Space Mono", monospace; font-size: 7.5px; color: var(--dim); letter-spacing: 0.2em; text-transform: uppercase; }
+        .sheet-add-btn {
+            width: 100%;
+            padding: 15px;
+            font-family: "DM Sans", sans-serif;
+            font-weight: 900;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            cursor: pointer;
+            border: none;
+            border-radius: 2px;
+            background: var(--accent);
+            color: #000;
+            transition: all 0.2s;
+            margin-bottom: 8px;
+        }
+        .sheet-add-btn:hover { background: #d8ff20; }
+        .sheet-add-btn:active { transform: scale(0.98); }
+        .sheet-add-btn.ok {
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+        }
 
-        /* ── CHIPS ── */
-        .chips { position: absolute; bottom: 0; left: 0; right: 0; z-index: 20; padding: 0 20px 28px; display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; opacity: 0; transform: translateY(14px); transition: opacity 0.5s ease, transform 0.5s ease; pointer-events: none; }
-        .chips.on { opacity: 1; transform: none; pointer-events: auto; }
-        .chip { font-family: "Space Mono", monospace; font-size: 7.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); background: rgba(5,5,5,0.6); border: 1px solid var(--border); backdrop-filter: blur(8px); padding: 5px 10px; }
-
-        /* ── HERO ── */
-        .hero {
-            height: 100vh;
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
+        .sheet-close {
+            width: 100%;
+            padding: 10px;
+            background: none;
+            border: none;
+            font-family: "Space Mono", monospace;
+            font-size: 7.5px;
+            color: var(--dim);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: color 0.2s;
             text-align: center;
-            position: relative;
-            overflow: hidden;
         }
-        .hero::before {
-            content: '';
-            position: absolute; inset: 0;
-            background: radial-gradient(ellipse 50% 40% at 50% 48%, rgba(200,255,0,0.03) 0%, transparent 70%);
+        .sheet-close:hover { color: var(--text); }
+
+        .sheet-live {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 14px;
+        }
+        .live-dot {
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: var(--accent);
+            animation: blink 2s ease-in-out infinite;
+            flex-shrink: 0;
+        }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+        .live-text {
+            font-family: "Space Mono", monospace;
+            font-size: 7px;
+            color: var(--dim);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
+
+        /* ── CART MODAL ── */
+        .cart-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 600;
+            background: rgba(0,0,0,0.88);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
             pointer-events: none;
+            transition: opacity 0.25s;
         }
-        .hero-eyebrow {
+        .cart-overlay.on { opacity: 1; pointer-events: auto; }
+
+        .cart-modal {
+            width: min(440px, 92vw);
+            background: #0a0a0a;
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            padding: 28px;
+            transform: translateY(16px);
+            transition: transform 0.28s ease;
+        }
+        .cart-overlay.on .cart-modal { transform: none; }
+
+        .modal-title {
+            font-family: "Bebas Neue", sans-serif;
+            font-size: 1.6rem;
+            letter-spacing: 0.12em;
+            margin-bottom: 20px;
+        }
+        .cart-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .cart-name { font-size: 12px; font-weight: 600; }
+        .cart-sub {
+            font-family: "Space Mono", monospace;
+            font-size: 7.5px;
+            color: var(--dim);
+            margin-top: 2px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+        .cart-price {
+            font-family: "Space Mono", monospace;
+            font-size: 11px;
+            flex-shrink: 0;
+            margin-left: 10px;
+        }
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0 20px;
+        }
+        .total-label {
             font-family: "Space Mono", monospace;
             font-size: 8px;
-            letter-spacing: 0.5em;
-            text-transform: uppercase;
             color: var(--dim);
-            margin-bottom: 16px;
-            opacity: 0; transform: translateY(18px);
-            animation: heroIn 0.8s cubic-bezier(0.16,1,0.3,1) 0.3s forwards;
-        }
-        .hero-title {
-            font-family: "Bebas Neue", sans-serif;
-            font-size: clamp(3.5rem, 12vw, 9rem);
-            letter-spacing: 0.08em;
-            line-height: 0.9;
-            opacity: 0; transform: translateY(28px);
-            animation: heroIn 0.8s cubic-bezier(0.16,1,0.3,1) 0.5s forwards;
-        }
-        .hero-title .ha { color: var(--accent); }
-        .hero-sub {
-            font-family: "Space Mono", monospace;
-            font-size: 9px;
-            letter-spacing: 0.3em;
+            letter-spacing: 0.22em;
             text-transform: uppercase;
-            color: var(--dim);
-            margin-top: 18px;
-            opacity: 0; transform: translateY(18px);
-            animation: heroIn 0.8s cubic-bezier(0.16,1,0.3,1) 0.7s forwards;
         }
-        .hero-scroll {
-            position: absolute; bottom: 32px;
-            display: flex; flex-direction: column;
-            align-items: center; gap: 8px;
-            opacity: 0;
-            animation: heroIn 0.8s cubic-bezier(0.16,1,0.3,1) 1s forwards;
-        }
-        .hero-scroll span {
+        .total-price {
             font-family: "Space Mono", monospace;
-            font-size: 7px; letter-spacing: 0.3em;
-            text-transform: uppercase; color: var(--dim);
+            font-size: 13px;
         }
-        .hero-line {
-            width: 1px; height: 28px;
-            background: linear-gradient(to bottom, var(--accent), transparent);
-            animation: pulse 2s ease-in-out infinite;
-        }
-        @keyframes heroIn { to { opacity: 1; transform: none; } }
-        @keyframes pulse { 0%,100%{opacity:0.3;transform:scaleY(0.6)} 50%{opacity:1;transform:scaleY(1)} }
-
-        /* ── DESKTOP ── */
-        @media (min-width: 1024px) {
-            .stage { flex-direction: row; gap: 60px; padding: 0 8vw; }
-            .model-box { width: 50%; height: 74vh; }
-            .panel { width: 340px; flex-shrink: 0; }
-            .chips { padding: 0 8vw 40px; }
-        }
-
-        /* ── FOOTER ── */
-        footer { height: 36vh; background: #020202; border-top: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
-        .footer-logo { font-family: "Bebas Neue", sans-serif; font-size: 1.8rem; letter-spacing: 0.3em; opacity: 0.1; }
-        .footer-tag { font-family: "Space Mono", monospace; font-size: 7.5px; color: var(--dim); letter-spacing: 0.28em; text-transform: uppercase; }
-
-        /* ── MODAL ── */
-        .overlay { position: fixed; inset: 0; z-index: 500; background: rgba(0,0,0,0.88); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
-        .overlay.on { opacity: 1; pointer-events: auto; }
-        .modal { width: min(440px, 92vw); background: #0a0a0a; border: 1px solid var(--border); border-radius: 2px; padding: 28px; transform: translateY(16px); transition: transform 0.28s ease; }
-        .overlay.on .modal { transform: none; }
-        .modal-title { font-family: "Bebas Neue", sans-serif; font-size: 1.6rem; letter-spacing: 0.12em; margin-bottom: 20px; }
-        .cart-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
-        .cart-name { font-size: 12px; font-weight: 600; }
-        .cart-sub { font-family: "Space Mono", monospace; font-size: 7.5px; color: var(--dim); margin-top: 2px; letter-spacing: 0.1em; text-transform: uppercase; }
-        .cart-price { font-family: "Space Mono", monospace; font-size: 11px; flex-shrink: 0; margin-left: 10px; }
-        .total-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 0 20px; }
-        .total-label { font-family: "Space Mono", monospace; font-size: 8px; color: var(--dim); letter-spacing: 0.22em; text-transform: uppercase; }
-        .total-price { font-family: "Space Mono", monospace; font-size: 13px; }
         .modal-btns { display: flex; flex-direction: column; gap: 6px; }
-        .modal-back { background: none; border: none; font-family: "Space Mono", monospace; font-size: 7.5px; color: var(--dim); letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; padding: 9px; text-align: center; transition: color 0.2s; }
-        .modal-back:hover { color: var(--text); }
-        .stripe-note { font-family: "Space Mono", monospace; font-size: 7px; color: var(--dim); text-align: center; margin-top: 10px; letter-spacing: 0.15em; text-transform: uppercase; }
 
-        .toast { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%) translateY(60px); background: var(--text); color: var(--bg); font-family: "Space Mono", monospace; font-size: 8px; letter-spacing: 0.2em; text-transform: uppercase; padding: 10px 16px; border-radius: 2px; z-index: 999; transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1); white-space: nowrap; pointer-events: none; }
+        .btn-stripe {
+            width: 100%;
+            padding: 14px;
+            font-family: "DM Sans", sans-serif;
+            font-weight: 900;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            cursor: pointer;
+            border: none;
+            border-radius: 2px;
+            background: var(--accent);
+            color: #000;
+            transition: all 0.2s;
+        }
+        .btn-stripe:hover { background: #d8ff20; }
+
+        .modal-back {
+            background: none;
+            border: none;
+            font-family: "Space Mono", monospace;
+            font-size: 7.5px;
+            color: var(--dim);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            cursor: pointer;
+            padding: 9px;
+            text-align: center;
+            transition: color 0.2s;
+        }
+        .modal-back:hover { color: var(--text); }
+        .stripe-note {
+            font-family: "Space Mono", monospace;
+            font-size: 7px;
+            color: var(--dim);
+            text-align: center;
+            margin-top: 10px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+
+        /* ── TOAST ── */
+        .toast {
+            position: fixed;
+            bottom: 22px;
+            left: 50%;
+            transform: translateX(-50%) translateY(60px);
+            background: var(--text);
+            color: var(--bg);
+            font-family: "Space Mono", monospace;
+            font-size: 8px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            padding: 10px 16px;
+            border-radius: 2px;
+            z-index: 999;
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            white-space: nowrap;
+            pointer-events: none;
+        }
         .toast.on { transform: translateX(-50%) translateY(0); }
 
+        /* ── TRANSITION EFFECTS ── */
+        .model-stage.transitioning {
+            animation: modelSwap 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        @keyframes modelSwap {
+            0% { transform: scale(1) translateY(0); opacity: 1; }
+            40% { transform: scale(0.95) translateY(8px); opacity: 0.5; }
+            60% { transform: scale(0.95) translateY(-8px); opacity: 0.5; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .product-bar.transitioning .product-name {
+            animation: nameSwap 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        @keyframes nameSwap {
+            0% { opacity: 1; transform: translateY(0); }
+            40% { opacity: 0; transform: translateY(-10px); }
+            60% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
         @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+
+        /* ── DESKTOP ── */
+        @media (min-width: 768px) {
+            .model-stage { height: 65vh; max-width: 650px; }
+            .product-bar { max-width: 550px; }
+            .action-row { max-width: 550px; }
+            .detail-sheet {
+                max-width: 480px;
+                border-radius: 14px;
+                border-bottom: 1px solid var(--border);
+                margin-bottom: 5vh;
+                max-height: 80vh;
+            }
+            .detail-overlay {
+                align-items: center;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .model-stage { height: 70vh; max-width: 700px; }
+        }
     </style>
 </head>
 <body>
 
-<nav>
-    <div class="nav-item">Collection 01</div>
+<!-- ── NAV ── -->
+<nav id="nav">
+    <div class="nav-icon" id="home-nav">
+        <svg viewBox="0 0 24 24"><path d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h3a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1h3a1 1 0 001-1V10"/></svg>
+    </div>
     <div class="logo">Cota <span>Lab</span></div>
-    <div class="nav-item" id="cart-nav">
-        Cart <div class="cart-dot" id="cart-dot">0</div>
+    <div class="nav-icon" id="cart-nav">
+        <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0"/></svg>
+        <div class="cart-dot" id="cart-dot">0</div>
     </div>
 </nav>
 
-<!-- ── HERO ── -->
-<section class="hero">
-    <div class="hero-eyebrow">Collection 001 — Limited Run</div>
-    <div class="hero-title">Cota <span class="ha">Lab</span></div>
-    <div class="hero-sub">Designed for the culture</div>
-    <div class="hero-scroll">
-        <span>Scroll to explore</span>
-        <div class="hero-line"></div>
+<!-- ── VIEWPORT-LOCKED EXPERIENCE ── -->
+<div class="viewport" id="viewport">
+    <div class="viewport-bg"></div>
+
+    <!-- 3D Model — always centered -->
+    <div class="model-stage" id="model-stage">
+        <model-viewer id="mv-shirt"
+            src="tshirtblack.glb"
+            camera-orbit="0deg 85deg 105%"
+            auto-rotate rotation-per-second="12deg"
+            camera-controls touch-action="none" disable-zoom
+            interaction-prompt="none" enable-pan="false"
+            min-camera-orbit="auto 70deg 80%"
+            max-camera-orbit="auto 100deg 130%"
+            interpolation-decay="200"
+            shadow-intensity="1" shadow-softness="0.8">
+        </model-viewer>
     </div>
-</section>
 
-<div class="track" id="track">
-    <div class="sticky">
-        <div id="bg"></div>
+    <!-- Product info bar -->
+    <div class="product-bar" id="product-bar">
+        <div class="product-info">
+            <div class="product-eyebrow">Cota Lab // Collection 01</div>
+            <div class="product-name" id="product-name">CLT // 001</div>
+            <div class="product-price" id="product-price">$25.00 USD</div>
+        </div>
+    </div>
 
-        <div class="stage">
-            <div class="model-box">
-                <model-viewer id="mv-shirt"
-                    src="tshirtblack.glb"
-                    camera-orbit="0deg 85deg 105%"
-                    auto-rotate rotation-per-second="12deg"
-                    camera-controls touch-action="none" disable-zoom
-                    interaction-prompt="none" enable-pan="false"
-                    min-camera-orbit="auto 70deg 80%"
-                    max-camera-orbit="auto 100deg 130%"
-                    interpolation-decay="200"
-                    shadow-intensity="1" shadow-softness="0.8">
-                </model-viewer>
-            </div>
+    <!-- Action buttons -->
+    <div class="action-row" id="action-row">
+        <button class="action-btn btn-add" id="quick-add-btn">Add to Cart</button>
+        <button class="action-btn btn-info" id="info-btn">Details</button>
+    </div>
+</div>
 
-            <div class="panel">
-                <div class="eyebrow">Cota Lab // Collection 01</div>
-                <div class="title">CLT // 001</div>
-                <div class="price-row">
-                    <span class="price">$25.00 USD</span>
-                    <span class="badge">In Stock</span>
-                </div>
-                <div class="rule"></div>
+<!-- Scroll indicator dots -->
+<div class="scroll-dots" id="scroll-dots"></div>
 
-                <span class="label">Colorway</span>
-                <div class="swatches">
-                    <div class="swatch sw-black on" data-color="black"></div>
-                    <div class="swatch sw-white" data-color="white"></div>
-                    <span class="swatch-name" id="swatch-name">Black</span>
-                </div>
+<!-- Bottom scroll hint -->
+<div class="scroll-hint" id="scroll-hint">
+    <span>Scroll to explore</span>
+    <div class="scroll-chevron"></div>
+</div>
 
-                <span class="label">Size</span>
-                <div class="sizes">
-                    <button class="sz" data-size="S">S</button>
-                    <button class="sz" data-size="M">M</button>
-                    <button class="sz" data-size="L">L</button>
-                    <button class="sz" data-size="XL">XL</button>
-                </div>
+<!-- Elastic squish bar -->
+<div class="squish-bar" id="squish-bar"></div>
 
-                <div class="btns">
-                    <button class="btn btn-outline" id="add-btn">Add to Cart</button>
-                    <button class="btn btn-fill" id="checkout-btn">Review & Checkout →</button>
-                </div>
+<!-- ── DETAIL SHEET (info popup) ── -->
+<div class="detail-overlay" id="detail-overlay">
+    <div class="detail-sheet" id="detail-sheet">
+        <div class="sheet-handle"></div>
+        <div class="sheet-title" id="sheet-title">CLT // 001</div>
+        <div class="sheet-subtitle" id="sheet-subtitle">Graphic Tee — Limited Run</div>
 
-                <div class="live">
-                    <div class="live-dot"></div>
-                    <span class="live-text">Secure checkout via Stripe</span>
-                </div>
-            </div>
+        <span class="sheet-section-label">Colorway</span>
+        <div class="sheet-swatches">
+            <div class="swatch sw-black on" data-color="black"></div>
+            <div class="swatch sw-white" data-color="white"></div>
+            <span class="swatch-name" id="swatch-name">Black</span>
         </div>
 
-        <div class="chips" id="chips">
-            <div class="chip">100% Cotton</div>
-            <div class="chip">Heavyweight 280gsm</div>
-            <div class="chip">Unisex Fit</div>
-            <div class="chip">Screen Printed</div>
-            <div class="chip">Limited Run</div>
-            <div class="chip">Ships 5–10 Days</div>
+        <span class="sheet-section-label">Size</span>
+        <div class="sheet-sizes" id="sheet-sizes">
+            <button class="sz" data-size="S">S</button>
+            <button class="sz" data-size="M">M</button>
+            <button class="sz" data-size="L">L</button>
+            <button class="sz" data-size="XL">XL</button>
+        </div>
+
+        <span class="sheet-section-label">Details</span>
+        <div class="sheet-chips" id="sheet-chips"></div>
+
+        <button class="sheet-add-btn" id="sheet-add-btn">Add to Cart</button>
+        <button class="sheet-close" id="sheet-close">← Back</button>
+
+        <div class="sheet-live">
+            <div class="live-dot"></div>
+            <span class="live-text">Secure checkout via Stripe</span>
         </div>
     </div>
 </div>
 
-<footer>
-    <div class="footer-logo">Cota Lab</div>
-    <div class="footer-tag">© 2026 Cota Lab // All Rights Reserved</div>
-</footer>
-
-<div class="overlay" id="overlay">
-    <div class="modal">
+<!-- ── CART MODAL ── -->
+<div class="cart-overlay" id="cart-overlay">
+    <div class="cart-modal">
         <div class="modal-title">Your Cart</div>
         <div id="cart-lines"></div>
         <div class="total-row">
@@ -341,248 +785,487 @@
             <span class="total-price" id="total-price">$0.00</span>
         </div>
         <div class="modal-btns">
-            <button class="btn btn-fill" id="stripe-btn" style="display:block;">Proceed to Payment →</button>
+            <button class="btn-stripe" id="stripe-btn">Proceed to Payment →</button>
             <button class="modal-back" id="modal-back">← Continue Shopping</button>
         </div>
         <div class="stripe-note">⚡ Payments processed securely by Stripe</div>
     </div>
 </div>
 
+<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
-    const PRICE   = 25.00;
-    const TEX_BLACK = 'shirtclt4black.png';
-    const TEX_WHITE = 'shirtclt4white.png';
+/* ═══════════════════════════════════════════
+   COTA LAB — Snap-Scroll Carousel Experience
+   ═══════════════════════════════════════════ */
 
-    const FRAMES = [
-        'street-view.jpg',
-        'street-view 1.jpg',
-        'street-view 2.jpg',
-        'street-view 3.jpg',
-        'street-view 4.jpg',
-        'street-view 5.jpg'
-    ];
-
-    // Preload frames
-    FRAMES.forEach(src => { const img = new Image(); img.src = src; });
-
-    const bg          = document.getElementById('bg');
-    const track       = document.getElementById('track');
-    const mv          = document.getElementById('mv-shirt');
-    const chips       = document.getElementById('chips');
-    const cartDot     = document.getElementById('cart-dot');
-    const cartNav     = document.getElementById('cart-nav');
-    const addBtn      = document.getElementById('add-btn');
-    const checkoutBtn = document.getElementById('checkout-btn');
-    const overlay     = document.getElementById('overlay');
-    const cartLines   = document.getElementById('cart-lines');
-    const totalPrice  = document.getElementById('total-price');
-    const modalBack   = document.getElementById('modal-back');
-    const stripeBtn   = document.getElementById('stripe-btn');
-    const toastEl     = document.getElementById('toast');
-    const swatches    = document.querySelectorAll('.swatch');
-    const swatchName  = document.getElementById('swatch-name');
-    const sizeBtns    = document.querySelectorAll('.sz');
-    const hero        = document.querySelector('.hero');
-
-    let cart        = [];
-    let activeColor = 'black';
-
-    // ── STRIPE CONFIG ──
-    const WORKER_URL = 'https://cota-checkout.mcvicker-allen.workers.dev';
-    const PRICES = {
-        'black-S':  'price_1TGoaYKnbzAulfJUlbBFvWwn',
-        'black-M':  'price_1TGob5KnbzAulfJU6pLjGWs9',
-        'black-L':  'price_1TGobJKnbzAulfJU5BWYoMNF',
-        'black-XL': 'price_1TGobdKnbzAulfJUNzRRPq9R',
-        'white-S':  'price_1TGobpKnbzAulfJU4YQrgpCM',
-        'white-M':  'price_1TGoc2KnbzAulfJUI5bkigBB',
-        'white-L':  'price_1TGocEKnbzAulfJUvsOdsAQW',
-        'white-XL': 'price_1TGocPKnbzAulfJUSre2Ky3f',
-    };
-
-    // Set first frame
-    bg.style.backgroundImage = `url('${FRAMES[0]}')`;
-    bg.dataset.f = '0';
-
-    // ── APPLY TEXTURE + STORE MATERIAL REF ──
-    let shirtPBR = null;
-
-    async function applyTexture(texFile) {
-        if (!shirtPBR) return;
-        try {
-            const tex = await mv.createTexture(texFile);
-            shirtPBR.baseColorTexture.setTexture(tex);
-        } catch(e) { console.warn('[COTA] Texture swap error:', e); }
-    }
-
-    mv.addEventListener('load', async () => {
-        try {
-            if (!mv.model) return;
-            for (const mat of mv.model.materials) {
-                const pbr = mat.pbrMetallicRoughness;
-                if (pbr.baseColorTexture) {
-                    shirtPBR = pbr;
-                    const tex = await mv.createTexture(TEX_BLACK);
-                    pbr.baseColorTexture.setTexture(tex);
-                    return;
-                }
-            }
-        } catch(e) { console.warn('[COTA] Texture error:', e); }
-    });
-
-    // ── COLORWAY SWAP — swap texture PNG ──
-    swatches.forEach(s => {
-        s.addEventListener('click', () => {
-            const c = s.dataset.color;
-            if (c === activeColor) return;
-            activeColor = c;
-            swatches.forEach(x => x.classList.remove('on'));
-            s.classList.add('on');
-            swatchName.textContent = c.charAt(0).toUpperCase() + c.slice(1);
-            applyTexture(c === 'white' ? TEX_WHITE : TEX_BLACK);
-        });
-    });
-
-    // ── SIZES ──
-    sizeBtns.forEach(b => {
-        b.addEventListener('click', () => {
-            sizeBtns.forEach(x => x.classList.remove('on'));
-            b.classList.add('on');
-        });
-    });
-
-    // ── CART ──
-    addBtn.addEventListener('click', () => {
-        const active = document.querySelector('.sz.on');
-        if (!active) {
-            showToast('Select a size first');
-            const g = document.querySelector('.sizes');
-            g.style.animation = 'none'; g.offsetHeight;
-            g.style.animation = 'shake 0.35s ease';
-            return;
+// ── PRODUCT DATA ──
+// Each product = a different graphic on the same shirt model
+const PRODUCTS = [
+    {
+        id: 'clt-001',
+        name: 'CLT // 001',
+        subtitle: 'Graphic Tee — Limited Run',
+        price: 25.00,
+        texture_black: 'shirtclt4black.png',
+        texture_white: 'shirtclt4white.png',
+        chips: ['100% Cotton', 'Heavyweight 280gsm', 'Unisex Fit', 'Screen Printed', 'Limited Run', 'Ships 5–10 Days'],
+        prices: {
+            'black-S':  'price_1TGoaYKnbzAulfJUlbBFvWwn',
+            'black-M':  'price_1TGob5KnbzAulfJU6pLjGWs9',
+            'black-L':  'price_1TGobJKnbzAulfJU5BWYoMNF',
+            'black-XL': 'price_1TGobdKnbzAulfJUNzRRPq9R',
+            'white-S':  'price_1TGobpKnbzAulfJU4YQrgpCM',
+            'white-M':  'price_1TGoc2KnbzAulfJUI5bkigBB',
+            'white-L':  'price_1TGocEKnbzAulfJUvsOdsAQW',
+            'white-XL': 'price_1TGocPKnbzAulfJUSre2Ky3f',
         }
-        const size = active.dataset.size;
-        const pid  = PRICES[`${activeColor}-${size}`];
-        const key  = `${activeColor}-${size}`;
-        const item = cart.find(i => i.key === key);
-        if (item) item.qty++;
-        else cart.push({ key, size, color: activeColor, pid, qty: 1 });
-        updateCart();
-        addBtn.textContent = '✓ Added'; addBtn.classList.add('ok');
-        setTimeout(() => { addBtn.textContent = 'Add to Cart'; addBtn.classList.remove('ok'); }, 1200);
-        showToast(`${activeColor.charAt(0).toUpperCase()+activeColor.slice(1)} · Size ${size} added`);
+    },
+    {
+        id: 'love-font',
+        name: 'LOVE FONT',
+        subtitle: 'Graphic Tee — Limited Run',
+        price: 25.00,
+        texture_black: 'lovefont.png',
+        texture_white: 'lovefont.png', // same graphic for both colorways for now
+        chips: ['100% Cotton', 'Heavyweight 280gsm', 'Unisex Fit', 'Screen Printed', 'Limited Run', 'Ships 5–10 Days'],
+        // Placeholder Stripe price IDs — wire these up when ready
+        prices: {
+            'black-S':  'price_lovefont_black_s',
+            'black-M':  'price_lovefont_black_m',
+            'black-L':  'price_lovefont_black_l',
+            'black-XL': 'price_lovefont_black_xl',
+            'white-S':  'price_lovefont_white_s',
+            'white-M':  'price_lovefont_white_m',
+            'white-L':  'price_lovefont_white_l',
+            'white-XL': 'price_lovefont_white_xl',
+        }
+    }
+];
+
+let currentIndex = 0;
+let activeColor = 'black';
+let cart = [];
+let shirtPBR = null;
+let isTransitioning = false;
+let scrollAccumulator = 0;
+const SCROLL_THRESHOLD = 80; // pixels of scroll needed to trigger snap
+
+// ── STRIPE CONFIG ──
+const WORKER_URL = 'https://cota-checkout.mcvicker-allen.workers.dev';
+
+// ── DOM REFS ──
+const mv           = document.getElementById('mv-shirt');
+const modelStage   = document.getElementById('model-stage');
+const productBar   = document.getElementById('product-bar');
+const productName  = document.getElementById('product-name');
+const productPrice = document.getElementById('product-price');
+const actionRow    = document.getElementById('action-row');
+const quickAddBtn  = document.getElementById('quick-add-btn');
+const infoBtn      = document.getElementById('info-btn');
+const scrollDotsEl = document.getElementById('scroll-dots');
+const scrollHint   = document.getElementById('scroll-hint');
+const squishBar    = document.getElementById('squish-bar');
+const nav          = document.getElementById('nav');
+
+// Detail sheet
+const detailOverlay = document.getElementById('detail-overlay');
+const detailSheet   = document.getElementById('detail-sheet');
+const sheetTitle    = document.getElementById('sheet-title');
+const sheetSubtitle = document.getElementById('sheet-subtitle');
+const sheetChips    = document.getElementById('sheet-chips');
+const sheetAddBtn   = document.getElementById('sheet-add-btn');
+const sheetClose    = document.getElementById('sheet-close');
+const swatches      = document.querySelectorAll('.swatch');
+const swatchName    = document.getElementById('swatch-name');
+const sizeBtns      = document.querySelectorAll('.sz');
+
+// Cart modal
+const cartOverlay = document.getElementById('cart-overlay');
+const cartDot     = document.getElementById('cart-dot');
+const cartNav     = document.getElementById('cart-nav');
+const cartLines   = document.getElementById('cart-lines');
+const totalPrice  = document.getElementById('total-price');
+const stripeBtn   = document.getElementById('stripe-btn');
+const modalBack   = document.getElementById('modal-back');
+const toastEl     = document.getElementById('toast');
+
+// ── BUILD SCROLL DOTS ──
+PRODUCTS.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'scroll-dot' + (i === 0 ? ' active' : '');
+    dot.addEventListener('click', () => goToProduct(i));
+    scrollDotsEl.appendChild(dot);
+});
+
+// ── MODEL VIEWER TEXTURE SETUP ──
+mv.addEventListener('load', async () => {
+    try {
+        if (!mv.model) return;
+        for (const mat of mv.model.materials) {
+            const pbr = mat.pbrMetallicRoughness;
+            if (pbr.baseColorTexture) {
+                shirtPBR = pbr;
+                const tex = await mv.createTexture(PRODUCTS[0].texture_black);
+                pbr.baseColorTexture.setTexture(tex);
+                return;
+            }
+        }
+    } catch(e) { console.warn('[COTA] Texture error:', e); }
+});
+
+async function applyTexture(texFile) {
+    if (!shirtPBR) return;
+    try {
+        const tex = await mv.createTexture(texFile);
+        shirtPBR.baseColorTexture.setTexture(tex);
+    } catch(e) { console.warn('[COTA] Texture swap error:', e); }
+}
+
+// ── NAVIGATE TO PRODUCT ──
+function goToProduct(index) {
+    if (index === currentIndex || isTransitioning) return;
+    if (index < 0 || index >= PRODUCTS.length) return;
+
+    isTransitioning = true;
+    const product = PRODUCTS[index];
+
+    // Trigger transition animations
+    modelStage.classList.add('transitioning');
+    productBar.classList.add('transitioning');
+
+    // Swap texture at the midpoint of animation
+    setTimeout(() => {
+        const texFile = activeColor === 'white' ? product.texture_white : product.texture_black;
+        applyTexture(texFile);
+        productName.textContent = product.name;
+        productPrice.textContent = `$${product.price.toFixed(2)} USD`;
+    }, 200);
+
+    // Update dots
+    document.querySelectorAll('.scroll-dot').forEach((d, i) => {
+        d.classList.toggle('active', i === index);
     });
 
-    function updateCart() {
-        const n = cart.reduce((s,i) => s+i.qty, 0);
-        cartDot.textContent = n;
-        cartDot.classList.toggle('on', n > 0);
-        checkoutBtn.style.display = n > 0 ? 'block' : 'none';
+    currentIndex = index;
+
+    // Clean up
+    setTimeout(() => {
+        modelStage.classList.remove('transitioning');
+        productBar.classList.remove('transitioning');
+        isTransitioning = false;
+    }, 500);
+}
+
+// ── SCROLL-CAPTURE / SNAP INTERACTION ──
+// Intercept all scroll events: accumulate, show elastic feedback, snap at threshold
+let squishTimeout;
+
+function handleScrollDelta(deltaY) {
+    if (isTransitioning) return;
+
+    // Check if any overlay is open
+    if (detailOverlay.classList.contains('on') || cartOverlay.classList.contains('on')) return;
+
+    scrollAccumulator += deltaY;
+
+    // Clamp accumulator
+    const maxAccum = SCROLL_THRESHOLD * 1.6;
+    scrollAccumulator = Math.max(-maxAccum, Math.min(maxAccum, scrollAccumulator));
+
+    // Show elastic squish bar
+    const progress = Math.abs(scrollAccumulator) / SCROLL_THRESHOLD;
+    const barWidth = 40 + progress * 80;
+    squishBar.style.width = barWidth + 'px';
+    squishBar.style.height = (3 + progress * 3) + 'px';
+    squishBar.classList.add('visible');
+
+    // Subtle UI shift — elements move slightly in scroll direction
+    const shift = (scrollAccumulator / SCROLL_THRESHOLD) * -4;
+    modelStage.style.transform = `translateY(${shift}px)`;
+    productBar.style.transform = `translateY(${shift * 0.6}px)`;
+    actionRow.style.transform = `translateY(${shift * 0.4}px)`;
+    nav.style.transform = `translateY(${shift * 0.3}px)`;
+
+    clearTimeout(squishTimeout);
+
+    // Check threshold
+    if (scrollAccumulator > SCROLL_THRESHOLD) {
+        // Scroll down → next product
+        scrollAccumulator = 0;
+        resetSquish();
+        goToProduct(currentIndex + 1);
+    } else if (scrollAccumulator < -SCROLL_THRESHOLD) {
+        // Scroll up → previous product
+        scrollAccumulator = 0;
+        resetSquish();
+        goToProduct(currentIndex - 1);
+    } else {
+        // Decay the accumulator
+        squishTimeout = setTimeout(() => {
+            decayAccumulator();
+        }, 150);
     }
 
-    // ── MODAL ──
-    function openModal() {
-        cartLines.innerHTML = '';
-        let total = 0;
-        cart.forEach(item => {
-            const cost = item.qty * PRICE; total += cost;
-            const row = document.createElement('div');
-            row.className = 'cart-row';
-            row.innerHTML = `
-                <div>
-                    <div class="cart-name">CLT // 001</div>
-                    <div class="cart-sub">${item.color} · Size ${item.size} · Qty ${item.qty}</div>
-                </div>
-                <div class="cart-price">$${cost.toFixed(2)}</div>`;
-            cartLines.appendChild(row);
+    // Hide scroll hint after first interaction
+    scrollHint.classList.add('hidden');
+}
+
+function decayAccumulator() {
+    scrollAccumulator *= 0.6;
+    if (Math.abs(scrollAccumulator) < 2) {
+        scrollAccumulator = 0;
+        resetSquish();
+        return;
+    }
+    const progress = Math.abs(scrollAccumulator) / SCROLL_THRESHOLD;
+    const barWidth = 40 + progress * 80;
+    squishBar.style.width = barWidth + 'px';
+    squishBar.style.height = (3 + progress * 3) + 'px';
+
+    const shift = (scrollAccumulator / SCROLL_THRESHOLD) * -4;
+    modelStage.style.transform = `translateY(${shift}px)`;
+    productBar.style.transform = `translateY(${shift * 0.6}px)`;
+    actionRow.style.transform = `translateY(${shift * 0.4}px)`;
+    nav.style.transform = `translateY(${shift * 0.3}px)`;
+
+    requestAnimationFrame(() => {
+        squishTimeout = setTimeout(decayAccumulator, 30);
+    });
+}
+
+function resetSquish() {
+    squishBar.classList.remove('visible');
+    squishBar.style.width = '40px';
+    squishBar.style.height = '3px';
+    modelStage.style.transform = '';
+    productBar.style.transform = '';
+    actionRow.style.transform = '';
+    nav.style.transform = '';
+}
+
+// Wheel events (desktop)
+window.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    handleScrollDelta(e.deltaY);
+}, { passive: false });
+
+// Touch events (mobile)
+let touchStartY = 0;
+let touchActive = false;
+
+window.addEventListener('touchstart', (e) => {
+    // Allow touch inside detail sheet / cart modal for scrolling
+    if (detailSheet.contains(e.target) || cartOverlay.contains(e.target)) return;
+    touchStartY = e.touches[0].clientY;
+    touchActive = true;
+}, { passive: true });
+
+window.addEventListener('touchmove', (e) => {
+    if (!touchActive) return;
+    if (detailSheet.contains(e.target) || cartOverlay.contains(e.target)) return;
+    e.preventDefault();
+    const deltaY = touchStartY - e.touches[0].clientY;
+    touchStartY = e.touches[0].clientY;
+    handleScrollDelta(deltaY * 1.2); // amplify for touch
+}, { passive: false });
+
+window.addEventListener('touchend', () => {
+    touchActive = false;
+    // Trigger decay
+    clearTimeout(squishTimeout);
+    squishTimeout = setTimeout(decayAccumulator, 50);
+}, { passive: true });
+
+// Keyboard arrows
+window.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+        e.preventDefault();
+        goToProduct(currentIndex + 1);
+    } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+        e.preventDefault();
+        goToProduct(currentIndex - 1);
+    }
+});
+
+// ── COLORWAY SWAP ──
+swatches.forEach(s => {
+    s.addEventListener('click', () => {
+        const c = s.dataset.color;
+        if (c === activeColor) return;
+        activeColor = c;
+        swatches.forEach(x => x.classList.remove('on'));
+        s.classList.add('on');
+        swatchName.textContent = c.charAt(0).toUpperCase() + c.slice(1);
+        const product = PRODUCTS[currentIndex];
+        applyTexture(c === 'white' ? product.texture_white : product.texture_black);
+    });
+});
+
+// ── SIZES ──
+sizeBtns.forEach(b => {
+    b.addEventListener('click', () => {
+        sizeBtns.forEach(x => x.classList.remove('on'));
+        b.classList.add('on');
+    });
+});
+
+// ── DETAIL SHEET ──
+function openDetail() {
+    const product = PRODUCTS[currentIndex];
+    sheetTitle.textContent = product.name;
+    sheetSubtitle.textContent = product.subtitle;
+    sheetChips.innerHTML = '';
+    product.chips.forEach(c => {
+        const chip = document.createElement('div');
+        chip.className = 'chip';
+        chip.textContent = c;
+        sheetChips.appendChild(chip);
+    });
+    detailOverlay.classList.add('on');
+}
+
+function closeDetail() {
+    detailOverlay.classList.remove('on');
+}
+
+infoBtn.addEventListener('click', openDetail);
+sheetClose.addEventListener('click', closeDetail);
+detailOverlay.addEventListener('click', (e) => {
+    if (e.target === detailOverlay) closeDetail();
+});
+
+// ── ADD TO CART (from both quick-add and detail sheet) ──
+function addToCart() {
+    const product = PRODUCTS[currentIndex];
+    const active = document.querySelector('.sz.on');
+    if (!active) {
+        showToast('Select a size first');
+        // If detail sheet is closed, open it
+        if (!detailOverlay.classList.contains('on')) {
+            openDetail();
+        }
+        const g = document.querySelector('.sheet-sizes');
+        if (g) {
+            g.style.animation = 'none';
+            g.offsetHeight;
+            g.style.animation = 'shake 0.35s ease';
+        }
+        return;
+    }
+    const size = active.dataset.size;
+    const key = `${product.id}-${activeColor}-${size}`;
+    const pid = product.prices[`${activeColor}-${size}`];
+    const item = cart.find(i => i.key === key);
+    if (item) item.qty++;
+    else cart.push({
+        key, size, color: activeColor,
+        pid, qty: 1,
+        name: product.name,
+        price: product.price
+    });
+    updateCart();
+    showToast(`${product.name} · ${activeColor.charAt(0).toUpperCase()+activeColor.slice(1)} · ${size} added`);
+}
+
+quickAddBtn.addEventListener('click', addToCart);
+sheetAddBtn.addEventListener('click', () => {
+    addToCart();
+    if (cart.length) {
+        sheetAddBtn.textContent = '✓ Added';
+        sheetAddBtn.classList.add('ok');
+        setTimeout(() => {
+            sheetAddBtn.textContent = 'Add to Cart';
+            sheetAddBtn.classList.remove('ok');
+        }, 1200);
+    }
+});
+
+function updateCart() {
+    const n = cart.reduce((s, i) => s + i.qty, 0);
+    cartDot.textContent = n;
+    cartDot.classList.toggle('on', n > 0);
+}
+
+// ── CART MODAL ──
+function openCart() {
+    if (!cart.length) return;
+    cartLines.innerHTML = '';
+    let total = 0;
+    cart.forEach(item => {
+        const cost = item.qty * item.price;
+        total += cost;
+        const row = document.createElement('div');
+        row.className = 'cart-row';
+        row.innerHTML = `
+            <div>
+                <div class="cart-name">${item.name}</div>
+                <div class="cart-sub">${item.color} · Size ${item.size} · Qty ${item.qty}</div>
+            </div>
+            <div class="cart-price">$${cost.toFixed(2)}</div>`;
+        cartLines.appendChild(row);
+    });
+    totalPrice.textContent = `$${total.toFixed(2)}`;
+    cartOverlay.classList.add('on');
+}
+
+function closeCart() {
+    cartOverlay.classList.remove('on');
+}
+
+cartNav.addEventListener('click', openCart);
+modalBack.addEventListener('click', closeCart);
+cartOverlay.addEventListener('click', (e) => {
+    if (e.target === cartOverlay) closeCart();
+});
+
+// ── STRIPE CHECKOUT ──
+stripeBtn.addEventListener('click', async () => {
+    stripeBtn.textContent = 'Processing…';
+    stripeBtn.disabled = true;
+    try {
+        const res = await fetch(WORKER_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                items: cart.map(i => ({ price_id: i.pid, quantity: i.qty })),
+                success_url: window.location.origin + '/success.html',
+                cancel_url: window.location.href,
+            }),
         });
-        totalPrice.textContent = `$${total.toFixed(2)}`;
-        overlay.classList.add('on');
-        document.body.style.overflow = 'hidden';
-    }
-    function closeModal() {
-        overlay.classList.remove('on');
-        document.body.style.overflow = '';
-    }
-    checkoutBtn.addEventListener('click', openModal);
-    cartNav.addEventListener('click', () => { if (cart.length) openModal(); });
-    modalBack.addEventListener('click', closeModal);
-    overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
-
-    // ── STRIPE CHECKOUT VIA WORKER ──
-    stripeBtn.addEventListener('click', async () => {
-        stripeBtn.textContent = 'Processing…';
-        stripeBtn.disabled = true;
-        try {
-            const res = await fetch(WORKER_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    items: cart.map(i => ({ price_id: i.pid, quantity: i.qty })),
-                    success_url: window.location.origin + '/success.html',
-                    cancel_url: window.location.href,
-                }),
-            });
-            const data = await res.json();
-            if (data.url) {
-                window.location.href = data.url;
-            } else {
-                showToast(data.error || 'Checkout error');
-                stripeBtn.textContent = 'Proceed to Payment →';
-                stripeBtn.disabled = false;
-            }
-        } catch (err) {
-            showToast('Connection error — try again');
+        const data = await res.json();
+        if (data.url) {
+            window.location.href = data.url;
+        } else {
+            showToast(data.error || 'Checkout error');
             stripeBtn.textContent = 'Proceed to Payment →';
             stripeBtn.disabled = false;
         }
-    });
-
-    // ── SCROLL ──
-    // Background starts moving halfway through the hero section
-    let tick = false;
-    window.addEventListener('scroll', () => {
-        if (!tick) { requestAnimationFrame(onScroll); tick = true; }
-    });
-
-    function onScroll() {
-        const y = window.scrollY;
-        const heroH = hero.offsetHeight;
-        const scrollStart = heroH * 0.5; // start at half the hero
-        const trackEnd = track.offsetTop + track.offsetHeight - window.innerHeight;
-        const range = trackEnd - scrollStart;
-        const p = Math.min(Math.max((y - scrollStart) / range, 0), 1);
-
-        const frameProg = Math.min(p / 0.3, 1);
-        const fi = Math.min(Math.floor(frameProg * FRAMES.length), FRAMES.length - 1);
-        if (bg.dataset.f !== String(fi)) {
-            bg.style.backgroundImage = `url('${FRAMES[fi]}')`;
-            bg.dataset.f = String(fi);
-        }
-
-        chips.classList.toggle('on', p > 0.2);
-        tick = false;
+    } catch (err) {
+        showToast('Connection error — try again');
+        stripeBtn.textContent = 'Proceed to Payment →';
+        stripeBtn.disabled = false;
     }
+});
 
-    // ── CAMERA RESET ──
-    let camTimer;
-    ['mouseup','touchend'].forEach(e => {
-        mv.addEventListener(e, () => {
-            clearTimeout(camTimer);
-            camTimer = setTimeout(() => { mv.cameraOrbit = '0deg 85deg 105%'; }, 5000);
-        });
+// ── CAMERA RESET ──
+let camTimer;
+['mouseup', 'touchend'].forEach(e => {
+    mv.addEventListener(e, () => {
+        clearTimeout(camTimer);
+        camTimer = setTimeout(() => { mv.cameraOrbit = '0deg 85deg 105%'; }, 5000);
     });
+});
 
-    // ── TOAST ──
-    let toastTimer;
-    function showToast(msg) {
-        toastEl.textContent = msg;
-        toastEl.classList.add('on');
-        clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => toastEl.classList.remove('on'), 2400);
-    }
+// ── TOAST ──
+let toastTimer;
+function showToast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add('on');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove('on'), 2400);
+}
 </script>
 </body>
 </html>
